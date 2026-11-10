@@ -26,6 +26,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        [hidden] { display: none !important; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -201,6 +202,54 @@
 
         .notes { margin-top: 2px; }
 
+        /* ---------- metadata, scores, review ---------- */
+        .meta-check { margin-top: 10px; font-size: 12px; color: var(--text-2); background: var(--surface-2);
+            border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+        .meta-check.warn { background: var(--warn-soft); border-color: #ffd8a8; color: #8a4b00; }
+        .confirm-row { display: flex; gap: 6px; align-items: center; margin-top: 6px; font-weight: 600; cursor: pointer; }
+        .dot.na { background: #adb5bd; } .dot.accent { background: var(--accent); }
+        .coverage { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+        .coverage-row { display: flex; justify-content: space-between; align-items: baseline; }
+        .coverage-row b { font-size: 18px; }
+        .formula b { color: var(--text-2); }
+
+        .seg button.on-na { background: #868e96; color: #fff; }
+        .card.needs-review { border-left: 3px solid var(--warn); }
+        .why { padding: 0 16px 10px; background: var(--surface-2); font-size: 12px; color: var(--text-2); }
+        .conf { font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); cursor: help; }
+        .conf-high { color: var(--ok); } .conf-medium { color: var(--warn); } .conf-low { color: var(--bad); }
+        .chip-review { font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; }
+        .chip-review.pending { background: var(--warn-soft); color: var(--warn); }
+        .chip-review.accepted { background: var(--ok-soft); color: var(--ok); }
+        .chip-review.changed { background: var(--accent-soft); color: var(--accent); }
+
+        .crit { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+        .crit-head { display: flex; gap: 10px; align-items: flex-start; }
+        .crit-icon { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+        .crit-icon.ok { background: var(--ok-soft); color: var(--ok); }
+        .crit-icon.warn { background: var(--warn-soft); color: var(--warn); }
+        .crit-icon.bad { background: var(--bad-soft); color: var(--bad); }
+        .crit-icon.none { background: var(--surface-2); color: var(--text-3); }
+        .crit-main { min-width: 0; }
+        .crit-title { font-weight: 600; }
+        .crit-result { font-size: 12px; color: var(--text-2); }
+        .tag { font-size: 11px; font-weight: 500; color: var(--text-3); border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; }
+        .quote { margin: 8px 0 0 32px; border-left: 3px solid var(--border); background: var(--surface-2); border-radius: 0 6px 6px 0; }
+        .quote-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); padding: 6px 10px 0; }
+        .quote-head a { color: var(--accent); text-decoration: none; }
+        .signals { display: inline-flex; flex-wrap: wrap; gap: 4px; margin-left: auto; }
+        .quote-body { padding: 6px 10px 8px; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+        .ctx { color: var(--text-3); }
+        .missing { margin: 8px 0 0 32px; font-size: 12px; background: var(--warn-soft); color: #8a4b00; border-radius: 6px; padding: 6px 10px; }
+        .review-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+        .review-box p { margin-bottom: 8px; color: var(--text-2); }
+        textarea.required { border-color: var(--bad); }
+
+        @media (max-width: 560px) {
+            .quote, .missing { margin-left: 0; }
+            .signals { margin-left: 0; }
+        }
+
         @media (max-width: 900px) {
             .layout { grid-template-columns: 1fr; padding: 16px; }
             .sidebar { position: static; }
@@ -233,27 +282,47 @@
                 </div>
                 <div class="field">
                     <label for="reportingYear">Reporting year</label>
-                    <input class="input" type="number" id="reportingYear" min="2000" max="2100">
+                    <input class="input" type="text" id="reportingYear" placeholder="e.g. 2023 or 2025-26" inputmode="numeric">
+                </div>
+                <div class="meta-check" id="metaCheck" hidden>
+                    <div id="metaText"></div>
+                    <label class="confirm-row" id="yearConfirmRow" hidden>
+                        <input type="checkbox" id="yearConfirm"> I confirm the reporting year entered is correct
+                    </label>
                 </div>
             </section>
 
             <section class="panel">
-                <h2>Score</h2>
+                <h2>Scores</h2>
                 <div class="score-row">
-                    <svg class="ring" viewBox="0 0 100 100" aria-label="Overall score">
+                    <svg class="ring" viewBox="0 0 100 100" aria-label="Compliance score">
                         <circle class="track" cx="50" cy="50" r="42"></circle>
                         <circle class="value" id="scoreRing" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9"></circle>
-                        <text x="50" y="50" id="overallScore">0%</text>
+                        <text x="50" y="50" id="overallScore">–</text>
                     </svg>
                     <div class="counts">
                         <div class="count"><span><i class="dot ok"></i>Compliant</span><b id="compliantCount">0</b></div>
                         <div class="count"><span><i class="dot warn"></i>Partial</span><b id="partialCount">0</b></div>
                         <div class="count"><span><i class="dot bad"></i>Non-compliant</span><b id="nonCompliantCount">0</b></div>
+                        <div class="count"><span><i class="dot na"></i>Not assessable</span><b id="naCount">0</b></div>
                         <div class="count"><span><i class="dot none"></i>Not assessed</span><b id="unassessedCount">11</b></div>
                     </div>
                 </div>
+                <p class="formula"><b>Compliance score</b>: final statuses, (Compliant + 0.5 × Partial) ÷ assessable disclosures.</p>
+                <div class="coverage">
+                    <div class="coverage-row"><span>Evidence coverage</span><b id="coverageScore">–</b></div>
+                    <p class="formula" id="coverageDetail">Run an analysis to measure evidence coverage</p>
+                </div>
                 <div class="pillar-bars" id="pillarBars"></div>
-                <p class="formula">Compliant = 1, Partial = 0.5, Non-compliant = 0; score = points ÷ 11.</p>
+            </section>
+
+            <section class="panel" id="reviewPanel" hidden>
+                <h2>Review</h2>
+                <div class="counts">
+                    <div class="count"><span><i class="dot warn"></i>Awaiting review</span><b id="pendingCount">0</b></div>
+                    <div class="count"><span><i class="dot ok"></i>Accepted</span><b id="acceptedCount">0</b></div>
+                    <div class="count"><span><i class="dot accent"></i>Changed (with reason)</span><b id="changedCount">0</b></div>
+                </div>
             </section>
 
             <section class="panel">
@@ -266,7 +335,7 @@
                 <button class="btn btn-primary btn-block" id="analyzeBtn" onclick="analyzeReport()">
                     <span class="spinner"></span><span id="analyzeLabel">Analyse report</span>
                 </button>
-                <p class="status-msg" id="uploadStatus">Optional. Suggests a status for each disclosure with page-cited evidence. Needs the backend on localhost:8250.</p>
+                <p class="status-msg" id="uploadStatus">Optional. Suggests a status per disclosure from criterion-level evidence. Needs the backend on localhost:8250.</p>
             </section>
 
             <section class="panel actions">
@@ -282,7 +351,7 @@
             <div class="intro">
                 <div>
                     <h1>Disclosures</h1>
-                    <p>Set a status for each recommendation. Expand a card to see the evidence behind a suggestion.</p>
+                    <p>Analyse a report to get AI suggestions, then review each one: check the criterion-level evidence and accept or change the status.</p>
                 </div>
                 <span class="source-tag" id="sourceTag" hidden></span>
             </div>

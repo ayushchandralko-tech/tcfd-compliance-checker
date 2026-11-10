@@ -15,7 +15,7 @@ This project provides two components:
 - **Single Page Design**: Clean, focused interface with no sidebar or tabs
 - **Company Details**: Company name and reporting year input
 - **11 TCFD Disclosures**: All four pillars in one scrollable list
-- **Status Selector**: Compliant / Partial / Non-compliant buttons
+- **Status Selector**: Compliant / Partial / Non-compliant / Not assessable (N/A, excluded from the score)
 - **Automatic Calculation**: Instant percentage score calculation
 - **Score Summary**: Overall score and status counts
 - **Auto-fill from PDF**: Upload a report to pre-fill statuses with page-cited evidence (needs the backend)
@@ -24,7 +24,8 @@ This project provides two components:
 
 ### Backend API (Optional)
 - **PDF Analysis**: Automated compliance assessment from sustainability reports
-- **Evidence retrieval**: TF-IDF passage ranking + keyword coverage per disclosure, with page numbers (baseline classifier prediction included for comparison)
+- **Criterion-level assessment**: 34 TCFD criteria checked with semantic retrieval and evidence-sufficiency rules; AI suggestion with reason, evidence coverage and confidence kept separate
+- **Human review**: accept or change each suggestion (reason required), audit trail, company/year mismatch check
 - **RESTful API**: Simple endpoints for compliance assessment
 - **Evidence-Based**: Provides supporting evidence snippets
 
@@ -108,7 +109,7 @@ InferESG/
 2. Enter company name and reporting year
 3. For each TCFD disclosure, click Compliant, Partial, or Non-compliant
 4. View the automatically calculated compliance score
-5. Expand a card to see the evidence (what TCFD asks, matched terms, page-cited passages) and add reviewer notes
+5. Expand a card to review the criterion-level evidence, then accept the AI suggestion or change it with a reason
 6. Click "Export report" to download an HTML report with all evidence (use its Print / Save as PDF button for a PDF)
 
 ### Backend API

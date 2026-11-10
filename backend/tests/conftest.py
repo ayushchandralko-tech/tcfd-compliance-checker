@@ -52,21 +52,34 @@ def make_pdf(pages):
 
 
 SAMPLE_REPORT = [
-    [  # page 1: governance
+    [  # page 1: title
+        "Acme Energy plc - Climate-related Financial Disclosures Report 2024",
+        "Acme Energy plc is a utility serving two million customers. This report follows the TCFD recommendations.",
+    ],
+    [  # page 2: governance
         "Climate governance. The Board of Directors oversees climate-related risks and opportunities.",
         "The Sustainability Committee of the board reviews climate risk quarterly and monitors progress",
         "against our net zero targets. The Chief Risk Officer is accountable for climate risk management",
         "and reports to the executive committee monthly.",
     ],
-    [  # page 2: unrelated
+    [  # page 3: unrelated
         "Our cafeteria introduced new menu options and the staff football team won the regional cup.",
-        "Employee volunteering hours increased compared with last year.",
+        "Employee volunteering hours increased compared with last year. The new office opened in March.",
+        "Customer satisfaction improved after the call centre upgrade. Opening hours were extended.",
     ],
-    [  # page 3: emissions and targets
+    [  # page 4: emissions and targets
         "Greenhouse gas emissions. Scope 1 emissions were 12,000 tCO2e and Scope 2 emissions (market-based)",
-        "were 8,000 tCO2e. Scope 3 emissions were 150,000 tCO2e, calculated using the GHG Protocol.",
+        "were 8,000 tCO2e in 2024. Scope 3 emissions were 150,000 tCO2e, calculated using the GHG Protocol.",
         "We target a 50% reduction in Scope 1 and 2 emissions by 2030 from a 2019 baseline and net zero",
-        "by 2050, validated by the Science Based Targets initiative (SBTi). Progress: 32% achieved.",
+        "by 2050, validated by the Science Based Targets initiative (SBTi). Progress: 32% reduction achieved to date.",
+    ],
+    [  # page 5: general business text so the document is long enough to assess
+        "Acme Energy plc operates power stations, distribution networks and retail energy services across the region.",
+        "Revenue grew by 4% to 2.1 billion. Operating costs were kept flat through efficiency programmes and procurement savings.",
+        "The company employs 5,200 people and invested 340 million in network reinforcement during the year.",
+        "Health and safety performance improved, with the lost time injury rate falling to 0.21 per 100,000 hours worked.",
+        "Our customer service centres handled 1.4 million calls and resolved 92% of complaints within eight weeks.",
+        "Acme Energy plc continues to modernise its billing systems and expand smart meter installations for households.",
     ],
 ]
 

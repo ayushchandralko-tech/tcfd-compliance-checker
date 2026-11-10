@@ -38,38 +38,65 @@ def test_requirements_are_the_11_official_disclosures(client):
 
 
 # --------------------------------------------------------------------------- assess
+# These use the sentence-embedding model (downloaded on first use, ~90 MB).
 
-def test_assess_returns_full_checklist(client, sample_pdf):
-    res = upload(client, "/tcfd/assess", sample_pdf)
+STATUSES = STATUSES | {"Not assessable"}
+CRITERION_RESULTS = {"Supported", "Partly supported", "Not found", "Not assessable"}
+
+
+def test_assess_returns_criterion_level_checklist(client, sample_pdf):
+    res = upload(client, "/tcfd/assess", sample_pdf, name="acme_tcfd_2024.pdf")
     assert res.status_code == 200
     body = res.json()
     checklist = body["compliance_checklist"]
     assert list(checklist) == EXPECTED_IDS
     s = body["summary"]
-    assert s["pages_with_text"] == 3
+    assert s["pages_with_text"] == 5 and s["not_assessable"] == 0
     assert s["disclosed"] + s["partially_disclosed"] + s["not_disclosed"] == 11
-    expected_score = round((s["disclosed"] + 0.5 * s["partially_disclosed"]) / 11 * 100, 2)
-    assert s["compliance_score"] == expected_score
+    expected = round((s["disclosed"] + 0.5 * s["partially_disclosed"]) / 11 * 100, 2)
+    assert s["compliance_score"] == expected
+    assert 0 <= s["evidence_coverage_score"] <= 100
+    assert s["criteria_total"] == s["criteria_supported"] + s["criteria_partly"] + s["criteria_missing"]
     for item in checklist.values():
-        assert item["status"] in STATUSES
-        assert 0 <= item["confidence"] <= 1
-        assert all(1 <= e["page"] <= 3 for e in item["evidence"])
+        assert item["status"] in STATUSES and item["reason"]
+        assert item["confidence"]["level"] in {"High", "Medium", "Low"}
+        assert len(item["criteria"]) == item["coverage"]["total"]
+        for c in item["criteria"]:
+            assert c["result"] in CRITERION_RESULTS and c["reason"]
+            if c["result"] != "Supported":
+                assert c["missing_guidance"]
+            if c["evidence"]:
+                assert 1 <= c["evidence"]["page"] <= 5 and 0 <= c["evidence"]["relevance"] <= 1
 
 
-def test_assess_finds_evidence_on_the_right_pages(client, sample_pdf):
-    checklist = upload(client, "/tcfd/assess", sample_pdf).json()["compliance_checklist"]
-    assert checklist["M.2"]["evidence"][0]["page"] == 3
-    assert checklist["G.1"]["evidence"][0]["page"] == 1
-    assert checklist["M.2"]["status"] != "Not disclosed"
-    assert "scope 1" in checklist["M.2"]["matched_keywords"]
+def test_assess_finds_criterion_evidence_on_the_right_pages(client, sample_pdf):
+    body = upload(client, "/tcfd/assess", sample_pdf).json()
+    crit = {c["id"]: c for r in body["compliance_checklist"].values() for c in r["criteria"]}
+    assert crit["G.1.a"]["result"] == "Supported" and crit["G.1.a"]["evidence"]["page"] == 2
+    assert crit["M.2.a"]["result"] == "Supported" and crit["M.2.a"]["evidence"]["page"] == 4
+    assert crit["M.3.a"]["result"] == "Supported"
+    assert crit["S.3.a"]["result"] == "Not found"  # no scenario analysis in the sample
+    assert body["compliance_checklist"]["S.3"]["status"] == "Not disclosed"
 
 
-def test_assess_irrelevant_report_scores_low(client, make_pdf_bytes):
-    pdf = make_pdf_bytes([["Our cafeteria introduced new menu options this year."],
-                          ["The staff football team won the regional cup."]])
+def test_assess_detects_company_and_year(client, sample_pdf):
+    meta = upload(client, "/tcfd/assess", sample_pdf, name="report.pdf").json()["metadata"]
+    assert meta["company"] == "Acme Energy plc"
+    assert meta["reporting_year"] == "2024"
+
+
+def test_short_document_is_not_assessable(client, make_pdf_bytes):
+    pdf = make_pdf_bytes([["Our cafeteria introduced new menu options this year."]])
     body = upload(client, "/tcfd/assess", pdf).json()
-    assert body["summary"]["not_disclosed"] == 11
-    assert body["summary"]["compliance_score"] == 0
+    assert body["summary"]["not_assessable"] == 11
+    assert body["summary"]["compliance_score"] is None
+    assert all(r["status"] == "Not assessable" for r in body["compliance_checklist"].values())
+
+
+def test_pdf_without_text_is_not_assessable_not_rejected(client, make_pdf_bytes):
+    res = upload(client, "/tcfd/assess", make_pdf_bytes([[], []]))
+    assert res.status_code == 200
+    assert res.json()["summary"]["not_assessable"] == 11
 
 
 @pytest.mark.parametrize("content,status", [
@@ -80,17 +107,12 @@ def test_assess_rejects_bad_files(client, content, status):
     assert upload(client, "/tcfd/assess", content).status_code == status
 
 
-def test_assess_rejects_pdf_without_text(client, make_pdf_bytes):
-    res = upload(client, "/tcfd/assess", make_pdf_bytes([[]]))
-    assert res.status_code == 422
-
-
 # --------------------------------------------------------------------------- labelling
 
 def test_labeling_task_includes_pages_and_hash(client, sample_pdf):
     body = upload(client, "/tcfd/labeling-task?top_k=2", sample_pdf).json()
     assert len(body["tasks"]) == 11
-    assert len(body["pages"]) == 3
+    assert len(body["pages"]) == 5
     assert len(body["metadata"]["sha256"]) == 64
     assert all(len(t["evidence_chunks"]) <= 2 and t["label"] is None for t in body["tasks"])
 

@@ -1,17 +1,13 @@
 """
 Standalone API server for the TCFD compliance checker.
 
-Pipeline for each uploaded report:
-  1. Extract text page by page (pypdf).
-  2. Split pages into overlapping passages, keeping the page number.
-  3. For each of the 11 TCFD recommended disclosures, rank passages by TF-IDF
-     cosine similarity to the requirement (title, description, sub-requirements
-     and keywords).
-  4. Measure keyword coverage across the top passages and turn the evidence
-     strength into a status: Disclosed / Partially disclosed / Not disclosed.
-  5. If a trained baseline classifier is available, its prediction on the
-     retrieved evidence is reported alongside (it is trained on synthetic data
-     today, so the evidence-based status is the primary result).
+The assessment itself lives in assessment.py (criterion-level pipeline):
+  PDF processing -> semantic retrieval per criterion -> evidence-sufficiency check per
+  criterion -> disclosure classification with reasons -> scores (compliance and evidence
+  coverage kept separate). Human review and final scoring happen in the frontend.
+
+The passage models trained by train_external.py are optional and are not used for status
+decisions; they remain available for experiments (passage_model_scores).
 """
 
 import hashlib
@@ -21,7 +17,6 @@ import os
 import re
 import sys
 from contextlib import asynccontextmanager
-from io import BytesIO
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -30,13 +25,12 @@ import numpy as np
 import uvicorn
 from fastapi import Body, FastAPI, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from pypdf import PdfReader
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 
 # Saved passage models reference passage_features.EmbeddingFeaturizer; make it importable
 # regardless of the working directory the server is started from.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import assessment  # noqa: E402  (needs the path above)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -51,19 +45,8 @@ EXTERNAL_DIR = None if _passage_env.lower() == "none" else (BASE_DIR / _passage_
 PILLAR_KEY = {"Governance": "governance", "Strategy": "strategy",
               "Risk Management": "risk", "Metrics & Targets": "metrics"}
 
-STATUSES = ["Not disclosed", "Partially disclosed", "Disclosed"]
 LABEL_MAP = {0: "Not disclosed", 1: "Partially disclosed", 2: "Disclosed"}
-
-# Evidence thresholds (tuned on the AstraZeneca 2023 report in library/).
-TOP_K = 3
-DISCLOSED_SCORE = 0.55
-PARTIAL_SCORE = 0.30
 MAX_UPLOAD_BYTES = 50 * 1024 * 1024
-# TF-IDF cosine similarity of ~0.25+ to a requirement query is a strong match.
-SIM_SCALE = 0.25
-# Embedding-based passage models are confident; require ~0.9 probability for full support.
-MODEL_FULL_SUPPORT = 0.9
-CLIMATE_RE = re.compile(r"climate|emission|carbon|ghg|greenhouse|net[- ]zero|decarboni|warming", re.I)
 
 state: Dict = {"vectorizer": None, "classifier": None, "requirements": None,
                "pillar_model": None, "disclosure_model": None}
@@ -132,64 +115,14 @@ def iter_requirements(requirements: Dict):
             yield pillar, rec
 
 
-def parse_pdf(file_content: bytes) -> List[Dict]:
-    """Return [{'page': n, 'text': ...}] for every page with extractable text."""
-    try:
-        reader = PdfReader(BytesIO(file_content))
-    except Exception as e:  # noqa: BLE001
-        logger.error("Error opening PDF: %s", e)
-        raise HTTPException(status_code=400, detail="Could not read the file as a PDF")
-
-    pages = []
-    for i, page in enumerate(reader.pages, start=1):
-        try:
-            text = page.extract_text() or ""
-        except Exception:  # noqa: BLE001
-            text = ""
-        text = re.sub(r"\s+", " ", text).strip()
-        if text:
-            pages.append({"page": i, "text": text})
-    return pages
-
-
-def chunk_pages(pages: List[Dict], chunk_size: int = 900, overlap: int = 150) -> List[Dict]:
-    """Split each page into overlapping passages, breaking on word boundaries."""
-    chunks = []
-    for p in pages:
-        text = p["text"]
-        start = 0
-        while start < len(text):
-            end = min(start + chunk_size, len(text))
-            if end < len(text):
-                space = text.rfind(" ", start + chunk_size // 2, end)
-                if space != -1:
-                    end = space
-            chunks.append({"page": p["page"], "text": text[start:end].strip()})
-            if end >= len(text):
-                break
-            start = max(end - overlap, start + 1)
-    return [c for c in chunks if len(c["text"]) > 40]
-
-
-def requirement_query(rec: Dict) -> str:
-    return " ".join([rec["title"], rec["description"], " ".join(rec.get("requirements", [])),
-                     " ".join(rec.get("keywords", []))])
-
-
-def keyword_hits(text: str, keywords: List[str]) -> List[str]:
-    lower = text.lower()
-    return [k for k in keywords if k.lower() in lower]
-
-
 def classify(text: str) -> Optional[Dict]:
+    """Legacy synthetic-data baseline classifier (reported for comparison only)."""
     vec, clf = state["vectorizer"], state["classifier"]
     if vec is None or clf is None:
         return None
     try:
-        x = vec.transform([text])
-        proba = clf.predict_proba(x)[0]
-        classes = list(clf.classes_)
-        probs = {LABEL_MAP[c]: float(p) for c, p in zip(classes, proba)}
+        proba = clf.predict_proba(vec.transform([text]))[0]
+        probs = {LABEL_MAP[c]: float(p) for c, p in zip(clf.classes_, proba)}
         label = max(probs, key=probs.get)
         return {"label": label, "confidence": probs[label], "probabilities": probs}
     except Exception as e:  # noqa: BLE001
@@ -197,47 +130,10 @@ def classify(text: str) -> Optional[Dict]:
         return None
 
 
-# --------------------------------------------------------------------------- #
-# Assessment
-# --------------------------------------------------------------------------- #
-
-def retrieve(chunks: List[Dict], requirements: Dict, top_k: int = TOP_K) -> Dict[str, List[Dict]]:
-    """Rank passages for every requirement in one TF-IDF pass."""
-    recs = list(iter_requirements(requirements))
-    if not chunks:
-        return {rec["id"]: [] for _, rec in recs}
-
-    queries = [requirement_query(rec) for _, rec in recs]
-    tfidf = TfidfVectorizer(stop_words="english", ngram_range=(1, 2), sublinear_tf=True, min_df=1)
-    matrix = tfidf.fit_transform([c["text"] for c in chunks] + queries)
-    chunk_m, query_m = matrix[: len(chunks)], matrix[len(chunks):]
-    sims = cosine_similarity(query_m, chunk_m)
-    model_probs = passage_model_scores([c["text"] for c in chunks], [(p, r["id"]) for p, r in recs])
-
-    # Passages that never mention climate/emissions are rarely TCFD evidence; halve their rank.
-    climate_weight = np.array([1.0 if CLIMATE_RE.search(c["text"]) else 0.5 for c in chunks])
-
-    results = {}
-    for qi, (_, rec) in enumerate(recs):
-        sim_norm = np.minimum(sims[qi] / SIM_SCALE, 1.0)
-        if model_probs is not None:
-            rank_score = 0.5 * sim_norm + 0.5 * model_probs[:, qi]
-        else:
-            rank_score = sim_norm
-        rank_score = rank_score * climate_weight
-        order = rank_score.argsort()[::-1][:top_k]
-        results[rec["id"]] = [
-            {"page": chunks[i]["page"], "text": chunks[i]["text"], "similarity": float(sims[qi][i]),
-             "model_score": float(model_probs[i, qi]) if model_probs is not None else None}
-            for i in order if rank_score[i] > 0
-        ]
-    return results
-
-
 def passage_model_scores(texts: List[str], recs: List) -> Optional[np.ndarray]:
-    """P(passage supports requirement) = P(pillar) x P(disclosure | pillar), shape (passages, requirements).
+    """Experimental: P(pillar) x P(disclosure | pillar) from the models trained by train_external.py.
 
-    Uses models trained by train_external.py on public labelled TCFD data. Returns None if not loaded.
+    Shape (passages, requirements). Not used for status decisions. Returns None if not loaded.
     """
     pm, dm = state["pillar_model"], state["disclosure_model"]
     if pm is None or dm is None or not texts:
@@ -246,112 +142,39 @@ def passage_model_scores(texts: List[str], recs: List) -> Optional[np.ndarray]:
     pillar_idx = {c: i for i, c in enumerate(pm.classes_)}
     disc_p = dm.predict_proba(texts)
     disc_idx = {c: i for i, c in enumerate(dm.classes_)}
-
     out = np.zeros((len(texts), len(recs)))
     for j, (pillar, req_id) in enumerate(recs):
-        key = PILLAR_KEY[pillar]
         siblings = [disc_idx[r] for p, r in recs if p == pillar and r in disc_idx]
         within = disc_p[:, disc_idx[req_id]] / disc_p[:, siblings].sum(axis=1)
-        out[:, j] = pillar_p[:, pillar_idx[key]] * within
+        out[:, j] = pillar_p[:, pillar_idx[PILLAR_KEY[pillar]]] * within
     return out
 
 
-def score_requirement(rec: Dict, passages: List[Dict]) -> Dict:
-    keywords = rec.get("keywords", [])
-    evidence_text = " ".join(p["text"] for p in passages)
-    hits = keyword_hits(evidence_text, keywords)
-    coverage = len(hits) / len(keywords) if keywords else 0.0
-    top_sim = passages[0]["similarity"] if passages else 0.0
-    mentions_climate = bool(CLIMATE_RE.search(evidence_text))
-
-    sim_component = min(top_sim / SIM_SCALE, 1.0)
-    model_scores = [p["model_score"] for p in passages if p.get("model_score") is not None]
-    model_support = None
-    if model_scores:
-        # Strongest support, scaled so that MODEL_FULL_SUPPORT probability counts as full support.
-        model_support = min(max(model_scores) / MODEL_FULL_SUPPORT, 1.0)
-        evidence_score = 0.45 * coverage + 0.25 * sim_component + 0.30 * model_support
-    else:
-        evidence_score = 0.6 * coverage + 0.4 * sim_component
-    if not mentions_climate:
-        evidence_score *= 0.5
-
-    if evidence_score >= DISCLOSED_SCORE:
-        status = "Disclosed"
-    elif evidence_score >= PARTIAL_SCORE:
-        status = "Partially disclosed"
-    else:
-        status = "Not disclosed"
-
-    return {
-        "status": status,
-        "confidence": round(evidence_score, 3),
-        "keyword_coverage": round(coverage, 3),
-        "matched_keywords": hits,
-        "retrieval_score": round(top_sim, 3),
-        "model_support": round(model_support, 3) if model_support is not None else None,
-    }
+def parse_document(content: bytes) -> Dict:
+    try:
+        return assessment.read_pdf(content)
+    except Exception as e:  # noqa: BLE001
+        logger.error("Error opening PDF: %s", e)
+        raise HTTPException(status_code=400, detail="Could not read the file as a PDF")
 
 
-def assess_text(pages: List[Dict], top_k: int = TOP_K) -> Dict:
-    requirements = state["requirements"]
-    chunks = chunk_pages(pages)
-    retrieved = retrieve(chunks, requirements, top_k=top_k)
-
-    checklist = {}
-    for pillar, rec in iter_requirements(requirements):
-        passages = retrieved[rec["id"]]
-        scored = score_requirement(rec, passages)
-        evidence = [
-            {"page": p["page"], "text": p["text"][:600] + ("..." if len(p["text"]) > 600 else ""),
-             "similarity": round(p["similarity"], 3),
-             "model_score": round(p["model_score"], 3) if p.get("model_score") is not None else None}
-            for p in passages
-        ]
-        checklist[rec["id"]] = {
-            "requirement_id": rec["id"],
-            "tcfd_ref": rec.get("tcfd_ref"),
-            "pillar": pillar,
-            "title": rec["title"],
-            "description": rec["description"],
-            "requirements": rec.get("requirements", []),
-            **scored,
-            "evidence": evidence,
-            "classifier": classify(passages[0]["text"]) if passages else None,
-        }
-
-    total = len(checklist)
-    counts = {s: sum(1 for r in checklist.values() if r["status"] == s) for s in STATUSES}
-    points = counts["Disclosed"] + 0.5 * counts["Partially disclosed"]
-    summary = {
-        "total_requirements": total,
-        "disclosed": counts["Disclosed"],
-        "partially_disclosed": counts["Partially disclosed"],
-        "not_disclosed": counts["Not disclosed"],
-        "compliance_score": round(points / total * 100, 2) if total else 0.0,
-        "disclosed_percentage": round(counts["Disclosed"] / total * 100, 2) if total else 0.0,
-        "average_confidence": round(sum(r["confidence"] for r in checklist.values()) / total, 3) if total else 0.0,
-        "pages_with_text": len(pages),
-        "passages": len(chunks),
-    }
-    return {"summary": summary, "compliance_checklist": checklist}
+def parse_pdf(content: bytes) -> List[Dict]:
+    """Pages with extractable text (kept for scripts that only need page text)."""
+    return parse_document(content)["pages"]
 
 
-async def read_pdf_upload(file: UploadFile, with_hash: bool = False):
+def assess(doc: Dict, filename: str = "") -> Dict:
+    return assessment.assess_document(doc, state["requirements"], filename)
+
+
+async def read_pdf_upload(file: UploadFile):
+    """Returns (document, sha256). An unreadable document is assessed as Not assessable, not rejected."""
     content = await file.read()
     if not content:
         raise HTTPException(status_code=400, detail="Uploaded file is empty")
     if len(content) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="File too large (max 50 MB)")
-    pages = parse_pdf(content)
-    if not pages:
-        raise HTTPException(
-            status_code=422,
-            detail="No extractable text found. The PDF may be scanned images; run OCR first.",
-        )
-    if with_hash:
-        return pages, hashlib.sha256(content).hexdigest()
-    return pages
+    return parse_document(content), hashlib.sha256(content).hexdigest()
 
 
 # --------------------------------------------------------------------------- #
@@ -376,59 +199,67 @@ async def get_tcfd_requirements():
 
 @app.post("/tcfd/assess")
 async def assess_tcfd_compliance(file: UploadFile):
-    """Assess a sustainability report PDF against the 11 TCFD recommended disclosures."""
+    """Assess a report PDF against the 11 TCFD recommended disclosures, criterion by criterion."""
     logger.info("Assessing %s", file.filename)
-    pages = await read_pdf_upload(file)
-    result = assess_text(pages)
+    doc, sha256 = await read_pdf_upload(file)
+    result = assess(doc, file.filename or "")
     s = result["summary"]
-    logger.info("Done: %d disclosed, %d partial, %d not disclosed",
-                s["disclosed"], s["partially_disclosed"], s["not_disclosed"])
+    logger.info("Done: %d disclosed, %d partial, %d not disclosed, %d not assessable",
+                s["disclosed"], s["partially_disclosed"], s["not_disclosed"], s["not_assessable"])
     return {
         "framework": "TCFD",
         "source_file": file.filename,
-        "method": ("tfidf-retrieval + keyword-coverage + trained pillar/disclosure models"
-                   if state["pillar_model"] is not None else "tfidf-retrieval + keyword-coverage"),
-        "classifier_loaded": state["classifier"] is not None,
+        "sha256": sha256,
+        "method": "criterion-level: semantic retrieval + evidence-sufficiency checks",
+        "method_details": {
+            "relevance": "0.8 x semantic similarity (sentence embeddings) + 0.2 x lexical similarity (TF-IDF)",
+            "criterion_supported": (f"a passage with relevance >= {assessment.RELEVANCE_SUPPORT} contains every "
+                                    f"required evidence signal within {assessment.SIGNAL_WINDOW} adjacent sentences, "
+                                    "and is not only a plan or training mention"),
+            "status_rules": {"Disclosed": "all essential criteria supported",
+                             "Partially disclosed": "some criteria supported or partly supported",
+                             "Not disclosed": "no criterion has supporting evidence",
+                             "Not assessable": "document unreadable or too short"},
+            "coverage": "(supported + 0.5 x partly supported) / criteria",
+            "confidence": "High / Medium / Low by how many criterion results are borderline",
+        },
         **result,
     }
 
 
 @app.post("/tcfd/compare")
 async def compare_methods(file: UploadFile):
-    """Compare the evidence-based status with the baseline classifier's prediction."""
+    """Compare the criterion-based status with the legacy baseline classifier's prediction."""
     if state["classifier"] is None:
         raise HTTPException(status_code=503, detail="Classifier not loaded; run train_baseline.py first")
-    pages = await read_pdf_upload(file)
-    checklist = assess_text(pages)["compliance_checklist"]
-
+    doc, _ = await read_pdf_upload(file)
+    checklist = assess(doc, file.filename or "")["compliance_checklist"]
     comparison = {}
     for req_id, r in checklist.items():
-        clf = r["classifier"] or {}
+        clf = classify(r["evidence"][0]["text"]) if r["evidence"] else None
         comparison[req_id] = {
             "title": r["title"],
-            "evidence_status": r["status"],
-            "evidence_confidence": r["confidence"],
-            "classifier_status": clf.get("label"),
-            "classifier_confidence": clf.get("confidence"),
-            "agreement": clf.get("label") == r["status"],
+            "criterion_status": r["status"],
+            "classifier_status": clf["label"] if clf else None,
+            "classifier_confidence": clf["confidence"] if clf else None,
+            "agreement": bool(clf) and clf["label"] == r["status"],
         }
     agree = sum(1 for c in comparison.values() if c["agreement"])
-    return {
-        "source_file": file.filename,
-        "agreement_rate": round(agree / len(comparison) * 100, 2) if comparison else 0.0,
-        "comparison": comparison,
-    }
+    return {"source_file": file.filename,
+            "agreement_rate": round(agree / len(comparison) * 100, 2) if comparison else 0.0,
+            "comparison": comparison}
 
 
 @app.post("/tcfd/labeling-task")
 async def create_labeling_task(file: UploadFile, top_k: int = 5):
-    """Build a labeling task: top retrieved passages per requirement plus full page text for searching.
+    """Build a labeling task: per-disclosure evidence plus full page text for searching.
 
     The automated status is returned as `suggested_label` so tools can hide it while labelling
-    (to avoid anchoring) and compare afterwards.
+    (to avoid anchoring) and compare afterwards. `top_k` limits the evidence passages shown.
     """
-    pages, sha256 = await read_pdf_upload(file, with_hash=True)
-    checklist = assess_text(pages, top_k=max(1, min(top_k, 10)))["compliance_checklist"]
+    doc, sha256 = await read_pdf_upload(file)
+    checklist = assess(doc, file.filename or "")["compliance_checklist"]
+    k = max(1, min(top_k, 10))
     tasks = [
         {
             "requirement_id": r["requirement_id"],
@@ -438,7 +269,7 @@ async def create_labeling_task(file: UploadFile, top_k: int = 5):
             "description": r["description"],
             "requirements": r["requirements"],
             "suggested_label": r["status"],
-            "evidence_chunks": r["evidence"],
+            "evidence_chunks": r["evidence"][:k],
             "label": None,
             "evidence_pages": [],
             "labeler_notes": "",
@@ -449,11 +280,11 @@ async def create_labeling_task(file: UploadFile, top_k: int = 5):
         "metadata": {
             "source_file": file.filename,
             "sha256": sha256,
-            "num_pages": len(pages),
+            "num_pages": len(doc["pages"]),
             "total_requirements": len(tasks),
             "labeling_instructions": LABELING_GUIDE,
         },
-        "pages": pages,
+        "pages": doc["pages"],
         "tasks": tasks,
     }
 
@@ -465,7 +296,7 @@ LABELING_GUIDE = (
     "Partially disclosed: the topic is addressed but vaguely or only some sub-requirements are covered. "
     "Not disclosed: nothing relevant in the report, or only generic statements unrelated to climate."
 )
-VALID_LABELS = set(STATUSES)
+VALID_LABELS = {"Disclosed", "Partially disclosed", "Not disclosed", "Not assessable"}
 
 
 def _safe_stem(name: str) -> str:

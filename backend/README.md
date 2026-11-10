@@ -4,11 +4,13 @@ A focused backend API for TCFD (Task Force on Climate-related Financial Disclosu
 
 ## Overview
 
-This backend provides a FastAPI server that:
-- Accepts sustainability report PDFs
-- Assesses compliance against 11 TCFD recommendations
-- Uses a trained TF-IDF + Logistic Regression classifier
-- Returns structured compliance checklists with confidence scores
+FastAPI server that assesses sustainability / TCFD report PDFs against the 11 TCFD recommended disclosures,
+criterion by criterion (34 criteria), and returns for each disclosure an AI suggestion with a reason, the
+criterion results with page-cited evidence and missing-evidence guidance, evidence coverage and
+classification confidence. See QUICKSTART.md, "How the automated assessment works", for the method.
+
+Main modules: `assessment.py` (pipeline), `tcfd_api_server.py` (API), `passage_features.py` (embeddings),
+`evaluate_reports.py` (evaluation against human labels).
 
 ## Project Structure
 
@@ -85,22 +87,19 @@ Health check endpoint. Returns service status and model loading status.
 Returns the TCFD knowledge base with all 11 recommendations across 4 pillars.
 
 ### POST /tcfd/assess
-Assesses an uploaded PDF against the 11 TCFD recommended disclosures.
 
-**Parameters:** `file` - PDF file (multipart)
+Assesses an uploaded PDF (multipart field `file`).
 
-**Returns:**
-- `summary`: counts per status, `compliance_score` (Disclosed = 1, Partial = 0.5), pages read
-- `compliance_checklist`: per requirement - `status`, `confidence` (evidence score 0-1), `keyword_coverage`,
-  `matched_keywords`, `retrieval_score`, top-3 `evidence` passages with page numbers, and the baseline
-  `classifier` prediction (if a model is loaded)
-
-**How status is decided:** passages are ranked by TF-IDF similarity to the requirement text and keywords
-in `library/tcfd_requirements.json`; evidence score = 0.6 x keyword coverage + 0.4 x normalised similarity
-(halved if the passages never mention climate/emissions). >= 0.55 Disclosed, >= 0.30 Partial, else Not disclosed.
+Returns `metadata` (detected company, reporting year), `summary` (status counts including
+`not_assessable`, `compliance_score`, `evidence_coverage_score`, criteria supported / partly / missing)
+and `compliance_checklist`: per disclosure `status`, `reason`, `coverage`, `confidence`, and `criteria`
+(each with `result`, `reason`, `evidence` {page, text, context, relevance, signals_found} and
+`missing_guidance`). `method_details` documents every measure. Unreadable PDFs are returned as
+Not assessable rather than rejected; non-PDF files return 400.
 
 ### POST /tcfd/compare
-Compares the evidence-based status with the baseline classifier's prediction per requirement and reports the agreement rate.
+
+Compares the criterion-based status with the legacy synthetic-data baseline classifier (diagnostic only).
 
 ### POST /tcfd/labeling-task
 Returns the retrieved evidence per requirement with a suggested label and an empty `label` field, for manual labeling.
@@ -186,9 +185,16 @@ The system assesses compliance against 11 TCFD recommendations across 4 pillars:
 
 ## Limitations
 
-1. **Heuristic status**: keyword coverage + TF-IDF similarity measures whether a topic is discussed, not the quality of the disclosure. Documents *about* climate disclosure (e.g. GRI sector standards) also score moderately.
-2. **Classifier**: trained on 100 synthetic sentences; its predictions are not reliable on real reports.
-3. **PDF parsing**: text-only extraction; scanned PDFs return HTTP 422.
+- Evidence checks are pattern-based on top of semantic retrieval: they verify that the right *kinds* of
+  information appear together, not that the disclosure is complete or high quality. Read the evidence.
+- Thresholds were calibrated on the EBRD 2023 TCFD report and AstraZeneca 2023 sustainability report.
+  Against the (unreviewed) AI-drafted labels for EBRD, Ujjivan and APAR, status agreement is 70%; the main
+  disagreement is the pipeline calling Compliant where the drafts said Partial. Confirm the labels in the
+  labelling tool to get a real measurement (`python evaluate_reports.py`).
+- Documents that *describe* disclosure requirements (e.g. GRI standards) still score moderately.
+- Integrated reports that refer to a separate TCFD report are assessed only on their own content.
+- Large reports take 30-130 s on CPU (sentence embeddings for every passage).
+- Scanned PDFs are reported as Not assessable; run OCR first.
 
 ## Future Improvements
 

@@ -10,11 +10,93 @@
           "tcfd_ref": "Governance (a)",
           "title": "Board oversight",
           "description": "Describe the board's oversight of climate-related risks and opportunities.",
-          "keywords": ["board", "oversight", "committee", "directors", "climate", "risk", "governance", "reviews", "chair", "agenda", "frequency", "sustainability committee"],
+          "keywords": [
+            "board",
+            "oversight",
+            "committee",
+            "directors",
+            "climate",
+            "risk",
+            "governance",
+            "reviews",
+            "chair",
+            "agenda",
+            "frequency",
+            "sustainability committee"
+          ],
           "requirements": [
-            "Processes and frequency by which the board and/or committees are informed about climate-related issues",
-            "Whether the board considers climate-related issues when reviewing strategy, budgets and major plans",
-            "How the board monitors and oversees progress against climate-related goals and targets"
+            "Board body that oversees climate issues and how often it is informed",
+            "Board considers climate issues in strategy, budgets, risk appetite and major plans",
+            "Board monitors progress against climate goals and targets"
+          ],
+          "criteria": [
+            {
+              "id": "G.1.a",
+              "text": "Board body that oversees climate issues and how often it is informed",
+              "essential": true,
+              "query": "The board or a board committee is informed about climate-related risks and opportunities at its regular quarterly meetings",
+              "signals": [
+                {
+                  "name": "board body",
+                  "pattern": "\\bboard\\b|board[- ]level|directors|audit (?:and|&) risk committee|risk (?:management )?committee of the board|sustainability committee|supervisory board"
+                },
+                {
+                  "name": "frequency",
+                  "pattern": "quarterl|annual(?:ly)?|bi-?annual|semi-annual|monthly|fortnightly|weekly|each (?:board )?meeting|every (?:board )?meeting|at least (?:once|twice|\\w+ times)|times (?:a|per) year|regular(?:ly)?|periodic|met \\w+ times|convened \\w+"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Name the board or board committee responsible for climate oversight and state how often it is briefed on climate-related issues."
+            },
+            {
+              "id": "G.1.b",
+              "text": "Board considers climate issues in strategy, budgets, risk appetite and major plans",
+              "essential": true,
+              "query": "The board considers climate-related issues when reviewing and guiding strategy, budgets, business plans, risk appetite and major investment decisions",
+              "signals": [
+                {
+                  "name": "board body",
+                  "pattern": "\\bboard\\b|board[- ]level|directors|audit (?:and|&) risk committee|risk (?:management )?committee of the board|sustainability committee|supervisory board"
+                },
+                {
+                  "name": "strategy or plans",
+                  "pattern": "strateg|budget|business plan|capital expenditure|capex|investment decision|acquisition|divestiture|major (?:plan|project|transaction)|risk appetite|polic(?:y|ies)|approv"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Explain whether and how the board takes climate-related issues into account when approving strategy, budgets, risk appetite and major investments."
+            },
+            {
+              "id": "G.1.c",
+              "text": "Board monitors progress against climate goals and targets",
+              "essential": true,
+              "query": "The board monitors and oversees progress against climate-related goals and targets",
+              "signals": [
+                {
+                  "name": "board body",
+                  "pattern": "\\bboard\\b|board[- ]level|directors|audit (?:and|&) risk committee|risk (?:management )?committee of the board|sustainability committee|supervisory board"
+                },
+                {
+                  "name": "monitoring",
+                  "pattern": "monitor|oversee|oversight|review|track|progress|performance against|report(?:s|ed)? on"
+                },
+                {
+                  "name": "goals or targets",
+                  "pattern": "target|goal|objective|commitment|net[- ]?zero|ambition|institutional objectives"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Describe how the board monitors progress against the organisation's climate-related goals and targets."
+            }
           ]
         },
         {
@@ -22,11 +104,93 @@
           "tcfd_ref": "Governance (b)",
           "title": "Management's role",
           "description": "Describe management's role in assessing and managing climate-related risks and opportunities.",
-          "keywords": ["management", "executive", "responsibility", "accountable", "chief", "officer", "reporting line", "climate", "team", "remuneration", "incentive", "senior"],
+          "keywords": [
+            "management",
+            "executive",
+            "responsibility",
+            "accountable",
+            "chief",
+            "officer",
+            "reporting line",
+            "climate",
+            "team",
+            "remuneration",
+            "incentive",
+            "senior"
+          ],
           "requirements": [
-            "Whether climate-related responsibilities are assigned to management-level positions or committees",
-            "Description of the associated organizational structure",
-            "Processes by which management is informed about and monitors climate-related issues"
+            "Climate responsibilities assigned to management roles or committees",
+            "Organisational structure and reporting lines for climate issues",
+            "How management is informed about and monitors climate issues"
+          ],
+          "criteria": [
+            {
+              "id": "G.2.a",
+              "text": "Climate responsibilities assigned to management roles or committees",
+              "essential": true,
+              "query": "Climate-related responsibilities are assigned to named management positions or management committees such as the chief risk officer or a sustainability committee",
+              "signals": [
+                {
+                  "name": "management role",
+                  "pattern": "management|executive|chief [a-z]+ officer|\\bc[efrs]o\\b|vice[- ]president|head of|steering (?:committee|group)|working group|management committee|managing director|\\bteam\\b"
+                },
+                {
+                  "name": "responsibility",
+                  "pattern": "responsib|accountab|in charge|charged with|mandate|oversee|leads?\\b|tasked|owner"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Identify which management-level positions or committees are responsible for assessing and managing climate-related issues."
+            },
+            {
+              "id": "G.2.b",
+              "text": "Organisational structure and reporting lines for climate issues",
+              "essential": true,
+              "query": "The management structure for climate issues, which committee or officer reports to whom, chairs and reporting lines",
+              "signals": [
+                {
+                  "name": "management role",
+                  "pattern": "management|executive|chief [a-z]+ officer|\\bc[efrs]o\\b|vice[- ]president|head of|steering (?:committee|group)|working group|management committee|managing director|\\bteam\\b"
+                },
+                {
+                  "name": "structure",
+                  "pattern": "reports? (?:directly )?to|reporting line|chaired by|\\bchair\\b|members? of|comprises|lines? of defen[cs]e|organi[sz]ational structure|escalat|structure"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Describe the organisational structure for climate issues: who reports to whom, committee chairs and escalation to the board."
+            },
+            {
+              "id": "G.2.c",
+              "text": "How management is informed about and monitors climate issues",
+              "essential": true,
+              "query": "Management committees are regularly informed about and monitor climate-related issues through reports and meetings",
+              "signals": [
+                {
+                  "name": "management role",
+                  "pattern": "management|executive|chief [a-z]+ officer|\\bc[efrs]o\\b|vice[- ]president|head of|steering (?:committee|group)|working group|management committee|managing director|\\bteam\\b"
+                },
+                {
+                  "name": "monitoring",
+                  "pattern": "monitor|inform|update|report|review|meet|track"
+                },
+                {
+                  "name": "frequency or process",
+                  "pattern": "quarterl|annual(?:ly)?|bi-?annual|semi-annual|monthly|fortnightly|weekly|each (?:board )?meeting|every (?:board )?meeting|at least (?:once|twice|\\w+ times)|times (?:a|per) year|regular(?:ly)?|periodic|met \\w+ times|convened \\w+|process|dashboard|key risk indicator|\\bkri"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Explain how and how often management is informed about climate-related issues and how it monitors them."
+            }
           ]
         }
       ]
@@ -39,11 +203,89 @@
           "tcfd_ref": "Strategy (a)",
           "title": "Climate risks and opportunities",
           "description": "Describe the climate-related risks and opportunities the organization has identified over the short, medium, and long term.",
-          "keywords": ["climate-related risks", "opportunities", "short term", "medium term", "long term", "time horizon", "physical risk", "transition risk", "climate", "identified"],
+          "keywords": [
+            "climate-related risks",
+            "opportunities",
+            "short term",
+            "medium term",
+            "long term",
+            "time horizon",
+            "physical risk",
+            "transition risk",
+            "climate",
+            "identified"
+          ],
           "requirements": [
-            "Relevant short-, medium- and long-term time horizons",
-            "Specific climate-related issues for each time horizon that could have a material financial impact",
-            "Processes used to determine which risks and opportunities could have a material financial impact"
+            "Short-, medium- and long-term horizons defined",
+            "Specific climate-related risks identified (physical and/or transition)",
+            "Climate-related opportunities identified",
+            "Process for determining which risks and opportunities are material"
+          ],
+          "criteria": [
+            {
+              "id": "S.1.a",
+              "text": "Short-, medium- and long-term horizons defined",
+              "essential": true,
+              "query": "The organisation defines short-term, medium-term and long-term time horizons in years for climate-related risks",
+              "signals": [
+                {
+                  "name": "horizon terms",
+                  "pattern": "short[- ]term|medium[- ]term|long[- ]term|time horizons?"
+                },
+                {
+                  "name": "defined period",
+                  "pattern": "\\d+\\s*(?:-|–|to)?\\s*\\d*\\s*(?:years?|yrs)|less than (?:one|\\w+) years?|more than \\w+ years?|<\\s*\\d|>\\s*\\d|\\bby 20\\d\\d|20\\d\\d\\s*(?:-|–|to)\\s*20\\d\\d"
+                }
+              ],
+              "missing": "Define the short-, medium- and long-term time horizons (in years) used for climate-related risks and opportunities."
+            },
+            {
+              "id": "S.1.b",
+              "text": "Specific climate-related risks identified (physical and/or transition)",
+              "essential": true,
+              "query": "Specific climate-related physical risks such as floods, droughts and extreme weather and transition risks such as carbon pricing, regulation and stranded assets",
+              "signals": [
+                {
+                  "name": "specific risk",
+                  "pattern": "physical risk|transition risk|flood|drought|cyclone|heat ?wave|heat stress|wildfire|sea[- ]level|extreme weather|carbon pric|carbon tax|regulat|stranded|cbam|litigation|reputation|technology risk|market risk|demand"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd|weather"
+                }
+              ],
+              "missing": "List the specific physical and transition risks identified and the time horizon over which each could have a material financial impact."
+            },
+            {
+              "id": "S.1.c",
+              "text": "Climate-related opportunities identified",
+              "essential": true,
+              "query": "Climate-related opportunities such as green finance, low-carbon products, renewable energy, energy efficiency and new markets",
+              "signals": [
+                {
+                  "name": "opportunity",
+                  "pattern": "opportunit|green (?:finance|bond|product|loan|deposit)|renewable|low[- ]carbon (?:product|technolog|solution)|energy efficien|new markets?|climate finance|sustainable finance|electri(?:c|fication)"
+                }
+              ],
+              "missing": "Describe the climate-related opportunities identified (e.g. products, markets, resource efficiency, energy sources)."
+            },
+            {
+              "id": "S.1.d",
+              "text": "Process for determining which risks and opportunities are material",
+              "essential": false,
+              "query": "The process used to determine which climate-related risks and opportunities could have a material financial impact",
+              "signals": [
+                {
+                  "name": "materiality",
+                  "pattern": "materiality|material (?:risk|impact|financial)|significan|prioriti|likelihood|magnitude|assessment process"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Describe the process used to determine which climate-related risks and opportunities could have a material financial impact."
+            }
           ]
         },
         {
@@ -51,11 +293,81 @@
           "tcfd_ref": "Strategy (b)",
           "title": "Business and financial impact",
           "description": "Describe the impact of climate-related risks and opportunities on the organization's businesses, strategy, and financial planning.",
-          "keywords": ["impact", "financial planning", "strategy", "revenue", "costs", "capital expenditure", "investment", "supply chain", "products", "operations", "climate", "transition plan"],
+          "keywords": [
+            "impact",
+            "financial planning",
+            "strategy",
+            "revenue",
+            "costs",
+            "capital expenditure",
+            "investment",
+            "supply chain",
+            "products",
+            "operations",
+            "climate",
+            "transition plan"
+          ],
           "requirements": [
-            "Impact on products and services, supply chain, adaptation and mitigation activities, R&D and operations",
-            "How climate-related issues serve as an input to financial planning",
-            "Impact on financial performance and financial position"
+            "Impact on businesses, products, operations or portfolio",
+            "Climate issues as an input to financial planning",
+            "Impact on financial performance and position"
+          ],
+          "criteria": [
+            {
+              "id": "S.2.a",
+              "text": "Impact on businesses, products, operations or portfolio",
+              "essential": true,
+              "query": "Climate-related risks and opportunities affect the organisation's products, services, operations, supply chain, investment portfolio and clients",
+              "signals": [
+                {
+                  "name": "impact",
+                  "pattern": "impact|affect|effect|implication|exposure|influence|shift|drive"
+                },
+                {
+                  "name": "business area",
+                  "pattern": "product|service|supply chain|operation|portfolio|customer|client|r&d|research|lending|investment|asset|plant|facilit|business model|balance[- ]sheet"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Describe how climate-related risks and opportunities affect products and services, supply chain, operations, R&D and investments."
+            },
+            {
+              "id": "S.2.b",
+              "text": "Climate issues as an input to financial planning",
+              "essential": true,
+              "query": "Climate-related issues are an input to financial planning, budgets, capital allocation and capital expenditure",
+              "signals": [
+                {
+                  "name": "financial planning",
+                  "pattern": "financial planning|budget|capital allocation|capital expenditure|capex|opex|operating cost|cost of capital|access to capital|financial plan|business plan|implementation plan|investment plan|resourc|funding|pricing|provision"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Explain how climate-related issues feed into financial planning (operating costs, revenues, capital expenditure, capital allocation)."
+            },
+            {
+              "id": "S.2.c",
+              "text": "Impact on financial performance and position",
+              "essential": true,
+              "query": "The quantified impact of climate-related risks and opportunities on revenues, costs, asset values, credit losses and financial position",
+              "signals": [
+                {
+                  "name": "financial metric",
+                  "pattern": "revenue|income|profit|cost|margin|asset value|impairment|write-?down|non-performing|\\bnpl|provision|balance sheet|credit loss|financial (?:performance|position|impact|effect|stability)|probability of default"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Disclose the (ideally quantified) effect of climate-related risks and opportunities on financial performance and financial position."
+            }
           ]
         },
         {
@@ -63,11 +375,77 @@
           "tcfd_ref": "Strategy (c)",
           "title": "Organisational resilience",
           "description": "Describe the resilience of the organization's strategy, taking into consideration different climate-related scenarios, including a 2°C or lower scenario.",
-          "keywords": ["scenario", "scenario analysis", "resilience", "2°c", "1.5°c", "warming", "pathway", "iea", "ngfs", "rcp", "stress test", "climate"],
+          "keywords": [
+            "scenario",
+            "scenario analysis",
+            "resilience",
+            "2°c",
+            "1.5°c",
+            "warming",
+            "pathway",
+            "iea",
+            "ngfs",
+            "rcp",
+            "stress test",
+            "climate"
+          ],
           "requirements": [
-            "Climate-related scenarios and time horizons considered",
-            "Inclusion of a 2°C or lower scenario",
-            "Where the strategy may be affected and how it might change to address potential risks"
+            "Climate scenarios used, named",
+            "A 2°C-or-lower scenario included, with temperature assumptions",
+            "Results: how the strategy holds up under the scenarios"
+          ],
+          "criteria": [
+            {
+              "id": "S.3.a",
+              "text": "Climate scenarios used, named",
+              "essential": true,
+              "query": "Climate scenario analysis using named scenarios such as NGFS, IEA, RCP or SSP pathways",
+              "signals": [
+                {
+                  "name": "scenario",
+                  "pattern": "scenario"
+                },
+                {
+                  "name": "named scenario",
+                  "pattern": "ngfs|\\biea\\b|rcp ?\\d|ssp ?\\d|net[- ]?zero (?:20\\d\\d|by 20\\d\\d)|delayed transition|current policies|orderly|disorderly|hot ?house|\\bnze\\b|steps|announced pledges|ipcc|sudden wake[- ]up"
+                }
+              ],
+              "missing": "Name the climate-related scenarios used (e.g. NGFS, IEA, RCP/SSP pathways) and their time horizons."
+            },
+            {
+              "id": "S.3.b",
+              "text": "A 2°C-or-lower scenario included, with temperature assumptions",
+              "essential": true,
+              "query": "A scenario limiting warming to 2 degrees Celsius or lower, such as 1.5°C or net zero 2050",
+              "signals": [
+                {
+                  "name": "scenario",
+                  "pattern": "scenario|pathway"
+                },
+                {
+                  "name": "temperature assumption",
+                  "pattern": "1[.,]5\\s?°?\\s?c\\b|2(?:[.,]0)?\\s?°\\s?c|well below 2|below 2|2 degrees|1\\.\\d+\\s?°?\\s?c|paris[- ]aligned|net[- ]?zero (?:20\\d\\d|by 20\\d\\d|emissions by)|rcp ?2[.,]6|ssp1"
+                }
+              ],
+              "missing": "Include a 2°C-or-lower scenario and state its temperature assumption."
+            },
+            {
+              "id": "S.3.c",
+              "text": "Results: how the strategy holds up under the scenarios",
+              "essential": true,
+              "query": "Results of the scenario analysis or climate stress test and what they mean for the resilience of the strategy",
+              "signals": [
+                {
+                  "name": "scenario",
+                  "pattern": "scenario|stress[- ]test"
+                },
+                {
+                  "name": "findings",
+                  "pattern": "resilience of (?:the|our|its) (?:strategy|business|portfolio|operations)|strategy (?:is|remains|would remain) resilient|results? (?:show|indicate|suggest|of the)|findings|outcomes? (?:show|indicate|of)|non-performing|\bnpl|(?:credit |expected )?loss(?:es)? (?:of|would|could)|financial impact|impact (?:on|of) [^.]{0,40}(?:revenue|portfolio|ebitda|profit|assets?|earnings|operations)|would (?:reduce|increase|result|lead)|(?:could|would) be (?:material|limited|significant)|\\d+(?:\\.\\d+)?\\s?(?:%|per ?cent)"
+                }
+              ],
+              "missing": "Report the results of the scenario analysis and explain how resilient the strategy is and how it might change."
+            }
           ]
         }
       ]
@@ -80,11 +458,85 @@
           "tcfd_ref": "Risk Management (a)",
           "title": "Risk identification and assessment",
           "description": "Describe the organization's processes for identifying and assessing climate-related risks.",
-          "keywords": ["identify", "identification", "assess", "assessment", "materiality", "likelihood", "magnitude", "risk", "climate", "process", "methodology", "regulatory"],
+          "keywords": [
+            "identify",
+            "identification",
+            "assess",
+            "assessment",
+            "materiality",
+            "likelihood",
+            "magnitude",
+            "risk",
+            "climate",
+            "process",
+            "methodology",
+            "regulatory"
+          ],
           "requirements": [
-            "Risk management processes for identifying and assessing climate-related risks",
-            "How the organization determines the relative significance of climate-related risks",
-            "Whether existing and emerging regulatory requirements are considered"
+            "Process for identifying and assessing climate risks",
+            "How the significance of climate risks is determined",
+            "Existing and emerging regulation considered"
+          ],
+          "criteria": [
+            {
+              "id": "R.1.a",
+              "text": "Process for identifying and assessing climate risks",
+              "essential": true,
+              "query": "The process, framework or methodology used to identify, screen and assess climate-related risks",
+              "signals": [
+                {
+                  "name": "identify or assess",
+                  "pattern": "identif|assess|screen|evaluat|mapp"
+                },
+                {
+                  "name": "process",
+                  "pattern": "process|framework|methodolog|procedure|tool|questionnaire|due diligence|heat ?map|model|approach"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Describe the processes, tools and methodologies used to identify and assess climate-related risks."
+            },
+            {
+              "id": "R.1.b",
+              "text": "How the significance of climate risks is determined",
+              "essential": true,
+              "query": "How the organisation determines the relative significance or materiality of climate-related risks using likelihood, magnitude, ratings or thresholds",
+              "signals": [
+                {
+                  "name": "significance",
+                  "pattern": "significan|materiality|prioriti|likelihood|magnitude|severity|threshold|rating|scor(?:e|ing)|high(?:er)? (?:risk|exposure)|classif"
+                },
+                {
+                  "name": "risk",
+                  "pattern": "risk"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Explain how the relative significance of climate-related risks is determined compared with other risks."
+            },
+            {
+              "id": "R.1.c",
+              "text": "Existing and emerging regulation considered",
+              "essential": false,
+              "query": "Existing and emerging climate regulation, carbon pricing and disclosure requirements are considered in the risk assessment",
+              "signals": [
+                {
+                  "name": "regulation",
+                  "pattern": "regulat|legislation|\\blaw\\b|carbon pric|disclosure requirement|\\bets\\b|cbam|taxonomy|supervis|paris agreement|policy change"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "State whether existing and emerging regulatory requirements related to climate change are considered."
+            }
           ]
         },
         {
@@ -92,11 +544,85 @@
           "tcfd_ref": "Risk Management (b)",
           "title": "Risk management processes",
           "description": "Describe the organization's processes for managing climate-related risks.",
-          "keywords": ["manage", "mitigate", "mitigation", "transfer", "accept", "control", "monitor", "prioritize", "materiality", "risk", "climate", "response"],
+          "keywords": [
+            "manage",
+            "mitigate",
+            "mitigation",
+            "transfer",
+            "accept",
+            "control",
+            "monitor",
+            "prioritize",
+            "materiality",
+            "risk",
+            "climate",
+            "response"
+          ],
           "requirements": [
-            "Processes for managing climate-related risks, including decisions to mitigate, transfer, accept or control",
-            "Processes for prioritizing climate-related risks",
-            "How materiality determinations are made"
+            "Decisions to mitigate, transfer, accept or control climate risks",
+            "How climate risks are prioritised (appetite, limits, thresholds)",
+            "How climate risks are monitored and controlled"
+          ],
+          "criteria": [
+            {
+              "id": "R.2.a",
+              "text": "Decisions to mitigate, transfer, accept or control climate risks",
+              "essential": true,
+              "query": "Actions and decisions to mitigate, transfer, accept or control climate-related risks",
+              "signals": [
+                {
+                  "name": "response",
+                  "pattern": "mitigat|transfer|insur|accept|control|reduc|hedg|avoid|exclu|limit|adapt|respon"
+                },
+                {
+                  "name": "risk",
+                  "pattern": "risk"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Describe how decisions are made to mitigate, transfer, accept or control climate-related risks."
+            },
+            {
+              "id": "R.2.b",
+              "text": "How climate risks are prioritised (appetite, limits, thresholds)",
+              "essential": true,
+              "query": "How climate-related risks are prioritised, for example through risk appetite, exposure limits or tolerance thresholds",
+              "signals": [
+                {
+                  "name": "prioritisation",
+                  "pattern": "prioriti|risk appetite|exposure limit|\\blimits?\\b|threshold|tolerance|materiality"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Explain how climate-related risks are prioritised, including risk appetite, limits or thresholds."
+            },
+            {
+              "id": "R.2.c",
+              "text": "How climate risks are monitored and controlled",
+              "essential": true,
+              "query": "Climate-related risks are monitored and controlled through key risk indicators, reviews and reporting",
+              "signals": [
+                {
+                  "name": "monitoring",
+                  "pattern": "monitor|track|review|key risk indicator|\\bkri|escalat|oversight|report"
+                },
+                {
+                  "name": "risk",
+                  "pattern": "risk"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Describe how climate-related risks are monitored over time and reported."
+            }
           ]
         },
         {
@@ -104,9 +630,44 @@
           "tcfd_ref": "Risk Management (c)",
           "title": "Integration into overall risk management",
           "description": "Describe how processes for identifying, assessing, and managing climate-related risks are integrated into the organization's overall risk management.",
-          "keywords": ["enterprise risk management", "erm", "integrated", "integration", "principal risks", "risk register", "risk framework", "group risk", "overall risk", "climate", "risk"],
+          "keywords": [
+            "enterprise risk management",
+            "erm",
+            "integrated",
+            "integration",
+            "principal risks",
+            "risk register",
+            "risk framework",
+            "group risk",
+            "overall risk",
+            "climate",
+            "risk"
+          ],
           "requirements": [
-            "How climate-related risk processes are integrated into overall (enterprise) risk management"
+            "Climate risk processes integrated into overall risk management"
+          ],
+          "criteria": [
+            {
+              "id": "R.3.a",
+              "text": "Climate risk processes integrated into overall risk management",
+              "essential": true,
+              "query": "Climate-related risk management is integrated into the existing enterprise risk management framework, risk appetite and principal risks",
+              "signals": [
+                {
+                  "name": "integration",
+                  "pattern": "integrat|embed|incorporat|part of|within (?:the|our|its)|into (?:the|our|its)"
+                },
+                {
+                  "name": "enterprise framework",
+                  "pattern": "enterprise[- ](?:wide )?risk|\\berm\\b|(?:existing|overall|group|bank's|company's|corporate) risk management|risk management (?:framework|process|system)|risk appetite|risk taxonomy|principal risks|risk register|icaap|three lines"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "Describe how climate-related risk processes are integrated into the organisation's overall (enterprise) risk management."
+            }
           ]
         }
       ]
@@ -119,11 +680,81 @@
           "tcfd_ref": "Metrics and Targets (a)",
           "title": "Climate-related metrics",
           "description": "Disclose the metrics used by the organization to assess climate-related risks and opportunities in line with its strategy and risk management process.",
-          "keywords": ["metrics", "kpi", "indicator", "energy", "water", "waste", "carbon price", "internal carbon", "renewable", "intensity", "climate", "performance"],
+          "keywords": [
+            "metrics",
+            "kpi",
+            "indicator",
+            "energy",
+            "water",
+            "waste",
+            "carbon price",
+            "internal carbon",
+            "renewable",
+            "intensity",
+            "climate",
+            "performance"
+          ],
           "requirements": [
-            "Key metrics used to measure and manage climate-related risks and opportunities",
-            "Whether and how performance metrics are incorporated into remuneration policies",
-            "Internal carbon prices and climate-related opportunity metrics, where relevant"
+            "Climate metrics reported with actual values",
+            "Climate metrics linked to remuneration",
+            "Internal carbon price or climate-opportunity metrics"
+          ],
+          "criteria": [
+            {
+              "id": "M.1.a",
+              "text": "Climate metrics reported with actual values",
+              "essential": true,
+              "query": "Climate-related metrics with reported values such as emission intensity, energy consumption, renewable share, exposure to carbon-related assets or green finance volumes",
+              "signals": [
+                {
+                  "name": "metric",
+                  "pattern": "metric|kpi|indicator|intensity|exposure|share|percentage|proportion|consumption|carbon[- ]related assets|financed emissions|green finance|renewable|water|energy|waste"
+                },
+                {
+                  "name": "reported value",
+                  "pattern": "\\d[\\d,.]*\\s?(?:%|per ?cent|percent|t\\s?co2e?|tco2|mt\\s?co2e?|ktco2e?|tonnes?|mwh|gwh|kwh|gj|tj|m3|kl|million|billion|crore|lakh)|(?:€|\\$|£|₹|eur|usd|gbp|inr)\\s?\\d"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd|energy|renewable"
+                }
+              ],
+              "missing": "Report the climate-related metrics used, with their values (and units) for the reporting period."
+            },
+            {
+              "id": "M.1.b",
+              "text": "Climate metrics linked to remuneration",
+              "essential": false,
+              "query": "Whether climate-related performance metrics are incorporated into executive remuneration or incentive schemes",
+              "signals": [
+                {
+                  "name": "remuneration",
+                  "pattern": "remunerat|compensation|incentive|bonus|scorecard|\\bpay\\b|reward"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd"
+                }
+              ],
+              "missing": "State whether and how climate-related performance metrics are incorporated into remuneration policies."
+            },
+            {
+              "id": "M.1.c",
+              "text": "Internal carbon price or climate-opportunity metrics",
+              "essential": false,
+              "query": "An internal or shadow carbon price, or metrics on climate-related opportunities such as green revenue or climate finance",
+              "signals": [
+                {
+                  "name": "price or opportunity metric",
+                  "pattern": "internal carbon pric|shadow (?:carbon )?pric|carbon pric|green revenue|green finance|sustainable finance|climate finance|revenue from|low[- ]carbon (?:products|revenue)"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd|green|sustainable"
+                }
+              ],
+              "missing": "Where relevant, disclose an internal carbon price and metrics on climate-related opportunities (e.g. green revenue)."
+            }
           ]
         },
         {
@@ -131,11 +762,95 @@
           "tcfd_ref": "Metrics and Targets (b)",
           "title": "Scope 1, 2 and 3 emissions",
           "description": "Disclose Scope 1, Scope 2, and, if appropriate, Scope 3 greenhouse gas (GHG) emissions, and the related risks.",
-          "keywords": ["scope 1", "scope 2", "scope 3", "ghg", "greenhouse gas", "emissions", "tco2e", "co2e", "ghg protocol", "market-based", "location-based", "carbon"],
+          "keywords": [
+            "scope 1",
+            "scope 2",
+            "scope 3",
+            "ghg",
+            "greenhouse gas",
+            "emissions",
+            "tco2e",
+            "co2e",
+            "ghg protocol",
+            "market-based",
+            "location-based",
+            "carbon"
+          ],
           "requirements": [
-            "Scope 1 and Scope 2 GHG emissions",
-            "Scope 3 GHG emissions, if appropriate",
-            "Methodology (e.g. GHG Protocol) and historical periods for trend analysis"
+            "Scope 1 and Scope 2 emissions with values",
+            "Scope 3 emissions (incl. financed emissions where relevant)",
+            "Emissions methodology",
+            "Historical emissions for trend analysis"
+          ],
+          "criteria": [
+            {
+              "id": "M.2.a",
+              "text": "Scope 1 and Scope 2 emissions with values",
+              "essential": true,
+              "query": "Scope 1 and Scope 2 greenhouse gas emissions in tonnes of CO2 equivalent",
+              "signals": [
+                {
+                  "name": "scope 1",
+                  "pattern": "scope[- ]?1\\b|scope one|direct (?:ghg )?emissions"
+                },
+                {
+                  "name": "scope 2",
+                  "pattern": "scope[- ]?2\\b|scope two|indirect emissions from (?:purchased )?(?:electricity|energy)"
+                },
+                {
+                  "name": "emissions value",
+                  "pattern": "\\d[\\d,.]*\\s?(?:t\\s?co2e?|tco2|mt\\s?co2e?|ktco2e?|tonnes?|kt\\b|mt\\b)|co2e|co2 equivalent"
+                }
+              ],
+              "missing": "Disclose Scope 1 and Scope 2 GHG emissions in tCO2e for the reporting period."
+            },
+            {
+              "id": "M.2.b",
+              "text": "Scope 3 emissions (incl. financed emissions where relevant)",
+              "essential": false,
+              "query": "Scope 3 greenhouse gas emissions, including financed emissions for financial institutions",
+              "signals": [
+                {
+                  "name": "scope 3",
+                  "pattern": "scope[- ]?3\\b|scope three|financed emissions|category 15|value chain emissions"
+                },
+                {
+                  "name": "emissions value or coverage",
+                  "pattern": "\\d[\\d,.]*\\s?(?:t\\s?co2e?|tco2|mt\\s?co2e?|ktco2e?|tonnes?)|co2e|categor"
+                }
+              ],
+              "missing": "Disclose Scope 3 emissions (for financial institutions, financed emissions) and which categories are covered."
+            },
+            {
+              "id": "M.2.c",
+              "text": "Emissions methodology",
+              "essential": true,
+              "query": "Emissions are calculated using the GHG Protocol or PCAF methodology with location-based and market-based approaches",
+              "signals": [
+                {
+                  "name": "methodology",
+                  "pattern": "ghg protocol|greenhouse gas protocol|pcaf|iso 14064|methodolog|location[- ]based|market[- ]based|emission factor|operational control|equity share|calculated (?:using|in accordance)"
+                }
+              ],
+              "missing": "State the methodology used to calculate emissions (e.g. GHG Protocol, PCAF) and the consolidation approach."
+            },
+            {
+              "id": "M.2.d",
+              "text": "Historical emissions for trend analysis",
+              "essential": false,
+              "query": "Emissions reported for several years so trends can be analysed",
+              "signals": [
+                {
+                  "name": "emissions",
+                  "pattern": "emission|co2|ghg"
+                },
+                {
+                  "name": "multiple years",
+                  "pattern": "(?:20[1-6]\\d|fy\\s?\\d\\d)\\D{1,40}(?:20[1-6]\\d|fy\\s?\\d\\d)|base year|previous year|prior year|year[- ]on[- ]year|compared (?:to|with) 20\\d\\d|trend"
+                }
+              ],
+              "missing": "Report emissions for prior years (and a base year) so trends can be analysed."
+            }
           ]
         },
         {
@@ -143,11 +858,99 @@
           "tcfd_ref": "Metrics and Targets (c)",
           "title": "Climate targets and performance",
           "description": "Describe the targets used by the organization to manage climate-related risks and opportunities and performance against targets.",
-          "keywords": ["target", "net zero", "science-based", "sbti", "baseline", "reduction", "2030", "2050", "progress", "achieved", "performance", "commitment"],
+          "keywords": [
+            "target",
+            "net zero",
+            "science-based",
+            "sbti",
+            "baseline",
+            "reduction",
+            "2030",
+            "2050",
+            "progress",
+            "achieved",
+            "performance",
+            "commitment"
+          ],
           "requirements": [
-            "Key climate-related targets (e.g. GHG emissions, energy usage)",
-            "Time frames and base years for targets",
-            "Key performance indicators used to assess progress against targets"
+            "Quantified climate targets",
+            "Target time frame (deadline)",
+            "Base year for targets",
+            "Performance and progress against targets"
+          ],
+          "criteria": [
+            {
+              "id": "M.3.a",
+              "text": "Quantified climate targets",
+              "essential": true,
+              "query": "Quantified climate-related targets such as emission reductions, net zero, renewable energy share or green finance volumes",
+              "signals": [
+                {
+                  "name": "target",
+                  "pattern": "target|goal|commit|aim|pledge|ambition"
+                },
+                {
+                  "name": "quantity",
+                  "pattern": "\\d+\\s?(?:%|per ?cent)|net[- ]?zero|carbon[- ]neutral|\\d[\\d,.]*\\s?(?:t\\s?co2e?|mt|million tonnes|mw|gw|million|billion)"
+                },
+                {
+                  "name": "climate",
+                  "pattern": "climate|emission|carbon|ghg|greenhouse|net[- ]?zero|decarboni|paris|transition risk|physical risk|tcfd|renewable|energy|green"
+                }
+              ],
+              "missing": "Disclose quantified climate-related targets (e.g. GHG reduction, energy, green finance)."
+            },
+            {
+              "id": "M.3.b",
+              "text": "Target time frame (deadline)",
+              "essential": true,
+              "query": "Climate targets with a deadline: to be achieved by 2025, by 2030 or by 2050, or over a period such as between 2021 and 2025",
+              "signals": [
+                {
+                  "name": "target",
+                  "pattern": "target|goal|commit|aim|pledge|ambition"
+                },
+                {
+                  "name": "deadline",
+                  "pattern": "\\bby (?:the end of )?20[2-6]\\d|until 20[2-6]\\d|20[2-6]\\d target|(?:target|goal) (?:year|date)|20[2-6]\\d\\s*(?:-|–|to)\\s*(?:20)?[2-6]\\d|over the (?:next|five|\\w+)[- ]year|within \\w+ years|between 20[0-6]\\d and 20[2-6]\\d"
+                }
+              ],
+              "missing": "State the time frame (target year) for each climate-related target."
+            },
+            {
+              "id": "M.3.c",
+              "text": "Base year for targets",
+              "essential": false,
+              "query": "The base year or baseline against which climate targets are measured",
+              "signals": [
+                {
+                  "name": "base year",
+                  "pattern": "base(?:line)?[- ]year|baseline|from (?:a )?20[01]\\d|relative to 20\\d\\d|compared (?:to|with) (?:a )?20\\d\\d|against 20\\d\\d|vs\\.? 20\\d\\d|20\\d\\d levels"
+                }
+              ],
+              "missing": "State the base year against which each target is measured."
+            },
+            {
+              "id": "M.3.d",
+              "text": "Performance and progress against targets",
+              "essential": true,
+              "query": "Actual performance and progress achieved against the climate targets in the reporting period",
+              "signals": [
+                {
+                  "name": "progress",
+                  "pattern": "progress|achiev|reached|performance against|on track|reduced by|reduction of|so far|to date|delivered|met (?:the|its|our)|within target|status"
+                },
+                {
+                  "name": "value",
+                  "pattern": "\\d[\\d,.]*\\s?(?:%|per ?cent|percent|t\\s?co2e?|tco2|mt\\s?co2e?|ktco2e?|tonnes?|mwh|gwh|kwh|gj|tj|m3|kl|million|billion|crore|lakh)|(?:€|\\$|£|₹|eur|usd|gbp|inr)\\s?\\d"
+                },
+                {
+                  "name": "target",
+                  "pattern": "target|goal|commit|objective"
+                }
+              ],
+              "missing": "Report actual performance against each target in the reporting period and progress to date."
+            }
           ]
         }
       ]
@@ -155,8 +958,9 @@
   },
   "metadata": {
     "total_recommendations": 11,
-    "version": "2.0",
+    "version": "3.0",
     "last_updated": "2026-11-10",
-    "source": "TCFD Final Report (2017), Recommendations of the Task Force on Climate-related Financial Disclosures"
+    "source": "TCFD Final Report (2017), Recommendations of the Task Force on Climate-related Financial Disclosures",
+    "criteria_note": "Each criterion is supported when a retrieved passage is semantically relevant and contains every listed evidence signal. Non-essential criteria count towards evidence coverage but do not block a Compliant status."
   }
 }

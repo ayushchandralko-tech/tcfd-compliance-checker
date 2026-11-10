@@ -15,7 +15,7 @@ This is a standalone web application that allows users to:
 - **Single Page Design**: No sidebar, no tabs, just the essential calculator
 - **Company Details**: Company name and reporting year input
 - **11 TCFD Disclosures**: All four pillars in one scrollable list
-- **Status Selector**: Compliant / Partial / Non-compliant buttons
+- **Status Selector**: Compliant / Partial / Non-compliant / Not assessable (N/A, excluded from the score)
 - **Automatic Calculation**: Instant percentage score calculation
 - **Score Summary**: Overall score and status counts
 - **Auto-fill from PDF**: Upload a report; the backend (`localhost:8250`) suggests a status per disclosure with page-cited evidence, which you can override
@@ -56,7 +56,7 @@ The application will be available at http://localhost:8650
 1. **Enter Company Details**: Fill in company name and reporting year
 2. **Select Statuses**: For each of the 11 TCFD disclosures, click Compliant, Partial, or Non-compliant
 3. **View Score**: The overall compliance score updates automatically
-4. **Review evidence**: Expand a card to see what TCFD asks, matched terms and the page-cited passages; add reviewer notes
+4. **Review**: Expand a card to see each criterion's result, evidence passage (page, relevance, context, link to the PDF page) and what is missing; accept the AI suggestion or change it with a reason
 5. **Export Report**: Click "Export report" for an HTML report including all evidence and notes (Print / Save as PDF from the report), or "Download data (JSON)"
 5. **Reset**: Click "Reset assessment" to start over
 
