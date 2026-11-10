@@ -19,7 +19,7 @@ This project provides two components:
 - **Automatic Calculation**: Instant percentage score calculation
 - **Score Summary**: Overall score and status counts
 - **Auto-fill from PDF**: Upload a report to pre-fill statuses with page-cited evidence (needs the backend)
-- **Export Report**: Download assessment as text file
+- **Export Report**: Formatted HTML report (print or save as PDF) with score, pillar summary, every disclosure's status, automated suggestion, page-cited evidence passages and reviewer notes; plus a JSON data export
 - **Responsive Design**: Works on desktop and mobile
 
 ### Backend API (Optional)
@@ -108,7 +108,8 @@ InferESG/
 2. Enter company name and reporting year
 3. For each TCFD disclosure, click Compliant, Partial, or Non-compliant
 4. View the automatically calculated compliance score
-5. Click "Export report" to download the assessment
+5. Expand a card to see the evidence (what TCFD asks, matched terms, page-cited passages) and add reviewer notes
+6. Click "Export report" to download an HTML report with all evidence (use its Print / Save as PDF button for a PDF)
 
 ### Backend API
 
@@ -145,7 +146,7 @@ Score = (Weighted points / 11) × 100
 
 ### Frontend
 - **HTML5**: Structure
-- **CSS3**: Styling with gradients
+- **CSS3**: Custom properties (design tokens), responsive grid layout
 - **JavaScript (Vanilla)**: Logic and calculations
 - **http-server**: Static file serving
 
@@ -169,7 +170,6 @@ This project is adapted from InferESG (ScottLogic). Contributions are welcome!
 
 Areas for contribution:
 - Improve UI/UX
-- Add PDF export
 - Implement local storage for saving assessments
 - Add historical tracking
 - Improve backend model performance

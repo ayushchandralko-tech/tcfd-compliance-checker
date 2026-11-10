@@ -5,424 +5,289 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TCFD Compliance Calculator</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #f5f6f8;
+            --surface: #ffffff;
+            --surface-2: #f8f9fb;
+            --border: #e3e6eb;
+            --text: #1d2330;
+            --text-2: #5b6474;
+            --text-3: #8a93a3;
+            --accent: #3b5bdb;
+            --accent-soft: #edf1ff;
+            --ok: #2f9e44;
+            --ok-soft: #ebf8ee;
+            --warn: #e67700;
+            --warn-soft: #fff4e6;
+            --bad: #e03131;
+            --bad-soft: #fff0f0;
+            --radius: 10px;
+            --shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-        }
-
-        h1 {
-            font-size: 32px;
-            color: #2d3748;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            color: #718096;
-            font-size: 16px;
-            margin-bottom: 32px;
-        }
-
-        .section {
-            margin-bottom: 32px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 16px;
-        }
-
-        .company-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .input-group label {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             font-size: 14px;
-            color: #4a5568;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .input-group input {
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.2s;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .compliance-overview {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            padding: 32px;
-            color: white;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .score-card {
-            text-align: center;
-        }
-
-        .score-value {
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .score-label {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .status-count {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .status-label {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .disclosures-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .disclosure-item {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 16px;
-            align-items: center;
-            padding: 16px;
-            background: #f7fafc;
-            border-radius: 12px;
-            transition: background 0.2s;
-        }
-
-        .disclosure-item:hover {
-            background: #edf2f7;
-        }
-
-        .disclosure-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .disclosure-pillar {
-            font-size: 12px;
-            font-weight: 600;
-            color: #667eea;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .disclosure-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: #2d3748;
-        }
-
-        .status-selector {
-            display: flex;
-            gap: 8px;
-        }
-
-        .status-btn {
-            flex: 1;
-            padding: 10px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            background: white;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .status-btn:hover {
-            border-color: #667eea;
-        }
-
-        .status-btn.active {
-            border-color: #667eea;
-            background: #667eea;
-            color: white;
-        }
-
-        .status-btn.active-compliant {
-            border-color: #48bb78;
-            background: #48bb78;
-        }
-
-        .status-btn.active-partial {
-            border-color: #ed8936;
-            background: #ed8936;
-        }
-
-        .status-btn.active-noncompliant {
-            border-color: #f56565;
-            background: #f56565;
-        }
-
-        .formula-box {
-            background: #f7fafc;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-
-        .formula-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #4a5568;
-            margin-bottom: 12px;
-        }
-
-        .formula-text {
-            font-size: 14px;
-            color: #718096;
-            font-family: 'Courier New', monospace;
-        }
-
-        .actions {
-            display: flex;
-            gap: 16px;
-            margin-top: 32px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 16px 32px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-
-        .btn-secondary:hover {
-            background: #cbd5e0;
-        }
-
-        .upload-box {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 20px;
-            background: #f7fafc;
-            border: 2px dashed #cbd5e0;
-            border-radius: 12px;
-        }
-
-        .upload-box input[type="file"] {
-            flex: 1;
-            min-width: 0;
-            font-size: 14px;
-        }
-
-        .upload-box .btn {
-            flex: 0 0 auto;
-            padding: 12px 24px;
-            font-size: 14px;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .upload-status {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #4a5568;
-        }
-
-        .upload-status.error {
-            color: #c53030;
-        }
-
-        .disclosure-meta {
-            font-size: 12px;
-            color: #718096;
-            margin-top: 4px;
-        }
-
-        .evidence {
-            grid-column: 1 / -1;
-            font-size: 13px;
-            color: #4a5568;
-        }
-
-        .evidence summary {
-            cursor: pointer;
-            color: #667eea;
-            font-weight: 500;
-        }
-
-        .evidence blockquote {
-            margin: 8px 0 0;
-            padding: 8px 12px;
-            border-left: 3px solid #cbd5e0;
-            background: white;
-            border-radius: 4px;
             line-height: 1.5;
         }
 
-        .evidence .page-ref {
-            font-weight: 600;
-            color: #2d3748;
+        button, input, textarea { font: inherit; color: inherit; }
+
+        /* ---------- header ---------- */
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+        .topbar-inner {
+            max-width: 1200px; margin: 0 auto; padding: 14px 24px;
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        }
+        .brand { font-weight: 650; font-size: 16px; }
+        .brand span { color: var(--text-3); font-weight: 400; margin-left: 8px; }
+        .topbar a { color: var(--text-2); text-decoration: none; font-size: 13px; }
+        .topbar a:hover { color: var(--accent); }
+
+        /* ---------- layout ---------- */
+        .layout {
+            max-width: 1200px; margin: 0 auto; padding: 24px;
+            display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 24px; align-items: start;
+        }
+        .sidebar { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+        .panel {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px;
+        }
+        .panel h2 {
+            font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+            color: var(--text-3); margin-bottom: 12px;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 24px;
-            }
+        /* ---------- form controls ---------- */
+        .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+        .field:last-child { margin-bottom: 0; }
+        .field label { font-size: 12px; color: var(--text-2); font-weight: 500; }
+        .input {
+            width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--surface); transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+        textarea.input { resize: vertical; min-height: 56px; }
 
-            .company-details {
-                grid-template-columns: 1fr;
-            }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--surface); font-weight: 550; cursor: pointer; transition: background 0.15s, border-color 0.15s;
+        }
+        .btn:hover { background: var(--surface-2); }
+        .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .btn-primary:hover { background: #3049b8; }
+        .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+        .btn-block { width: 100%; }
+        .btn-link { border: none; background: none; padding: 0; color: var(--text-2); font-weight: 500; cursor: pointer; }
+        .btn-link:hover { color: var(--accent); background: none; }
 
-            .compliance-overview {
-                grid-template-columns: 1fr;
-            }
+        /* ---------- score ---------- */
+        .score-row { display: flex; align-items: center; gap: 16px; }
+        .ring { width: 92px; height: 92px; flex: none; }
+        .ring circle { fill: none; stroke-width: 9; }
+        .ring .track { stroke: var(--border); }
+        .ring .value { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 0.4s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .ring text { font-size: 19px; font-weight: 650; fill: var(--text); text-anchor: middle; dominant-baseline: central; }
+        .counts { display: grid; gap: 6px; flex: 1; }
+        .count { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--text-2); }
+        .count b { color: var(--text); font-weight: 600; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .dot.ok { background: var(--ok); } .dot.warn { background: var(--warn); }
+        .dot.bad { background: var(--bad); } .dot.none { background: var(--border); }
+        .formula { margin-top: 12px; font-size: 12px; color: var(--text-3); }
 
-            .disclosure-item {
-                grid-template-columns: 1fr;
-            }
+        .pillar-bars { margin-top: 14px; display: grid; gap: 8px; }
+        .pbar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2); margin-bottom: 3px; }
+        .pbar { height: 6px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        .pbar div { height: 100%; background: var(--accent); transition: width 0.3s; }
 
-            .status-selector {
-                margin-top: 12px;
-            }
+        /* ---------- upload ---------- */
+        .drop {
+            border: 1.5px dashed var(--border); border-radius: 8px; padding: 14px; text-align: center;
+            color: var(--text-2); cursor: pointer; transition: border-color 0.15s, background 0.15s; margin-bottom: 10px;
+        }
+        .drop:hover, .drop.drag { border-color: var(--accent); background: var(--accent-soft); }
+        .drop strong { color: var(--text); display: block; overflow-wrap: anywhere; }
+        .drop input { display: none; }
+        .status-msg { font-size: 12px; color: var(--text-2); margin-top: 8px; }
+        .status-msg.error { color: var(--bad); }
+        .spinner {
+            width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.5); border-top-color: #fff;
+            border-radius: 50%; animation: spin 0.8s linear infinite; display: none;
+        }
+        .busy .spinner { display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .actions { display: grid; gap: 8px; }
+        .actions-row { display: flex; justify-content: space-between; }
+
+        /* ---------- disclosures ---------- */
+        .main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+        .intro { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+        .intro h1 { font-size: 22px; font-weight: 650; }
+        .intro p { color: var(--text-2); }
+        .source-tag { font-size: 12px; color: var(--text-2); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }
+
+        .pillar-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+        .pillar-head h3 { font-size: 15px; font-weight: 650; }
+        .pillar-head span { font-size: 12px; color: var(--text-3); }
+
+        .card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            box-shadow: var(--shadow); margin-bottom: 10px; overflow: hidden;
+        }
+        .card-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding: 14px 16px; align-items: start; }
+        .card-id { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.03em; }
+        .card-title { font-size: 15px; font-weight: 600; margin: 1px 0 2px; }
+        .card-desc { color: var(--text-2); font-size: 13px; }
+
+        .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; flex: none; }
+        .seg button {
+            border: none; background: var(--surface); padding: 7px 12px; font-size: 13px; font-weight: 500;
+            color: var(--text-2); cursor: pointer; border-right: 1px solid var(--border); white-space: nowrap;
+        }
+        .seg button:last-child { border-right: none; }
+        .seg button:hover { background: var(--surface-2); }
+        .seg button.on-compliant { background: var(--ok); color: #fff; }
+        .seg button.on-partial { background: var(--warn); color: #fff; }
+        .seg button.on-noncompliant { background: var(--bad); color: #fff; }
+
+        .suggest {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+            padding: 10px 16px; background: var(--surface-2); border-top: 1px solid var(--border); font-size: 13px; color: var(--text-2);
+        }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+        .badge.compliant { background: var(--ok-soft); color: var(--ok); }
+        .badge.partial { background: var(--warn-soft); color: var(--warn); }
+        .badge.noncompliant { background: var(--bad-soft); color: var(--bad); }
+        .badge.override { background: var(--accent-soft); color: var(--accent); }
+        .meter { display: inline-flex; align-items: center; gap: 6px; }
+        .meter-bar { width: 64px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .meter-bar div { height: 100%; background: var(--text-2); }
+        .toggle { margin-left: auto; }
+
+        .evidence { border-top: 1px solid var(--border); padding: 14px 16px; display: none; }
+        .card.open .evidence { display: block; }
+        .ev-section { margin-bottom: 14px; }
+        .ev-section:last-child { margin-bottom: 0; }
+        .ev-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-3); margin-bottom: 6px; }
+        .asks { list-style: none; display: grid; gap: 4px; }
+        .asks li { padding-left: 16px; position: relative; color: var(--text-2); font-size: 13px; }
+        .asks li::before { content: ''; position: absolute; left: 3px; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--text-3); }
+        .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .chip { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
+        .chip.muted { background: var(--surface-2); color: var(--text-3); border: 1px solid var(--border); }
+
+        .passages { display: grid; gap: 8px; }
+        .passage { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .passage-head {
+            display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: var(--surface-2);
+            border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-2);
+        }
+        .page-pill { font-weight: 650; color: var(--text); }
+        .passage-body { padding: 10px; font-size: 13px; color: var(--text); line-height: 1.6; }
+        .passage-body mark { background: #fff3bf; color: inherit; padding: 0 1px; border-radius: 2px; }
+        .empty { color: var(--text-3); font-size: 13px; }
+
+        .notes { margin-top: 2px; }
+
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; padding: 16px; }
+            .sidebar { position: static; }
+        }
+        @media (max-width: 560px) {
+            .topbar-inner { padding: 12px 16px; }
+            .brand span { display: none; }
+            .card-top { grid-template-columns: 1fr; }
+            .seg { width: 100%; }
+            .seg button { flex: 1; padding: 8px 4px; }
+            .toggle { margin-left: 0; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>TCFD Assessment</h1>
-        <p class="subtitle">Climate disclosure compliance calculator · <a href="label.html" style="color: #667eea">Labelling tool</a></p>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">TCFD Compliance Calculator<span>11 recommended disclosures</span></div>
+            <a href="label.html">Labelling tool →</a>
+        </div>
+    </header>
 
-        <div class="section">
-            <h2 class="section-title">Company details</h2>
-            <div class="company-details">
-                <div class="input-group">
+    <div class="layout">
+        <aside class="sidebar">
+            <section class="panel">
+                <h2>Company</h2>
+                <div class="field">
                     <label for="companyName">Company name</label>
-                    <input type="text" id="companyName" placeholder="Enter company name">
+                    <input class="input" type="text" id="companyName" placeholder="e.g. Acme plc">
                 </div>
-                <div class="input-group">
+                <div class="field">
                     <label for="reportingYear">Reporting year</label>
-                    <input type="number" id="reportingYear" placeholder="2023" value="2023">
+                    <input class="input" type="number" id="reportingYear" min="2000" max="2100">
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="section">
-            <h2 class="section-title">Auto-fill from report (optional)</h2>
-            <div class="upload-box">
-                <input type="file" id="reportFile" accept="application/pdf,.pdf">
-                <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeReport()">Analyse PDF</button>
-            </div>
-            <div class="upload-status" id="uploadStatus">
-                Upload a sustainability report to pre-fill statuses with page-cited evidence. Requires the backend API at <code>localhost:8250</code>. You can override any suggested status.
-            </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title">Compliance overview</h2>
-            <div class="compliance-overview">
-                <div class="score-card">
-                    <div class="score-value" id="overallScore">0%</div>
-                    <div class="score-label">Overall compliance score</div>
+            <section class="panel">
+                <h2>Score</h2>
+                <div class="score-row">
+                    <svg class="ring" viewBox="0 0 100 100" aria-label="Overall score">
+                        <circle class="track" cx="50" cy="50" r="42"></circle>
+                        <circle class="value" id="scoreRing" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9"></circle>
+                        <text x="50" y="50" id="overallScore">0%</text>
+                    </svg>
+                    <div class="counts">
+                        <div class="count"><span><i class="dot ok"></i>Compliant</span><b id="compliantCount">0</b></div>
+                        <div class="count"><span><i class="dot warn"></i>Partial</span><b id="partialCount">0</b></div>
+                        <div class="count"><span><i class="dot bad"></i>Non-compliant</span><b id="nonCompliantCount">0</b></div>
+                        <div class="count"><span><i class="dot none"></i>Not assessed</span><b id="unassessedCount">11</b></div>
+                    </div>
                 </div>
-                <div class="score-card">
-                    <div class="status-count" id="compliantCount">0</div>
-                    <div class="status-label">Compliant</div>
-                </div>
-                <div class="score-card">
-                    <div class="status-count" id="partialCount">0</div>
-                    <div class="status-label">Partial</div>
-                </div>
-                <div class="score-card">
-                    <div class="status-count" id="nonCompliantCount">0</div>
-                    <div class="status-label">Non-compliant</div>
-                </div>
-            </div>
-        </div>
+                <div class="pillar-bars" id="pillarBars"></div>
+                <p class="formula">Compliant = 1, Partial = 0.5, Non-compliant = 0; score = points ÷ 11.</p>
+            </section>
 
-        <div class="section">
-            <h2 class="section-title">TCFD disclosures</h2>
-            <p style="color: #718096; margin-bottom: 16px; font-size: 14px;">Select a status for each requirement.</p>
-            <div class="disclosures-list" id="disclosuresList">
-                <!-- Disclosures will be rendered here -->
-            </div>
-        </div>
+            <section class="panel">
+                <h2>Auto-fill from report</h2>
+                <label class="drop" id="dropZone">
+                    <input type="file" id="reportFile" accept="application/pdf,.pdf">
+                    <strong id="fileName">Choose a PDF</strong>
+                    or drop it here
+                </label>
+                <button class="btn btn-primary btn-block" id="analyzeBtn" onclick="analyzeReport()">
+                    <span class="spinner"></span><span id="analyzeLabel">Analyse report</span>
+                </button>
+                <p class="status-msg" id="uploadStatus">Optional. Suggests a status for each disclosure with page-cited evidence. Needs the backend on localhost:8250.</p>
+            </section>
 
-        <div class="section">
-            <h2 class="section-title">Scoring formula</h2>
-            <div class="formula-box">
-                <div class="formula-title">Full = 1 | Partial = 0.5 | Non-compliant = 0</div>
-                <div class="formula-text">Score = (Weighted points / 11) × 100</div>
-            </div>
-        </div>
+            <section class="panel actions">
+                <button class="btn btn-primary btn-block" onclick="exportReport()">Export report</button>
+                <div class="actions-row">
+                    <button class="btn-link" onclick="exportJson()">Download data (JSON)</button>
+                    <button class="btn-link" onclick="resetAssessment()">Reset</button>
+                </div>
+            </section>
+        </aside>
 
-        <div class="actions">
-            <button class="btn btn-secondary" onclick="resetAssessment()">Reset assessment</button>
-            <button class="btn btn-primary" onclick="exportReport()">Export report</button>
-        </div>
+        <main class="main">
+            <div class="intro">
+                <div>
+                    <h1>Disclosures</h1>
+                    <p>Set a status for each recommendation. Expand a card to see the evidence behind a suggestion.</p>
+                </div>
+                <span class="source-tag" id="sourceTag" hidden></span>
+            </div>
+            <div id="disclosuresList"></div>
+        </main>
     </div>
 
     <script src="app.js"></script>

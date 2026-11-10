@@ -19,15 +19,15 @@ This is a standalone web application that allows users to:
 - **Automatic Calculation**: Instant percentage score calculation
 - **Score Summary**: Overall score and status counts
 - **Auto-fill from PDF**: Upload a report; the backend (`localhost:8250`) suggests a status per disclosure with page-cited evidence, which you can override
-- **Export Report**: Download assessment as text file
+- **Export Report**: Formatted HTML report (print or save as PDF) with score, pillar summary, every disclosure's status, automated suggestion, page-cited evidence passages and reviewer notes; plus a JSON data export
 - **Responsive Design**: Works on desktop and mobile
 
 ## Technology
 
 - **Frontend**: Pure HTML, CSS, and JavaScript (no frameworks)
-- **Styling**: Custom CSS with gradient design
+- **Styling**: Custom CSS with design tokens in `:root` (colours, radius, shadow)
 - **Serving**: http-server for static file serving
-- **Export**: JavaScript Blob API for text file generation
+- **Export**: self-contained HTML report and JSON, generated in the browser (Blob API)
 
 ## Installation
 
@@ -56,7 +56,8 @@ The application will be available at http://localhost:8650
 1. **Enter Company Details**: Fill in company name and reporting year
 2. **Select Statuses**: For each of the 11 TCFD disclosures, click Compliant, Partial, or Non-compliant
 3. **View Score**: The overall compliance score updates automatically
-4. **Export Report**: Click "Export report" to download a text file with the assessment
+4. **Review evidence**: Expand a card to see what TCFD asks, matched terms and the page-cited passages; add reviewer notes
+5. **Export Report**: Click "Export report" for an HTML report including all evidence and notes (Print / Save as PDF from the report), or "Download data (JSON)"
 5. **Reset**: Click "Reset assessment" to start over
 
 ## TCFD Disclosures
@@ -110,31 +111,28 @@ frontend/
 Edit `src/app.js` and add to the `disclosures` array:
 
 ```javascript
-{
-    id: 'X.1',
-    pillar: 'Pillar Name',
-    title: 'Disclosure Title',
-    status: null
-}
+{ id: 'X.1', ref: 'Pillar (x)', pillar: 'Pillar Name', title: 'Disclosure title',
+  description: 'What the disclosure asks for.',
+  asks: ['Sub-requirement 1', 'Sub-requirement 2'] }
 ```
+
+Add the pillar to `PILLARS` if it is new.
 
 ### Changing Colors
 
-Edit the CSS in `src/index.html`:
+Edit the design tokens at the top of the `<style>` block in `src/index.html`:
 
 ```css
-/* Primary gradient */
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-
-/* Status colors */
-.status-btn.active-compliant { background: #48bb78; }
-.status-btn.active-partial { background: #ed8936; }
-.status-btn.active-noncompliant { background: #f56565; }
+:root {
+    --accent: #3b5bdb;   /* buttons, links, score ring */
+    --ok: #2f9e44;       /* Compliant */
+    --warn: #e67700;     /* Partial */
+    --bad: #e03131;      /* Non-compliant */
+}
 ```
 
 ## Future Enhancements
 
-- PDF export using jsPDF
 - Save/load assessments to local storage
 - Historical tracking
 - Comparison with previous years

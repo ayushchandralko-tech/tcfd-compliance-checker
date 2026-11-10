@@ -46,7 +46,7 @@ Open http://localhost:8650.
 1. Enter the company name and reporting year.
 2. (Optional) Choose a sustainability report PDF and click **Analyse PDF**. Each of the 11 disclosures is pre-filled with a suggested status, an evidence-strength percentage and the page numbers the evidence came from. Click **Show evidence** to read the passages.
 3. Review each suggestion and click Compliant / Partial / Non-compliant to override it. Overridden items are marked.
-4. Click **Export report** to download the assessment, including the automated suggestions and evidence pages.
+4. Click **Export report** for a formatted HTML report with every disclosure's status, suggestion, page-cited evidence passages and your notes. Open it and use **Print / Save as PDF** for a PDF.
 
 The calculator also works without the backend for fully manual assessment.
 

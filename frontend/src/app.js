@@ -1,285 +1,591 @@
 // TCFD Compliance Calculator
 
-const disclosures = [
-    {
-        id: 'G.1',
-        pillar: 'Governance',
-        title: 'Board oversight',
-        status: null
-    },
-    {
-        id: 'G.2',
-        pillar: 'Governance',
-        title: "Management's role",
-        status: null
-    },
-    {
-        id: 'S.1',
-        pillar: 'Strategy',
-        title: 'Climate risks and opportunities',
-        status: null
-    },
-    {
-        id: 'S.2',
-        pillar: 'Strategy',
-        title: 'Business and financial impact',
-        status: null
-    },
-    {
-        id: 'S.3',
-        pillar: 'Strategy',
-        title: 'Organisational resilience',
-        status: null
-    },
-    {
-        id: 'R.1',
-        pillar: 'Risk Management',
-        title: 'Risk identification and assessment',
-        status: null
-    },
-    {
-        id: 'R.2',
-        pillar: 'Risk Management',
-        title: 'Risk management processes',
-        status: null
-    },
-    {
-        id: 'R.3',
-        pillar: 'Risk Management',
-        title: 'Integration into overall risk management',
-        status: null
-    },
-    {
-        id: 'M.1',
-        pillar: 'Metrics & Targets',
-        title: 'Climate-related metrics',
-        status: null
-    },
-    {
-        id: 'M.2',
-        pillar: 'Metrics & Targets',
-        title: 'Scope 1, 2 and 3 emissions',
-        status: null
-    },
-    {
-        id: 'M.3',
-        pillar: 'Metrics & Targets',
-        title: 'Climate targets and performance',
-        status: null
-    }
-];
-
-// Initialize the UI
-function init() {
-    renderDisclosures();
-    updateScore();
-}
-
 const API_BASE = 'http://localhost:8250';
+
+const PILLARS = ['Governance', 'Strategy', 'Risk Management', 'Metrics & Targets'];
+
+// The 11 TCFD recommended disclosures (TCFD Final Report, 2017).
+const disclosures = [
+    { id: 'G.1', ref: 'Governance (a)', pillar: 'Governance', title: 'Board oversight',
+      description: "Describe the board's oversight of climate-related risks and opportunities.",
+      asks: ['How often and through which committees the board is informed about climate-related issues',
+             'Whether the board considers climate issues when reviewing strategy, budgets and major plans',
+             'How the board monitors progress against climate-related goals and targets'] },
+    { id: 'G.2', ref: 'Governance (b)', pillar: 'Governance', title: "Management's role",
+      description: "Describe management's role in assessing and managing climate-related risks and opportunities.",
+      asks: ['Whether climate responsibilities are assigned to management positions or committees',
+             'The associated organisational structure and reporting lines',
+             'How management is informed about and monitors climate-related issues'] },
+    { id: 'S.1', ref: 'Strategy (a)', pillar: 'Strategy', title: 'Climate risks and opportunities',
+      description: 'Describe the climate-related risks and opportunities identified over the short, medium and long term.',
+      asks: ['Relevant short-, medium- and long-term time horizons',
+             'Specific climate-related issues for each horizon that could have a material financial impact',
+             'How material risks and opportunities are determined'] },
+    { id: 'S.2', ref: 'Strategy (b)', pillar: 'Strategy', title: 'Business and financial impact',
+      description: "Describe the impact of climate-related risks and opportunities on the organisation's businesses, strategy and financial planning.",
+      asks: ['Impact on products, services, supply chain, operations and R&D',
+             'How climate issues feed into financial planning',
+             'Impact on financial performance and financial position'] },
+    { id: 'S.3', ref: 'Strategy (c)', pillar: 'Strategy', title: 'Strategy resilience',
+      description: 'Describe the resilience of the strategy under different climate-related scenarios, including a 2°C or lower scenario.',
+      asks: ['Climate scenarios and time horizons considered',
+             'Inclusion of a 2°C or lower scenario',
+             'Where strategy may be affected and how it might change'] },
+    { id: 'R.1', ref: 'Risk Management (a)', pillar: 'Risk Management', title: 'Risk identification and assessment',
+      description: "Describe the organisation's processes for identifying and assessing climate-related risks.",
+      asks: ['Processes for identifying and assessing climate-related risks',
+             'How the relative significance of climate risks is determined',
+             'Whether existing and emerging regulation is considered'] },
+    { id: 'R.2', ref: 'Risk Management (b)', pillar: 'Risk Management', title: 'Risk management processes',
+      description: "Describe the organisation's processes for managing climate-related risks.",
+      asks: ['Decisions to mitigate, transfer, accept or control climate risks',
+             'How climate risks are prioritised',
+             'How materiality determinations are made'] },
+    { id: 'R.3', ref: 'Risk Management (c)', pillar: 'Risk Management', title: 'Integration into overall risk management',
+      description: 'Describe how climate risk processes are integrated into overall risk management.',
+      asks: ['How climate risk processes are integrated into enterprise risk management'] },
+    { id: 'M.1', ref: 'Metrics and Targets (a)', pillar: 'Metrics & Targets', title: 'Climate-related metrics',
+      description: 'Disclose the metrics used to assess climate-related risks and opportunities in line with strategy and risk management.',
+      asks: ['Key metrics used to measure and manage climate risks and opportunities',
+             'Whether performance metrics feed into remuneration',
+             'Internal carbon prices and opportunity metrics, where relevant'] },
+    { id: 'M.2', ref: 'Metrics and Targets (b)', pillar: 'Metrics & Targets', title: 'Scope 1, 2 and 3 emissions',
+      description: 'Disclose Scope 1, Scope 2 and, if appropriate, Scope 3 greenhouse gas emissions and the related risks.',
+      asks: ['Scope 1 and Scope 2 GHG emissions',
+             'Scope 3 GHG emissions, if appropriate',
+             'Methodology (e.g. GHG Protocol) and historical trend'] },
+    { id: 'M.3', ref: 'Metrics and Targets (c)', pillar: 'Metrics & Targets', title: 'Climate targets and performance',
+      description: 'Describe the targets used to manage climate-related risks and opportunities and performance against them.',
+      asks: ['Key climate-related targets (e.g. GHG emissions, energy use)',
+             'Time frames and base years',
+             'KPIs used to assess progress against targets'] },
+].map(d => ({ ...d, status: null, notes: '', open: false, analysis: null }));
+
+const STATUS = {
+    compliant: { label: 'Compliant', points: 1 },
+    partial: { label: 'Partial', points: 0.5 },
+    noncompliant: { label: 'Non-compliant', points: 0 },
+};
 const STATUS_FROM_API = {
     'Disclosed': 'compliant',
     'Partially disclosed': 'partial',
-    'Not disclosed': 'noncompliant'
+    'Not disclosed': 'noncompliant',
 };
 
-function escapeHtml(text) {
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+let source = null; // { file, pages, method, analysedAt }
+
+// --------------------------------------------------------------------------- helpers
+
+function esc(text) {
+    return String(text ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-// Render the disclosures list
-function renderDisclosures() {
+function escRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Escape a passage and highlight the requirement keywords that matched.
+function highlight(text, keywords) {
+    let html = esc(text);
+    const terms = [...(keywords || [])].sort((a, b) => b.length - a.length).map(k => escRegex(esc(k)));
+    if (terms.length) {
+        html = html.replace(new RegExp(`(${terms.join('|')})`, 'gi'), '<mark>$1</mark>');
+    }
+    return html;
+}
+
+// Same blend the backend uses to rank passages: TF-IDF similarity (scaled) and model probability.
+function passageMatch(p) {
+    const sim = Math.min((p.similarity || 0) / 0.25, 1);
+    return p.model_score == null ? sim : 0.5 * sim + 0.5 * p.model_score;
+}
+
+function pct(x) {
+    return `${Math.round((x || 0) * 100)}%`;
+}
+
+function pagesOf(d) {
+    return d.analysis ? [...new Set(d.analysis.evidence.map(e => e.page))].sort((a, b) => a - b) : [];
+}
+
+function companyName() {
+    return document.getElementById('companyName').value.trim();
+}
+
+function reportingYear() {
+    return document.getElementById('reportingYear').value.trim();
+}
+
+// --------------------------------------------------------------------------- rendering
+
+function render() {
     const container = document.getElementById('disclosuresList');
-    container.innerHTML = '';
+    container.innerHTML = PILLARS.map(pillar => {
+        const items = disclosures.filter(d => d.pillar === pillar);
+        const points = items.reduce((s, d) => s + (d.status ? STATUS[d.status].points : 0), 0);
+        return `
+            <section>
+                <div class="pillar-head">
+                    <h3>${esc(pillar)}</h3>
+                    <span>${points} / ${items.length} points</span>
+                </div>
+                ${items.map(renderCard).join('')}
+            </section>`;
+    }).join('');
+    updateScore();
+}
 
-    disclosures.forEach((disclosure, index) => {
-        const item = document.createElement('div');
-        item.className = 'disclosure-item';
+function renderCard(d) {
+    const i = disclosures.indexOf(d);
+    const seg = Object.entries(STATUS).map(([key, s]) =>
+        `<button class="${d.status === key ? 'on-' + key : ''}" onclick="setStatus(${i}, '${key}')"
+                 aria-pressed="${d.status === key}">${s.label}</button>`).join('');
 
-        let meta = '';
-        let evidence = '';
-        if (disclosure.suggested) {
-            const pages = [...new Set(disclosure.evidence.map(e => e.page))].sort((a, b) => a - b);
-            const overridden = disclosure.status !== STATUS_FROM_API[disclosure.suggested];
-            meta = `<div class="disclosure-meta">Suggested: ${escapeHtml(disclosure.suggested)}
-                (evidence strength ${Math.round(disclosure.confidence * 100)}%)
-                ${pages.length ? '· pages ' + pages.join(', ') : ''}
-                ${overridden ? '· <strong>overridden</strong>' : ''}</div>`;
-            if (disclosure.evidence.length) {
-                evidence = `<details class="evidence"><summary>Show evidence</summary>
-                    ${disclosure.evidence.map(e => `<blockquote><span class="page-ref">p.${e.page}</span> ${escapeHtml(e.text)}</blockquote>`).join('')}
-                </details>`;
-            }
+    let suggest = '';
+    if (d.analysis) {
+        const a = d.analysis;
+        const suggested = STATUS_FROM_API[a.status];
+        const overridden = d.status && d.status !== suggested;
+        const pages = pagesOf(d);
+        suggest = `
+            <div class="suggest">
+                <span>Suggested <span class="badge ${suggested}">${STATUS[suggested].label}</span></span>
+                ${overridden ? '<span class="badge override">Overridden</span>' : ''}
+                <span class="meter">Evidence strength
+                    <span class="meter-bar"><div style="width:${pct(a.confidence)}"></div></span>${pct(a.confidence)}</span>
+                ${pages.length ? `<span>Pages ${pages.join(', ')}</span>` : '<span>No evidence found</span>'}
+                <button class="btn-link toggle" onclick="toggle(${i})">${d.open ? 'Hide evidence ▲' : 'Show evidence ▼'}</button>
+            </div>`;
+    } else {
+        suggest = `
+            <div class="suggest">
+                <span>No automated analysis</span>
+                <button class="btn-link toggle" onclick="toggle(${i})">${d.open ? 'Hide details ▲' : 'Details ▼'}</button>
+            </div>`;
+    }
+
+    return `
+        <article class="card ${d.open ? 'open' : ''}" id="card-${d.id}">
+            <div class="card-top">
+                <div>
+                    <div class="card-id">${d.id} · ${esc(d.ref)}</div>
+                    <div class="card-title">${esc(d.title)}</div>
+                    <div class="card-desc">${esc(d.description)}</div>
+                </div>
+                <div class="seg" role="group" aria-label="Status for ${d.id}">${seg}</div>
+            </div>
+            ${suggest}
+            <div class="evidence">${d.open ? renderEvidence(d, i) : ''}</div>
+        </article>`;
+}
+
+function renderEvidence(d, i) {
+    const a = d.analysis;
+    const asks = `
+        <div class="ev-section">
+            <div class="ev-label">What TCFD asks</div>
+            <ul class="asks">${d.asks.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+        </div>`;
+
+    let analysis = '';
+    if (a) {
+        const keywords = a.matched_keywords || [];
+        analysis = `
+            <div class="ev-section">
+                <div class="ev-label">Matched terms (${keywords.length})</div>
+                <div class="chips">${keywords.length
+                    ? keywords.map(k => `<span class="chip">${esc(k)}</span>`).join('')
+                    : '<span class="chip muted">none</span>'}</div>
+            </div>
+            <div class="ev-section">
+                <div class="ev-label">Supporting passages</div>
+                ${a.evidence.length ? `<div class="passages">${a.evidence.map((p, n) => `
+                    <div class="passage">
+                        <div class="passage-head">
+                            <span class="page-pill">Page ${p.page}</span>
+                            <span class="meter">Match <span class="meter-bar"><div style="width:${pct(passageMatch(p))}"></div></span>${pct(passageMatch(p))}</span>
+                            <span>#${n + 1}</span>
+                        </div>
+                        <div class="passage-body">${highlight(p.text, keywords)}</div>
+                    </div>`).join('')}</div>` : '<p class="empty">No relevant passages were found in the report.</p>'}
+            </div>`;
+    }
+
+    const notes = `
+        <div class="ev-section">
+            <div class="ev-label">Reviewer notes</div>
+            <textarea class="input notes" placeholder="Why this status? Included in the exported report."
+                      oninput="setNotes(${i}, this.value)">${esc(d.notes)}</textarea>
+        </div>`;
+
+    return asks + analysis + notes;
+}
+
+function updateScore() {
+    const counts = { compliant: 0, partial: 0, noncompliant: 0 };
+    let points = 0;
+    disclosures.forEach(d => {
+        if (d.status) {
+            counts[d.status]++;
+            points += STATUS[d.status].points;
         }
-
-        item.innerHTML = `
-            <div class="disclosure-info">
-                <div class="disclosure-pillar">${disclosure.id} · ${disclosure.pillar}</div>
-                <div class="disclosure-title">${disclosure.title}</div>
-                ${meta}
-            </div>
-            <div class="status-selector">
-                <button class="status-btn ${disclosure.status === 'compliant' ? 'active active-compliant' : ''}"
-                        onclick="setStatus(${index}, 'compliant')">Compliant</button>
-                <button class="status-btn ${disclosure.status === 'partial' ? 'active active-partial' : ''}"
-                        onclick="setStatus(${index}, 'partial')">Partial</button>
-                <button class="status-btn ${disclosure.status === 'noncompliant' ? 'active active-noncompliant' : ''}"
-                        onclick="setStatus(${index}, 'noncompliant')">Non-compliant</button>
-            </div>
-            ${evidence}
-        `;
-        container.appendChild(item);
     });
+    const score = points / disclosures.length * 100;
+    const unassessed = disclosures.length - counts.compliant - counts.partial - counts.noncompliant;
+
+    document.getElementById('overallScore').textContent = `${Math.round(score)}%`;
+    document.getElementById('scoreRing').style.strokeDashoffset = 263.9 * (1 - score / 100);
+    document.getElementById('compliantCount').textContent = counts.compliant;
+    document.getElementById('partialCount').textContent = counts.partial;
+    document.getElementById('nonCompliantCount').textContent = counts.noncompliant;
+    document.getElementById('unassessedCount').textContent = unassessed;
+
+    document.getElementById('pillarBars').innerHTML = PILLARS.map(p => {
+        const items = disclosures.filter(d => d.pillar === p);
+        const pts = items.reduce((s, d) => s + (d.status ? STATUS[d.status].points : 0), 0);
+        return `<div><div class="pbar-label"><span>${esc(p)}</span><span>${pts}/${items.length}</span></div>
+                <div class="pbar"><div style="width:${pts / items.length * 100}%"></div></div></div>`;
+    }).join('');
+}
+
+// --------------------------------------------------------------------------- interactions
+
+function setStatus(i, status) {
+    disclosures[i].status = disclosures[i].status === status ? null : status;
+    render();
+}
+
+function setNotes(i, value) {
+    disclosures[i].notes = value;
+}
+
+function toggle(i) {
+    disclosures[i].open = !disclosures[i].open;
+    render();
 }
 
 function setUploadStatus(message, isError = false) {
     const el = document.getElementById('uploadStatus');
     el.textContent = message;
-    el.className = 'upload-status' + (isError ? ' error' : '');
+    el.className = 'status-msg' + (isError ? ' error' : '');
 }
 
-// Send the PDF to the backend and pre-fill statuses from the result
-async function analyzeReport() {
+function setupFileInput() {
     const input = document.getElementById('reportFile');
-    const button = document.getElementById('analyzeBtn');
-    const file = input.files[0];
+    const zone = document.getElementById('dropZone');
+    const showName = () => {
+        document.getElementById('fileName').textContent = input.files[0] ? input.files[0].name : 'Choose a PDF';
+    };
+    input.addEventListener('change', showName);
+    ['dragenter', 'dragover'].forEach(ev => zone.addEventListener(ev, e => {
+        e.preventDefault();
+        zone.classList.add('drag');
+    }));
+    ['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, e => {
+        e.preventDefault();
+        zone.classList.remove('drag');
+    }));
+    zone.addEventListener('drop', e => {
+        if (e.dataTransfer.files.length) {
+            input.files = e.dataTransfer.files;
+            showName();
+        }
+    });
+}
+
+async function analyzeReport() {
+    const file = document.getElementById('reportFile').files[0];
     if (!file) {
-        setUploadStatus('Choose a PDF file first.', true);
+        setUploadStatus('Choose a PDF first.', true);
         return;
     }
-
-    const form = new FormData();
-    form.append('file', file);
+    const button = document.getElementById('analyzeBtn');
+    const label = document.getElementById('analyzeLabel');
     button.disabled = true;
-    setUploadStatus(`Analysing ${file.name}...`);
+    button.classList.add('busy');
+    const started = Date.now();
+    const tick = setInterval(() => {
+        label.textContent = `Analysing… ${Math.round((Date.now() - started) / 1000)}s`;
+    }, 500);
+    label.textContent = 'Analysing…';
+    setUploadStatus(`Reading ${file.name}. Large reports can take up to a minute.`);
 
     try {
+        const form = new FormData();
+        form.append('file', file);
         const response = await fetch(`${API_BASE}/tcfd/assess`, { method: 'POST', body: form });
         const data = await response.json().catch(() => ({}));
         if (!response.ok) {
             throw new Error(data.detail || `Server returned ${response.status}`);
         }
 
-        disclosures.forEach(disclosure => {
-            const result = data.compliance_checklist[disclosure.id];
-            if (!result) return;
-            disclosure.suggested = result.status;
-            disclosure.confidence = result.confidence;
-            disclosure.evidence = result.evidence || [];
-            disclosure.status = STATUS_FROM_API[result.status] || null;
+        disclosures.forEach(d => {
+            const r = data.compliance_checklist[d.id];
+            if (!r) return;
+            d.analysis = {
+                status: r.status,
+                confidence: r.confidence,
+                matched_keywords: r.matched_keywords || [],
+                evidence: r.evidence || [],
+            };
+            d.status = STATUS_FROM_API[r.status] || null;
         });
+        source = {
+            file: file.name,
+            pages: data.summary.pages_with_text,
+            method: data.method,
+            analysedAt: new Date(),
+        };
+        const tag = document.getElementById('sourceTag');
+        tag.textContent = `Analysed: ${file.name} · ${source.pages} pages`;
+        tag.hidden = false;
 
         const s = data.summary;
-        setUploadStatus(`Analysed ${file.name}: ${s.disclosed} disclosed, ${s.partially_disclosed} partial, ` +
-            `${s.not_disclosed} not disclosed (${s.pages_with_text} pages read). Review the evidence and adjust as needed.`);
-        renderDisclosures();
-        updateScore();
+        setUploadStatus(`Done in ${Math.round((Date.now() - started) / 1000)}s: ${s.disclosed} compliant, ` +
+            `${s.partially_disclosed} partial, ${s.not_disclosed} non-compliant suggested. Review each card's evidence.`);
+        render();
     } catch (err) {
-        const msg = err instanceof TypeError
-            ? 'Could not reach the backend at localhost:8250. Start it with "python tcfd_api_server.py" in backend/.'
-            : `Analysis failed: ${err.message}`;
-        setUploadStatus(msg, true);
+        setUploadStatus(err instanceof TypeError
+            ? 'Could not reach the backend on localhost:8250. Start it with "python tcfd_api_server.py" in backend/.'
+            : `Analysis failed: ${err.message}`, true);
     } finally {
+        clearInterval(tick);
+        label.textContent = 'Analyse report';
+        button.classList.remove('busy');
         button.disabled = false;
     }
 }
 
-// Set status for a disclosure
-function setStatus(index, status) {
-    disclosures[index].status = status;
-    renderDisclosures();
-    updateScore();
-}
-
-// Calculate and update the score
-function updateScore() {
-    let totalPoints = 0;
-    let compliantCount = 0;
-    let partialCount = 0;
-    let nonCompliantCount = 0;
-
-    disclosures.forEach(disclosure => {
-        if (disclosure.status === 'compliant') {
-            totalPoints += 1;
-            compliantCount++;
-        } else if (disclosure.status === 'partial') {
-            totalPoints += 0.5;
-            partialCount++;
-        } else if (disclosure.status === 'noncompliant') {
-            totalPoints += 0;
-            nonCompliantCount++;
-        }
-    });
-
-    const overallScore = (totalPoints / disclosures.length) * 100;
-
-    document.getElementById('overallScore').textContent = overallScore.toFixed(2) + '%';
-    document.getElementById('compliantCount').textContent = compliantCount;
-    document.getElementById('partialCount').textContent = partialCount;
-    document.getElementById('nonCompliantCount').textContent = nonCompliantCount;
-}
-
-// Reset the assessment
 function resetAssessment() {
-    disclosures.forEach(disclosure => {
-        disclosure.status = null;
-        delete disclosure.suggested;
-        delete disclosure.confidence;
-        delete disclosure.evidence;
-    });
+    if (!confirm('Clear all statuses, notes and analysis results?')) return;
+    disclosures.forEach(d => Object.assign(d, { status: null, notes: '', open: false, analysis: null }));
+    source = null;
+    document.getElementById('sourceTag').hidden = true;
     document.getElementById('reportFile').value = '';
-    setUploadStatus('Upload a sustainability report to pre-fill statuses with page-cited evidence.');
+    document.getElementById('fileName').textContent = 'Choose a PDF';
     document.getElementById('companyName').value = '';
-    document.getElementById('reportingYear').value = '2023';
-    renderDisclosures();
-    updateScore();
+    document.getElementById('reportingYear').value = new Date().getFullYear() - 1;
+    setUploadStatus('Optional. Suggests a status for each disclosure with page-cited evidence. Needs the backend on localhost:8250.');
+    render();
 }
 
-const STATUS_LABELS = { compliant: 'Compliant', partial: 'Partial', noncompliant: 'Non-compliant' };
+// --------------------------------------------------------------------------- export
 
-// Export the report as a simple text file
-function exportReport() {
-    const companyName = document.getElementById('companyName').value || 'Not specified';
-    const reportingYear = document.getElementById('reportingYear').value || 'Not specified';
+function fileStem() {
+    const name = (companyName() || 'Company').replace(/[^\w-]+/g, '_');
+    return `TCFD_Assessment_${name}_${reportingYear() || 'year'}`;
+}
 
-    let report = `TCFD Compliance Assessment Report\n`;
-    report += `=================================\n\n`;
-    report += `Company: ${companyName}\n`;
-    report += `Reporting Year: ${reportingYear}\n`;
-    report += `Date: ${new Date().toLocaleDateString()}\n\n`;
-    report += `Overall Compliance Score: ${document.getElementById('overallScore').textContent}\n`;
-    report += `Compliant: ${document.getElementById('compliantCount').textContent}\n`;
-    report += `Partial: ${document.getElementById('partialCount').textContent}\n`;
-    report += `Non-compliant: ${document.getElementById('nonCompliantCount').textContent}\n\n`;
-    report += `Detailed Assessment:\n`;
-    report += `===================\n\n`;
-
-    disclosures.forEach(disclosure => {
-        const statusText = STATUS_LABELS[disclosure.status] || 'Not assessed';
-        report += `${disclosure.id} - ${disclosure.pillar}\n`;
-        report += `${disclosure.title}\n`;
-        report += `Status: ${statusText}\n`;
-        if (disclosure.suggested) {
-            const pages = [...new Set(disclosure.evidence.map(e => e.page))].sort((a, b) => a - b);
-            report += `Automated suggestion: ${disclosure.suggested}` +
-                (pages.length ? ` (evidence on pages ${pages.join(', ')})` : '') + `\n`;
-        }
-        report += `\n`;
-    });
-
-    const blob = new Blob([report], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
+function download(content, filename, type) {
+    const url = URL.createObjectURL(new Blob([content], { type }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = `TCFD_Assessment_${companyName.replace(/\s+/g, '_')}_${reportingYear}.txt`;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    a.remove();
     URL.revokeObjectURL(url);
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', init);
+function summaryData() {
+    const counts = { compliant: 0, partial: 0, noncompliant: 0 };
+    let points = 0;
+    disclosures.forEach(d => {
+        if (d.status) {
+            counts[d.status]++;
+            points += STATUS[d.status].points;
+        }
+    });
+    return { counts, points, score: points / disclosures.length * 100,
+             unassessed: disclosures.length - counts.compliant - counts.partial - counts.noncompliant };
+}
+
+function exportJson() {
+    const s = summaryData();
+    const data = {
+        framework: 'TCFD',
+        company: companyName() || null,
+        reporting_year: reportingYear() || null,
+        generated_at: new Date().toISOString(),
+        source_report: source ? { file: source.file, pages: source.pages, method: source.method } : null,
+        score: Math.round(s.score * 100) / 100,
+        counts: s.counts,
+        disclosures: disclosures.map(d => ({
+            id: d.id, tcfd_ref: d.ref, pillar: d.pillar, title: d.title,
+            status: d.status ? STATUS[d.status].label : null,
+            suggested_status: d.analysis ? STATUS[STATUS_FROM_API[d.analysis.status]].label : null,
+            evidence_strength: d.analysis ? d.analysis.confidence : null,
+            matched_keywords: d.analysis ? d.analysis.matched_keywords : [],
+            evidence: d.analysis ? d.analysis.evidence.map(p => ({ page: p.page, match: Math.round(passageMatch(p) * 100) / 100, text: p.text })) : [],
+            notes: d.notes || '',
+        })),
+    };
+    download(JSON.stringify(data, null, 2), `${fileStem()}.json`, 'application/json');
+}
+
+function exportReport() {
+    const s = summaryData();
+    const company = companyName() || 'Not specified';
+    const year = reportingYear() || 'Not specified';
+    const generated = new Date().toLocaleString();
+    const badge = key => key
+        ? `<span class="badge ${key}">${STATUS[key].label}</span>`
+        : '<span class="badge none">Not assessed</span>';
+
+    const pillarRows = PILLARS.map(p => {
+        const items = disclosures.filter(d => d.pillar === p);
+        const pts = items.reduce((t, d) => t + (d.status ? STATUS[d.status].points : 0), 0);
+        return `<tr><td>${esc(p)}</td><td>${items.length}</td><td>${pts}</td><td>${Math.round(pts / items.length * 100)}%</td></tr>`;
+    }).join('');
+
+    const overviewRows = disclosures.map(d => {
+        const suggested = d.analysis ? STATUS_FROM_API[d.analysis.status] : null;
+        return `<tr>
+            <td><a href="#${d.id}">${d.id}</a></td>
+            <td>${esc(d.title)}</td>
+            <td>${badge(d.status)}</td>
+            <td>${suggested ? badge(suggested) + (d.status && d.status !== suggested ? ' <span class="small">(overridden)</span>' : '') : '<span class="small">-</span>'}</td>
+            <td>${d.analysis ? pagesOf(d).join(', ') || '-' : '-'}</td>
+        </tr>`;
+    }).join('');
+
+    const details = disclosures.map(d => {
+        const a = d.analysis;
+        const suggested = a ? STATUS_FROM_API[a.status] : null;
+        const evidence = a
+            ? (a.evidence.length
+                ? a.evidence.map(p => `
+                    <div class="passage">
+                        <div class="passage-head"><b>Page ${p.page}</b><span>Match ${pct(passageMatch(p))}</span></div>
+                        <div class="passage-body">${highlight(p.text, a.matched_keywords)}</div>
+                    </div>`).join('')
+                : '<p class="small">No relevant passages were found in the report.</p>')
+            : '<p class="small">No automated analysis was run for this disclosure.</p>';
+        return `
+            <section class="disclosure" id="${d.id}">
+                <div class="d-head">
+                    <div>
+                        <div class="d-id">${d.id} · ${esc(d.ref)}</div>
+                        <h3>${esc(d.title)}</h3>
+                    </div>
+                    ${badge(d.status)}
+                </div>
+                <p class="desc">${esc(d.description)}</p>
+                <table class="facts">
+                    <tr><th>Final status</th><td>${d.status ? STATUS[d.status].label : 'Not assessed'}</td></tr>
+                    <tr><th>Automated suggestion</th><td>${suggested ? STATUS[suggested].label + (d.status && d.status !== suggested ? ' (overridden by reviewer)' : '') : '-'}</td></tr>
+                    <tr><th>Evidence strength</th><td>${a ? pct(a.confidence) : '-'}</td></tr>
+                    <tr><th>Evidence pages</th><td>${a ? pagesOf(d).join(', ') || '-' : '-'}</td></tr>
+                    <tr><th>Matched terms</th><td>${a && a.matched_keywords.length ? a.matched_keywords.map(esc).join(', ') : '-'}</td></tr>
+                    <tr><th>Reviewer notes</th><td>${d.notes ? esc(d.notes).replace(/\n/g, '<br>') : '-'}</td></tr>
+                </table>
+                <h4>What TCFD asks</h4>
+                <ul>${d.asks.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+                <h4>Supporting evidence</h4>
+                ${evidence}
+            </section>`;
+    }).join('');
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCFD Assessment - ${esc(company)} ${esc(year)}</title>
+<style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+           color: #1d2330; background: #fff; margin: 0; font-size: 13px; line-height: 1.55; }
+    .page { max-width: 860px; margin: 0 auto; padding: 40px 32px; }
+    h1 { font-size: 24px; margin: 0 0 4px; }
+    h2 { font-size: 16px; margin: 32px 0 10px; padding-bottom: 6px; border-bottom: 2px solid #1d2330; }
+    h3 { font-size: 15px; margin: 2px 0 0; }
+    h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #5b6474; margin: 16px 0 6px; }
+    .sub { color: #5b6474; margin: 0; }
+    .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 20px 0 0; }
+    .meta div { border: 1px solid #e3e6eb; border-radius: 8px; padding: 10px 12px; }
+    .meta span { display: block; font-size: 11px; color: #8a93a3; text-transform: uppercase; letter-spacing: 0.04em; }
+    .meta b { font-size: 15px; overflow-wrap: anywhere; }
+    .score b { font-size: 26px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid #e3e6eb; vertical-align: top; }
+    thead th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #5b6474; border-bottom: 1px solid #c9ced6; }
+    .facts th { width: 180px; color: #5b6474; font-weight: 500; }
+    a { color: #3b5bdb; text-decoration: none; }
+    .badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .badge.compliant { background: #ebf8ee; color: #2f9e44; }
+    .badge.partial { background: #fff4e6; color: #c25e00; }
+    .badge.noncompliant { background: #fff0f0; color: #c92a2a; }
+    .badge.none { background: #f1f3f5; color: #868e96; }
+    .small { color: #8a93a3; font-size: 12px; }
+    .disclosure { border: 1px solid #e3e6eb; border-radius: 10px; padding: 16px 18px; margin: 0 0 14px; break-inside: avoid-page; }
+    .d-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .d-id { font-size: 11px; font-weight: 600; color: #3b5bdb; }
+    .desc { color: #5b6474; margin: 6px 0 10px; }
+    ul { margin: 0; padding-left: 18px; color: #5b6474; }
+    .passage { border: 1px solid #e3e6eb; border-radius: 8px; margin-bottom: 8px; break-inside: avoid; }
+    .passage-head { display: flex; justify-content: space-between; padding: 5px 10px; background: #f8f9fb; border-bottom: 1px solid #e3e6eb; font-size: 12px; color: #5b6474; }
+    .passage-head b { color: #1d2330; }
+    .passage-body { padding: 8px 10px; }
+    mark { background: #fff3bf; color: inherit; }
+    .note { margin-top: 32px; padding: 12px 14px; background: #f8f9fb; border-radius: 8px; color: #5b6474; font-size: 12px; }
+    .print-hint { text-align: right; margin-bottom: 12px; }
+    .print-hint button { font: inherit; padding: 6px 12px; border: 1px solid #c9ced6; border-radius: 6px; background: #fff; cursor: pointer; }
+    @media print {
+        .print-hint { display: none; }
+        .page { padding: 0; }
+        @page { margin: 16mm; }
+        a { color: inherit; }
+    }
+</style>
+</head>
+<body>
+<div class="page">
+    <div class="print-hint"><button onclick="window.print()">Print / Save as PDF</button></div>
+    <h1>TCFD Compliance Assessment</h1>
+    <p class="sub">${esc(company)} · Reporting year ${esc(year)}</p>
+
+    <div class="meta">
+        <div class="score"><span>Overall score</span><b>${Math.round(s.score)}%</b></div>
+        <div><span>Compliant / Partial / Non-compliant</span><b>${s.counts.compliant} / ${s.counts.partial} / ${s.counts.noncompliant}</b></div>
+        <div><span>Not assessed</span><b>${s.unassessed}</b></div>
+        <div><span>Source report</span><b>${source ? esc(source.file) : 'Manual assessment'}</b></div>
+    </div>
+
+    <h2>Summary by pillar</h2>
+    <table>
+        <thead><tr><th>Pillar</th><th>Disclosures</th><th>Points</th><th>Score</th></tr></thead>
+        <tbody>${pillarRows}</tbody>
+    </table>
+
+    <h2>Disclosure overview</h2>
+    <table>
+        <thead><tr><th>ID</th><th>Disclosure</th><th>Status</th><th>Suggested</th><th>Evidence pages</th></tr></thead>
+        <tbody>${overviewRows}</tbody>
+    </table>
+
+    <h2>Detailed findings and evidence</h2>
+    ${details}
+
+    <div class="note">
+        <b>Method.</b> Score = (Compliant × 1 + Partial × 0.5) ÷ 11 × 100.
+        ${source ? `Automated suggestions were generated from <i>${esc(source.file)}</i> (${source.pages} pages) using ${esc(source.method || 'evidence retrieval')}; page numbers refer to the PDF.
+        Suggestions are a starting point and were reviewed by the assessor; overridden items are marked.` : 'All statuses were set manually.'}
+        <br>Generated ${esc(generated)} with the TCFD Compliance Calculator.
+    </div>
+</div>
+</body>
+</html>`;
+
+    download(html, `${fileStem()}.html`, 'text/html');
+}
+
+// --------------------------------------------------------------------------- init
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('reportingYear').value = new Date().getFullYear() - 1;
+    setupFileInput();
+    render();
+});
