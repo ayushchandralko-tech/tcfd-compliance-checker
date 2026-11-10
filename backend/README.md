@@ -1,139 +1,209 @@
-# Backend
+# TCFD Compliance Checker - Backend
 
-Python service for the InferESG backend.
+A focused backend API for TCFD (Task Force on Climate-related Financial Disclosures) compliance assessment using machine learning.
 
-## Structure
+## Overview
 
-- `/supervisors` storing all supervisor modules (agents that call other agents for a greater goal)
-- `/agents` containing all agents the director can call. Agents have their own functions stored within the agent module
-- `/utils` with all shared utility modules
-- `/tools` for all shared function modules
+This backend provides a FastAPI server that:
+- Accepts sustainability report PDFs
+- Assesses compliance against 11 TCFD recommendations
+- Uses a trained TF-IDF + Logistic Regression classifier
+- Returns structured compliance checklists with confidence scores
 
-## Set up
+## Project Structure
 
-1. Ensure the `.env` file has been configured as described in the main [README](../README.md).
+```
+backend/
+├── tcfd_api_server.py          # Main FastAPI server
+├── train_baseline.py           # Training script for baseline model
+├── create_sample_data.py       # Sample data generator
+├── library/
+│   ├── tcfd_requirements.json  # TCFD knowledge base (11 recommendations)
+│   └── catalogue.json          # Framework catalog
+├── datasets/
+│   └── tcfd_training_sample.json  # Sample training data (100 samples)
+└── models/
+    └── tcfd_classifier/
+        ├── baseline_model.pkl     # Trained baseline model
+        └── baseline_results.json   # Training results
+```
 
-> Note: You will need to configure a LLM to run the service.
+## Installation
 
-This README covers instructions on how to run the application:
+### Prerequisites
 
-- Locally
-- In a Docker Container
+- Python 3.10+
+- pip
 
-For ease of use, we would recommended that you run the entire application using **Docker Compose** instead. See main [README](../README.md).
-
-If you would prefer not to use **Docker Compose**, read on...
-
-Unless otherwise stated all of the commands mentioned in this README should be run from `./backend`.
-
-## Running Locally
-
-Follow the instructions below to run the backend locally. Change directory to `/backend`, then follow the instructions below.
-
-1. Set-up a virtual environment
-
-> It's recommended (though not technically required) to create a virtual environment for the project by running `python -m venv venv` to create it and `source venv/Scripts/activate` to activate it in your active terminal.
-
-2. Install dependencies
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-> (VsCode) You may run into some issues with compiling python packages from requirements.txt. To resolve this ensure you have downloaded and installed the "Desktop development with C++" workload from your Visual Studio installer. Details on this can be found https://matplotlib.org/devdocs/install/dependencies.html#compiled-extensions
+## Quick Start
 
-3. Run the app
-
-```bash
-uvicorn src.api:app --port 8250
-```
-
-4. Check the backend app is running at [http://localhost:8250/health](http://localhost:8250/health)
-
-## Running in a Docker Container
-
-1. Build the Docker image
+### 1. Train the Model
 
 ```bash
-docker build -t {my-backend-image-name} .
+python train_baseline.py --data_path ./datasets/tcfd_training_sample.json --output_dir ./models/tcfd_classifier
 ```
 
-2. Run the backend within a Docker container
+This will:
+- Train a TF-IDF + Logistic Regression classifier
+- Evaluate performance
+- Save the trained model to `models/tcfd_classifier/baseline_model.pkl`
+
+### 2. Start the API Server
 
 ```bash
-docker run --env-file ../.env -p 8250:8250 {my-backend-image-name}
+python tcfd_api_server.py
 ```
 
-> Note that we pass in the entire environment file that contains all our application's configuration. This means some unneccessary configuration is also being passed in. This is fine when testing locally. In production, we must limit this to only the essential backend configuration (see environment configuration within [Docker Compose](../compose.yml)).
+The server will start at http://localhost:8250
 
-3. Check the backend app is running at [http://localhost:8250/health](http://localhost:8250/health)
-
-## Linting
-
-Ruff is being used for the backend linting. See the docs: [here](https://docs.astral.sh/ruff/)
-
-Make sure the ruff dependency is downloaded; It is defined in the `requirements.txt` so step `1` of [setup](#set-up) should do this for you.
-
-Run the following command to check:
+### 3. Test the API
 
 ```bash
-ruff --version
+# Health check
+curl http://localhost:8250/health
+
+# Get TCFD requirements
+curl http://localhost:8250/tcfd/requirements
+
+# Assess compliance
+curl -X POST http://localhost:8250/tcfd/assess \
+  -F "file=@your_report.pdf"
 ```
 
-If it is not installed use the following command:
+## API Endpoints
+
+### GET /health
+Health check endpoint. Returns service status and model loading status.
+
+### GET /tcfd/requirements
+Returns the TCFD knowledge base with all 11 recommendations across 4 pillars.
+
+### POST /tcfd/assess
+Assesses an uploaded PDF against the 11 TCFD recommended disclosures.
+
+**Parameters:** `file` - PDF file (multipart)
+
+**Returns:**
+- `summary`: counts per status, `compliance_score` (Disclosed = 1, Partial = 0.5), pages read
+- `compliance_checklist`: per requirement - `status`, `confidence` (evidence score 0-1), `keyword_coverage`,
+  `matched_keywords`, `retrieval_score`, top-3 `evidence` passages with page numbers, and the baseline
+  `classifier` prediction (if a model is loaded)
+
+**How status is decided:** passages are ranked by TF-IDF similarity to the requirement text and keywords
+in `library/tcfd_requirements.json`; evidence score = 0.6 x keyword coverage + 0.4 x normalised similarity
+(halved if the passages never mention climate/emissions). >= 0.55 Disclosed, >= 0.30 Partial, else Not disclosed.
+
+### POST /tcfd/compare
+Compares the evidence-based status with the baseline classifier's prediction per requirement and reports the agreement rate.
+
+### POST /tcfd/labeling-task
+Returns the retrieved evidence per requirement with a suggested label and an empty `label` field, for manual labeling.
+
+## Training
+
+### Passage models on public labelled data (used by the API)
 
 ```bash
-pip install ruff
+python train_external.py
 ```
 
-If ruff is installed correctly, the python files in the backend will be checked using the following command, from the backend directory:
+Trains two logistic-regression models from `datasets/external/` (see its README for sources and licences), comparing TF-IDF features, sentence embeddings (`all-MiniLM-L6-v2`) and both combined, and saves the best to `models/tcfd_external/`. Use `--features tfidf` for fast TF-IDF-only models.
+
+| Model | Data | Evaluation | TF-IDF | Embeddings | **Both (selected)** |
+|---|---|---|---|---|---|
+| Pillar (none/governance/strategy/risk/metrics) | ClimateBERT tcfd_recommendations, 1,300 paragraphs | official 400-paragraph test split, macro-F1 | 0.60 | 0.68 | **0.71** (accuracy 0.75) |
+| Disclosure (G.1 ... M.3) | rexarski TCFD_disclosure, 537 sentences | stratified 5-fold CV, macro-F1 | 0.43 | 0.43 | **0.46** (0.63 within the correct pillar) |
+
+Weakest classes: pillar `risk` (F1 0.57), disclosures M.2, R.2, S.2 (F1 about 0.35).
+
+**Speed:** with embeddings a 40-page report takes ~8 s on CPU (vs ~1 s with TF-IDF only).
+
+### Synthetic baseline (legacy)
+
+### Sample Data
+
+The repository includes synthetic sample data for testing:
+- 100 labeled samples
+- 3 classes: Disclosed, Partially disclosed, Not disclosed
+- Used for smoke testing only
+
+### Real Data Training
+
+For production use:
+
+1. Collect 20-40 real sustainability reports
+2. Use the labeling pipeline to create structured tasks
+3. Manually label each requirement
+4. Train on real data for accurate performance
 
 ```bash
-ruff check
+python train_baseline.py --data_path ./datasets/real_training_data.json --use_cross_validation
 ```
 
-You can run the following command to fix any errors automatically:
+## Model Performance
 
-```bash
-ruff format
-```
+### Current Baseline (Synthetic Data)
+- Accuracy: 100%
+- Macro F1: 100%
+- Per-Class F1: 100% for all classes
 
-The ruff vscode plugin can also be installed from the store to show linting errors in the IDE.
+**Note:** Perfect scores are expected with synthetic data. Real-world performance will vary.
 
-### Linting Rules
+### Expected Real-World Performance
+With properly labeled real data:
+- Target: 70-85% accuracy
+- Target: 0.65-0.80 macro F1
+- Per-class precision/recall should be balanced
 
-Currently there are 4 rule groups selected in`ruff.toml`. All rule groups can be found [here](https://docs.astral.sh/ruff/rules/).
+## TCFD Framework
 
-To add further rules, these are added to `ruff.toml` by using the letter asssigned to the rules as in the docs linked above. ie. pep8-naming uses the letter "N".
+The system assesses compliance against 11 TCFD recommendations across 4 pillars:
 
-## Test
+### Governance (2)
+- G.1: Board oversight of climate-related risks and opportunities
+- G.2: Management's role in assessing and managing them
 
-`pytest` is being used for testing the backend. Like with linting, running the [setup](#set-up) steps should download `pytest` for you.
+### Strategy (3)
+- S.1: Climate risks and opportunities (short, medium, long term)
+- S.2: Impact on business, strategy and financial planning
+- S.3: Resilience of strategy under different scenarios, incl. 2°C or lower
 
-We are using a separate `tests` directory to store all the tests. This directory is intended to mirror the `src` directory to make it easier to find the tests for a specific module.
+### Risk Management (3)
+- R.1: Processes for identifying and assessing climate risks
+- R.2: Processes for managing climate risks
+- R.3: Integration into overall risk management
 
-> [!WARNING]  
-> running the `pytest` tests only works when running the service locally (not through the Docker setup)
+### Metrics & Targets (3)
+- M.1: Metrics used to assess climate risks and opportunities
+- M.2: Scope 1, 2 and (if appropriate) 3 GHG emissions
+- M.3: Targets and performance against targets
 
-To run the tests, change to the `/backend` directory and run the following command:
+## Limitations
 
-```bash
-pytest
-```
+1. **Heuristic status**: keyword coverage + TF-IDF similarity measures whether a topic is discussed, not the quality of the disclosure. Documents *about* climate disclosure (e.g. GRI sector standards) also score moderately.
+2. **Classifier**: trained on 100 synthetic sentences; its predictions are not reliable on real reports.
+3. **PDF parsing**: text-only extraction; scanned PDFs return HTTP 422.
 
-More documentation on `pytest` can be found [here](https://docs.pytest.org/en/8.0.x/).
+## Future Improvements
 
-## Contributing
+- Label real reports (via `/tcfd/labeling-task`) and train/evaluate on them
+- Calibrate the evidence thresholds against labelled data
+- Embedding-based retrieval (sentence-transformers) instead of TF-IDF
+- Train a transformer classifier (ClimateBERT/DistilBERT)
+- Support additional frameworks (ISSB/IFRS S2, CSRD/ESRS)
 
-### Type errors
+## Documentation
 
-The vscode extension [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) can be used to highlight basic type errors in your python code. To set this up do the following:
+- **QUICKSTART.md** - Quick start guide for the full application
+- **TCFD_ADAPTER_README.md** - Comprehensive technical documentation
+- **library/tcfd_requirements.json** - TCFD knowledge base
 
-- Install the extension
-- Add the following to your `../.vscode/settings.json` file:
+## License
 
-```json
-{
-  "python.analysis.typeCheckingMode": "basic"
-}
-```
+Based on InferESG (ScottLogic). Adapted for TCFD compliance checking.

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCFD Labelling</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; padding: 20px; color: #2d3748;
+        }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 40px; }
+        h1 { font-size: 30px; margin-bottom: 6px; }
+        .subtitle { color: #718096; margin-bottom: 24px; }
+        .subtitle a { color: #667eea; }
+        .section { margin-bottom: 28px; }
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+        .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .row > * { min-width: 0; }
+        input[type="text"], input[type="number"], textarea {
+            padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: inherit;
+        }
+        input:focus, textarea:focus { outline: none; border-color: #667eea; }
+        .btn { padding: 12px 22px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-secondary { background: #e2e8f0; color: #4a5568; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .status { margin-top: 10px; font-size: 14px; color: #4a5568; }
+        .status.error { color: #c53030; }
+        .guide { background: #f7fafc; border-radius: 12px; padding: 16px 20px; font-size: 14px; line-height: 1.6; color: #4a5568; }
+        .guide b { color: #2d3748; }
+        .progress { position: sticky; top: 0; z-index: 2; background: white; padding: 12px 0; border-bottom: 1px solid #e2e8f0;
+            display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .progress-bar { flex: 1; min-width: 120px; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #48bb78; width: 0; transition: width 0.2s; }
+        .card { background: #f7fafc; border-radius: 12px; padding: 20px; margin-top: 16px; border-left: 4px solid #cbd5e0; }
+        .card.done { border-left-color: #48bb78; }
+        .card-pillar { font-size: 12px; font-weight: 600; color: #667eea; text-transform: uppercase; }
+        .card-title { font-size: 18px; font-weight: 600; margin: 2px 0 6px; }
+        .card-desc { font-size: 14px; color: #4a5568; margin-bottom: 8px; }
+        .card ul { margin: 0 0 12px 20px; font-size: 13px; color: #4a5568; line-height: 1.6; }
+        details { margin-bottom: 12px; font-size: 13px; }
+        summary { cursor: pointer; color: #667eea; font-weight: 500; }
+        blockquote { margin: 8px 0 0; padding: 8px 12px; border-left: 3px solid #cbd5e0; background: white; border-radius: 4px; line-height: 1.5; }
+        .page-ref { font-weight: 600; }
+        .labels { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .label-btn { flex: 1; min-width: 140px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; background: white;
+            font-size: 14px; font-weight: 500; cursor: pointer; }
+        .label-btn.sel-Disclosed { background: #48bb78; border-color: #48bb78; color: white; }
+        .label-btn.sel-Partially { background: #ed8936; border-color: #ed8936; color: white; }
+        .label-btn.sel-Not { background: #f56565; border-color: #f56565; color: white; }
+        .meta-inputs { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+        .card.draft { border-left-color: #9f7aea; }
+        .draft-box { background: #faf5ff; border: 1px solid #e9d8fd; border-radius: 8px; padding: 10px 12px;
+            font-size: 13px; color: #44337a; margin-bottom: 10px; line-height: 1.5; }
+        .draft-box b { color: #322659; }
+        .suggestion { font-size: 13px; color: #718096; margin-top: 8px; }
+        .search-results { margin-top: 10px; max-height: 320px; overflow-y: auto; font-size: 13px; }
+        .search-results div { padding: 6px 0; border-bottom: 1px solid #edf2f7; line-height: 1.5; }
+        mark { background: #fefcbf; }
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .meta-inputs { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>TCFD Labelling</h1>
+    <p class="subtitle">Build a ground-truth test set: label each disclosure for a whole report. <a href="index.html">Back to calculator</a></p>
+
+    <div class="section">
+        <div class="guide">
+            <b>Disclosed</b> - the report addresses the disclosure specifically (named bodies, processes, numbers, time frames) and covers most of its sub-requirements.<br>
+            <b>Partially disclosed</b> - the topic is addressed but vaguely, or only some sub-requirements are covered.<br>
+            <b>Not disclosed</b> - nothing relevant, or only generic statements unrelated to climate.<br>
+            Label the <b>whole report</b>: the passages shown are the model's picks and may miss things. Use the search box and the PDF itself.
+            The model's suggestion stays hidden until you choose a label. <b>AI drafts</b> (purple) only count once you click a label to confirm them.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">1. Report</h2>
+        <div class="row">
+            <input type="text" id="labeler" placeholder="Your name or initials" style="flex: 1">
+            <input type="text" id="company" placeholder="Company" style="flex: 1">
+            <input type="number" id="year" placeholder="Reporting year" style="width: 140px">
+        </div>
+        <div class="row" style="margin-top: 12px">
+            <input type="file" id="reportFile" accept="application/pdf,.pdf" style="flex: 1">
+            <button class="btn btn-primary" id="loadBtn" onclick="loadReport()">Load report</button>
+        </div>
+        <div class="status" id="loadStatus">Requires the backend at localhost:8250.</div>
+    </div>
+
+    <div id="workArea" style="display: none">
+        <div class="section">
+            <h2 class="section-title">2. Search the report</h2>
+            <div class="row">
+                <input type="text" id="searchBox" placeholder="e.g. scenario analysis, Scope 3, remuneration" style="flex: 1"
+                       onkeydown="if (event.key === 'Enter') searchReport()">
+                <button class="btn btn-secondary" onclick="searchReport()">Search</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">3. Label the 11 disclosures</h2>
+            <div class="progress">
+                <span id="progressText">0 / 11 labelled</span>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <button class="btn btn-secondary" onclick="downloadLabels()">Download JSON</button>
+                <button class="btn btn-primary" id="saveBtn" onclick="saveLabels()">Save labels</button>
+            </div>
+            <div class="status" id="saveStatus"></div>
+            <div id="cards"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_BASE = 'http://localhost:8250';
+const LABELS = [
+    { value: 'Disclosed', cls: 'Disclosed' },
+    { value: 'Partially disclosed', cls: 'Partially' },
+    { value: 'Not disclosed', cls: 'Not' }
+];
+let task = null;      // response from /tcfd/labeling-task
+let answers = {};     // requirement_id -> {label, evidence_pages, notes}
+
+function esc(text) {
+    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function setStatus(id, msg, isError = false) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = 'status' + (isError ? ' error' : '');
+}
+
+function draftKey() { return task ? `tcfd-label-draft-${task.metadata.sha256}` : null; }
+
+function saveDraft() {
+    try { localStorage.setItem(draftKey(), JSON.stringify(answers)); } catch (e) { /* storage unavailable */ }
+}
+
+function loadDraft() {
+    try { return JSON.parse(localStorage.getItem(draftKey()) || '{}'); } catch (e) { return {}; }
+}
+
+async function loadReport() {
+    const file = document.getElementById('reportFile').files[0];
+    if (!file) { setStatus('loadStatus', 'Choose a PDF first.', true); return; }
+    const btn = document.getElementById('loadBtn');
+    btn.disabled = true;
+    setStatus('loadStatus', `Loading ${file.name} (this takes a few seconds)...`);
+    try {
+        const form = new FormData();
+        form.append('file', file);
+        const res = await fetch(`${API_BASE}/tcfd/labeling-task?top_k=5`, { method: 'POST', body: form });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.detail || `Server returned ${res.status}`);
+        task = data;
+        const saved = await fetchSavedLabels(task.metadata.sha256);
+        answers = { ...saved, ...loadDraft() };
+        const nSaved = Object.keys(saved).length;
+        const nAi = Object.values(answers).filter(a => a.source === 'ai_draft').length;
+        setStatus('loadStatus', `${file.name}: ${task.metadata.num_pages} pages with text.` +
+            (nSaved ? ` Loaded ${nSaved} saved labels` + (nAi ? ` (${nAi} AI drafts to review: click a label to confirm or change it).` : '.') : ''));
+        document.getElementById('workArea').style.display = '';
+        renderCards();
+    } catch (err) {
+        setStatus('loadStatus', err instanceof TypeError
+            ? 'Could not reach the backend at localhost:8250. Start it with "python tcfd_api_server.py" in backend/.'
+            : `Failed: ${err.message}`, true);
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function fetchSavedLabels(sha256) {
+    try {
+        const res = await fetch(`${API_BASE}/tcfd/labels/${sha256}`);
+        if (!res.ok) return {};
+        const rec = await res.json();
+        const m = rec.metadata || {};
+        if (m.labeler && !document.getElementById('labeler').value) document.getElementById('labeler').value = m.labeler;
+        if (m.company && !document.getElementById('company').value) document.getElementById('company').value = m.company;
+        if (m.reporting_year && !document.getElementById('year').value) document.getElementById('year').value = m.reporting_year;
+        return rec.labels || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function renderCards() {
+    const container = document.getElementById('cards');
+    container.innerHTML = task.tasks.map((t, i) => {
+        const a = answers[t.requirement_id] || {};
+        const evidence = t.evidence_chunks.map(e =>
+            `<blockquote><span class="page-ref">p.${e.page}</span> ${esc(e.text)}</blockquote>`).join('');
+        const buttons = LABELS.map(l =>
+            `<button class="label-btn ${a.label === l.value ? 'sel-' + l.cls : ''}"
+                     onclick="setLabel('${t.requirement_id}', '${l.value}')">${l.value}</button>`).join('');
+        const isDraft = a.source === 'ai_draft';
+        const draftBox = isDraft ? `<div class="draft-box"><b>AI draft: ${esc(a.label)}</b> - not yet confirmed. ` +
+            `Check the evidence, then click a label to confirm or change it.` +
+            (a.rationale ? `<br>${esc(a.rationale)}` : '') + `</div>` : '';
+        const suggestion = a.label && !isDraft
+            ? `<div class="suggestion">Model suggested: <b>${esc(t.suggested_label)}</b>${t.suggested_label === a.label ? ' (agrees)' : ' (differs)'}</div>`
+            : '';
+        return `
+        <div class="card ${isDraft ? 'draft' : (a.label ? 'done' : '')}" id="card-${t.requirement_id}">
+            <div class="card-pillar">${esc(t.requirement_id)} · ${esc(t.pillar)} · ${esc(t.tcfd_ref || '')}</div>
+            <div class="card-title">${esc(t.title)}</div>
+            <div class="card-desc">${esc(t.description)}</div>
+            <ul>${t.requirements.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
+            <details><summary>Model-retrieved passages (${t.evidence_chunks.length})</summary>${evidence || '<p>None found.</p>'}</details>
+            ${draftBox}
+            <div class="labels">${buttons}</div>
+            <div class="meta-inputs">
+                <input type="text" placeholder="Evidence pages, e.g. 16, 17" value="${esc((a.evidence_pages || []).join(', '))}"
+                       onchange="setField('${t.requirement_id}', 'evidence_pages', this.value)">
+                <input type="text" placeholder="Notes (why this label?)" value="${esc(a.notes || '')}"
+                       onchange="setField('${t.requirement_id}', 'notes', this.value)">
+            </div>
+            ${suggestion}
+        </div>`;
+    }).join('');
+    updateProgress();
+}
+
+function setLabel(reqId, label) {
+    answers[reqId] = { ...(answers[reqId] || {}), label, source: 'human' };
+    saveDraft();
+    const y = window.scrollY;
+    renderCards();
+    window.scrollTo(0, y);
+}
+
+function setField(reqId, field, value) {
+    const a = answers[reqId] || {};
+    a[field] = field === 'evidence_pages'
+        ? value.split(/[,\s]+/).map(v => parseInt(v, 10)).filter(n => Number.isInteger(n) && n > 0)
+        : value;
+    answers[reqId] = a;
+    saveDraft();
+}
+
+function updateProgress() {
+    const done = task.tasks.filter(t => answers[t.requirement_id] && answers[t.requirement_id].label
+        && answers[t.requirement_id].source !== 'ai_draft').length;
+    const drafts = task.tasks.filter(t => answers[t.requirement_id] && answers[t.requirement_id].source === 'ai_draft').length;
+    document.getElementById('progressText').textContent = `${done} / ${task.tasks.length} confirmed` +
+        (drafts ? ` · ${drafts} AI drafts to review` : '');
+    document.getElementById('progressFill').style.width = `${done / task.tasks.length * 100}%`;
+}
+
+function searchReport() {
+    const q = document.getElementById('searchBox').value.trim();
+    const out = document.getElementById('searchResults');
+    if (!q || !task) { out.innerHTML = ''; return; }
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const hits = [];
+    task.pages.forEach(p => {
+        re.lastIndex = 0;
+        const m = re.exec(p.text);
+        if (!m) return;
+        const count = (p.text.match(re) || []).length;
+        const start = Math.max(0, m.index - 150);
+        const snippet = esc(p.text.slice(start, m.index + 250)).replace(
+            new RegExp(esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), s => `<mark>${s}</mark>`);
+        hits.push(`<div><span class="page-ref">p.${p.page}</span> (${count}x) ...${snippet}...</div>`);
+    });
+    out.innerHTML = hits.length ? hits.join('') : '<div>No matches.</div>';
+}
+
+function buildPayload() {
+    return {
+        metadata: {
+            ...task.metadata,
+            labeler: document.getElementById('labeler').value.trim(),
+            company: document.getElementById('company').value.trim(),
+            reporting_year: document.getElementById('year').value || null,
+            labelled_at: new Date().toISOString()
+        },
+        labels: Object.fromEntries(Object.entries(answers).filter(([, a]) => a.label))
+    };
+}
+
+async function saveLabels() {
+    const payload = buildPayload();
+    const n = Object.keys(payload.labels).length;
+    if (!n) { setStatus('saveStatus', 'Label at least one disclosure first.', true); return; }
+    try {
+        const res = await fetch(`${API_BASE}/tcfd/labels`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.detail || `Server returned ${res.status}`);
+        const pending = data.unconfirmed_drafts || [];
+        setStatus('saveStatus', `Saved ${data.labelled} labels to backend/${data.saved_to}` +
+            (data.missing.length ? `. Still unlabelled: ${data.missing.join(', ')}` : '') +
+            (pending.length ? `. Unconfirmed AI drafts (not used in evaluation): ${pending.join(', ')}` : '') +
+            (!data.missing.length && !pending.length ? '. All 11 confirmed.' : ''));
+    } catch (err) {
+        setStatus('saveStatus', `Save failed: ${err.message}. Use "Download JSON" as a backup.`, true);
+    }
+}
+
+function downloadLabels() {
+    const payload = buildPayload();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = task.metadata.source_file.replace(/\.pdf$/i, '') + '.labels.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+</script>
+</body>
+</html>

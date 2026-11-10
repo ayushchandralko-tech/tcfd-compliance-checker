@@ -1,151 +1,179 @@
-# InferESG: AI-Augmented ESG Analysis
+# TCFD Compliance Calculator
 
-InferESG is an open-source solution that transforms how analysts interact with ESG (Environmental, Social, and Governance) data. Built upon the InferLLM framework, it helps combat greenwashing and validates ESG claims through AI-augmented analysis.
+A simple, single-page TCFD (Task Force on Climate-related Financial Disclosures) compliance assessment tool.
 
-**Please Note:** Alpha Solution Accelerator Status! 
-This was initially developed as part of a FinTech Scotland Funded research project and whilst it is easy to deploy (see below) and has shown promising results in testing it needs more work (mostly on error handling and presentation) and integration to your data to be most effective. (Contributions to this project and it's parent project InferLLM welcome!)
+## 🎯 Overview
 
-## 🎯 Mission
+This project provides two components:
 
-InferESG's mission is to augment ESG analysts' capabilities through intelligent automation while maintaining human expertise and judgment in the loop. Rather than attempting to automate the entire analysis process, InferESG serves as an intelligent assistant that augments human expertise through three key capabilities:
+1. **Frontend Calculator**: A standalone web-based calculator for manual TCFD compliance assessment
+2. **Backend API**: An automated ML-powered API for analyzing sustainability reports
 
-### 🔍 Comprehensive Report Analysis
-- Thorough analysis of sustainability reports
-- Step-by-step materiality assessment
-- Examination of environmental targets, social initiatives, and governance structures
-- Identification of both strong performance areas and potential concerns
+## ✨ Features
 
-### 💬 Interactive Investigation
-- Natural language query interface for ESG data exploration
-- Evidence-based responses through multi-agent framework
-- Deep dive capabilities into areas of interest or concern
-- Cross-referencing claims against external sources
+### Frontend Calculator
+- **Single Page Design**: Clean, focused interface with no sidebar or tabs
+- **Company Details**: Company name and reporting year input
+- **11 TCFD Disclosures**: All four pillars in one scrollable list
+- **Status Selector**: Compliant / Partial / Non-compliant buttons
+- **Automatic Calculation**: Instant percentage score calculation
+- **Score Summary**: Overall score and status counts
+- **Auto-fill from PDF**: Upload a report to pre-fill statuses with page-cited evidence (needs the backend)
+- **Export Report**: Download assessment as text file
+- **Responsive Design**: Works on desktop and mobile
 
-### 📊 Evidence-Based Analysis
-- Clear evidence trails for all conclusions
-- Transparent verification paths
-- Effective challenge processes
-- Support for manual verification
+### Backend API (Optional)
+- **PDF Analysis**: Automated compliance assessment from sustainability reports
+- **Evidence retrieval**: TF-IDF passage ranking + keyword coverage per disclosure, with page numbers (baseline classifier prediction included for comparison)
+- **RESTful API**: Simple endpoints for compliance assessment
+- **Evidence-Based**: Provides supporting evidence snippets
 
-## 🏗️ Technical Architecture
+## 🚀 Quick Start
 
-InferESG employs a sophisticated multi-agent architecture:
+### Frontend Calculator (Recommended)
 
-- Materiality Agent: Evaluates companies against established frameworks
-- Report Agent: Coordinates comprehensive document analysis
-- Web Agent: Validates claims against external sources
-- Intent Agent: Processes and routes natural language queries
-- Validator Agent: Improves response accuracy and completeness
+The frontend calculator is a standalone tool that requires no backend.
 
-## 🚀 Key Features
+```bash
+cd frontend
+npm install
+npm start
+```
 
-- Integration with key frameworks (TNFD, GRI)
-- Materiality assessment capabilities
-- Greenwashing and Greenhushing flagging
-- Interactive query system
-- Evidence trail generation
-- Multi-source validation
+Access at: http://localhost:8650
 
-## Demo, Case Study & Blogs
-- We have recorded a demo: https://www.youtube.com/watch?v=sg3Lf0UODEQ 
-- Case study is available: https://www.scottlogic.com/our-work/inferesg-agentic-ai-due-diligence 
-- [Blogs](https://blog.scottlogic.com/2025/03/20/inferesg-overview.html)
+### Backend API (Optional)
 
-## 📈 Validation & Testing
+For automated PDF analysis:
 
-The system has been validated through rigorous testing:
-- Testing across multiple industry sectors
-- F1 score metrics for accuracy measurement
-- Real-world validation with research industry sponsor
-- Cross-validation using multiple AI systems and manual exploratory testing
+```bash
+cd backend
+pip install -r requirements.txt
+python train_baseline.py --data_path ./datasets/tcfd_training_sample.json --output_dir ./models/tcfd_classifier
+python tcfd_api_server.py
+```
 
-## InferESG Roadmap & Docs
-InferESG is based on InferGPT/LLM
+Access at: http://localhost:8250
 
-We are very keen to integrate further use of the Knowledge Graph as we believe this will help manage a lot of the risks and improve it's capabilities.
+## 📊 TCFD Framework
 
-For further reading on InferLLMs's components, see the [InferLLM Github](https://github.com/ScottLogic/InferLLM)
+The system assesses compliance against 11 TCFD recommendations across 4 pillars:
 
-## Contribute
-We welcome contributions from the community! Whether you're interested in:
-- Enhancing the analysis capabilities
-- Adding new materiality frameworks
-- Improving the agent architecture
-- Expanding validation capabilities
-See [the contribution guide](CONTRIBUTING.md) for further guidance. Note this guide is in progress!
+### Governance (2)
+- G.1: Board oversight of climate-related risks and opportunities
+- G.2: Management's role in assessing and managing them
 
-## Getting Started
+### Strategy (3)
+- S.1: Climate risks and opportunities (short, medium, long term)
+- S.2: Impact on business, strategy and financial planning
+- S.3: Resilience of strategy under different scenarios, incl. 2°C or lower
 
-In the top-right corner of the page, click Fork.
+### Risk Management (3)
+- R.1: Processes for identifying and assessing climate risks
+- R.2: Processes for managing climate risks
+- R.3: Integration into overall risk management
 
-On the next page, select your GitHub account to create the fork under.
-Wait for the forking process to complete. You now have a copy of the repository in your GitHub account.
+### Metrics & Targets (3)
+- M.1: Metrics used to assess climate risks and opportunities
+- M.2: Scope 1, 2 and (if appropriate) 3 GHG emissions
+- M.3: Targets and performance against targets
 
-### Clone the Repository
+## 📁 Project Structure
 
-To clone the repository, you need to have Git installed on your system. Use the [official Git installer](https://git-scm.com/download/win) or [follow the terminal commands guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+```
+InferESG/
+├── frontend/                      # Web-based calculator
+│   ├── src/
+│   │   ├── index.html            # Main HTML file
+│   │   └── app.js                # JavaScript logic
+│   ├── package.json              # Dependencies
+│   └── README.md                 # Frontend documentation
+├── backend/                       # ML-powered API (optional)
+│   ├── tcfd_api_server.py        # FastAPI server
+│   ├── train_baseline.py         # Training script
+│   ├── create_sample_data.py     # Sample data generator
+│   ├── library/                  # TCFD knowledge base
+│   ├── datasets/                 # Training data
+│   ├── models/                   # Trained models
+│   └── README.md                 # Backend documentation
+├── QUICKSTART.md                  # Quick start guide
+└── README.md                      # This file
+```
 
-Once you have Git installed, follow these steps:
+## 📖 Usage
 
-- Open your preferred terminal.
-- Navigate to the directory where you want to clone the repository.
-- Run the git clone command for the fork you just created.
+### Frontend Calculator
 
-### Initial configuration
+1. Open http://localhost:8650
+2. Enter company name and reporting year
+3. For each TCFD disclosure, click Compliant, Partial, or Non-compliant
+4. View the automatically calculated compliance score
+5. Click "Export report" to download the assessment
 
-There is a example property file `.env.example` at the root of this project.
+### Backend API
 
-Configuration steps:
+```bash
+# Health check
+curl http://localhost:8250/health
 
-- Copy the `.env.example` file at the root of this project.
-- Rename the copied file as `.env`.
-- Update the `.env` file with your wanted configuration following the guidance in the file.
+# Get TCFD requirements
+curl http://localhost:8250/tcfd/requirements
 
-### Running the application
+# Assess compliance
+curl -X POST http://localhost:8250/tcfd/assess \
+  -F "file=@your_report.pdf"
+```
 
-There are a few ways to run the application:
+## 🧮 Scoring Formula
 
-1. **Docker Compose** - run the entire application within Docker containers configured by Docker Compose.
-2. **Locally** - run local instances of the front-end, back-end and a neo4j database.
-3. **Individual Docker Containers** - you may choose to run individual components within a Docker container.
+- **Compliant**: 1 point
+- **Partial**: 0.5 points
+- **Non-compliant**: 0 points
 
-For ease of use, we would recommended that you run the application using **Docker Compose**.
+```
+Score = (Weighted points / 11) × 100
+```
 
-For instructions on how to run indivdual components locally or within Docker containers, refer to appropriate READMEs:
+## 📚 Documentation
 
-- [frontend README](frontend/README.md)
-- [backend README](backend/README.md)
-- [data README](data/README.md)
+- **frontend/README.md** - Frontend calculator documentation
+- **backend/README.md** - Backend API documentation
+- **QUICKSTART.md** - Quick start guide
+- **LABELLING.md** - Building a labelled test set and evaluating against it
 
-### Running with Docker Compose
+## 🚀 Technology Stack
 
-- **Ensure Docker is installed and running**. The easiest way to do this is by using the Docker Desktop app (install it from [docker.com](docker.com) if you don't have it).
-- In the root directory of the project run `docker compose up`
-  > [!WARNING]  
-  > the first time you do this it may take longer as the compose file builds the images.
+### Frontend
+- **HTML5**: Structure
+- **CSS3**: Styling with gradients
+- **JavaScript (Vanilla)**: Logic and calculations
+- **http-server**: Static file serving
 
-> To re-build the docker images following any changes, run `docker compose build` first or use `docker compose up --build`.
+### Backend (Optional)
+- **Python 3.10+**: Backend language
+- **FastAPI**: Web framework
+- **scikit-learn**: Machine learning
+- **joblib**: Model persistence
+- **pypdf**: PDF parsing
 
-For ease of development, after running `docker compose build` you can run `docker compose up --watch`. Watch mode allows for the docker container to rebuild when you save a file. This means that it is not required to take down the service after every change to see these implemented. This option is recommended.
+## ⚠️ Notes
 
-- View the frontend at [localhost:8650](http://localhost:8650)
-- View the Neo4j Browser at [localhost:7474](http://localhost:7474)
-- Type the phrase "healthcheck" into the frontend UI to test if everything is connected successfully
+- The frontend calculator is a standalone tool for manual assessment
+- The backend API is optional and provides automated analysis
+- The backend uses synthetic sample data for testing
+- Real-world performance will vary with actual labeled data
 
-### Usage
-We've designed and tested the current initial workflow with an ESG analyst team. Primarily with the user journey of 
-- help me assess whether this is a company that we should consider adding to an ESG fund. What claims and potential greenwashing are present?
-- What's missing against material issues for the sector?
-- Help me (interactively) dig into the details of this company's sustainability claims.
-- Save me time wading through the noise to find the right signals to investigate
+## 🤝 Contributing
 
-  **Process:**
-- To get started upload a Sustainability report PDF for an organistion. Be patient as a lot of processing is done initially (plan is to make this more efficient, async and notify the user when done)
-- Once the report has been analysed you can click a button to view it in the canvas or download it
-- You can then ask questions chat bot style. Behind the scenes InferESG works out whether to use data from the report, web searches, materiality documents, LLM generalist content or a mix
-- If you want to see how it's created its output to a question you can click a button and it will (at the time of writing) give you a JSON dump of what agent, queries and source URLs it has used - although the source URLs should also be included in the friendlier UI output
-- Suggested questions are provided based on the current conversation context
+This project is adapted from InferESG (ScottLogic). Contributions are welcome!
 
-### LICENCE
+Areas for contribution:
+- Improve UI/UX
+- Add PDF export
+- Implement local storage for saving assessments
+- Add historical tracking
+- Improve backend model performance
 
-See [LICENCE.md](LICENCE.md)
+## 📄 License
+
+Based on InferESG (ScottLogic). Adapted for TCFD compliance checking.

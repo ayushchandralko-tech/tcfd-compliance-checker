@@ -1,0 +1,15 @@
+{
+  "baseline": {
+    "accuracy": 1.0,
+    "precision_not_disclosed": 1.0,
+    "precision_partially_disclosed": 1.0,
+    "precision_disclosed": 1.0,
+    "recall_not_disclosed": 1.0,
+    "recall_partially_disclosed": 1.0,
+    "recall_disclosed": 1.0,
+    "f1_not_disclosed": 1.0,
+    "f1_partially_disclosed": 1.0,
+    "f1_disclosed": 1.0,
+    "macro_f1": 1.0
+  }
+}

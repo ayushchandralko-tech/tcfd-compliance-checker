@@ -1,0 +1,902 @@
+[
+  {
+    "requirement_id": "M.3",
+    "pillar": "Metrics & Targets",
+    "title": "Targets and Performance",
+    "description": "Targets and performance against targets",
+    "text": "Some information about climate governance is mentioned in our annual report, but details on board oversight and specific responsibilities are limited.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.712069624970482
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "Climate-related risks are mentioned in our risk management framework, but specific methodologies and assessment processes are not fully detailed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8580069904366071
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.763169526416607
+  },
+  {
+    "requirement_id": "S.1",
+    "pillar": "Strategy",
+    "title": "Climate-related Risks and Opportunities",
+    "description": "Climate-related risks and opportunities",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.720488670141562
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "The report does not contain any information about climate governance or board oversight of climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8268336965479042
+  },
+  {
+    "requirement_id": "S.1",
+    "pillar": "Strategy",
+    "title": "Climate-related Risks and Opportunities",
+    "description": "Climate-related risks and opportunities",
+    "text": "Some information about climate governance is mentioned in our annual report, but details on board oversight and specific responsibilities are limited.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.9010057303719821
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.7525400201962895
+  },
+  {
+    "requirement_id": "M.3",
+    "pillar": "Metrics & Targets",
+    "title": "Targets and Performance",
+    "description": "Targets and performance against targets",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8365656512004717
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "Some information about climate governance is mentioned in our annual report, but details on board oversight and specific responsibilities are limited.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.885022276019021
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.7588948473392937
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "The report does not contain any information about climate governance or board oversight of climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8433406295596165
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "The company has not disclosed any climate-related targets or goals for reducing greenhouse gas emissions.",
+    "label": "Not disclosed",
+    "relevance_score": 0.790518688765693
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8012888200046576
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.7276026736252534
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8695268068976367
+  },
+  {
+    "requirement_id": "M.3",
+    "pillar": "Metrics & Targets",
+    "title": "Targets and Performance",
+    "description": "Targets and performance against targets",
+    "text": "We are working on understanding climate-related risks and opportunities. Initial assessments have been conducted but comprehensive analysis is still in progress.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.9121587412335951
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "We are working on understanding climate-related risks and opportunities. Initial assessments have been conducted but comprehensive analysis is still in progress.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8961582020959077
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "We disclose our Scope 1, 2, and 3 greenhouse gas emissions in accordance with the GHG Protocol. Total Scope 1 emissions were 125,000 tCO2e, Scope 2 were 89,000 tCO2e, and Scope 3 were 450,000 tCO2e in 2023.",
+    "label": "Disclosed",
+    "relevance_score": 0.8624332934364789
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "No information is provided about climate-related risks and opportunities or their impact on the company's business strategy.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7939504818420287
+  },
+  {
+    "requirement_id": "M.3",
+    "pillar": "Metrics & Targets",
+    "title": "Targets and Performance",
+    "description": "Targets and performance against targets",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.9181582464248458
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "Some information about climate governance is mentioned in our annual report, but details on board oversight and specific responsibilities are limited.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.9446464412825183
+  },
+  {
+    "requirement_id": "G.1",
+    "pillar": "Governance",
+    "title": "Governance Disclosure",
+    "description": "Governance around climate-related risks and opportunities",
+    "text": "We disclose our Scope 1, 2, and 3 greenhouse gas emissions in accordance with the GHG Protocol. Total Scope 1 emissions were 125,000 tCO2e, Scope 2 were 89,000 tCO2e, and Scope 3 were 450,000 tCO2e in 2023.",
+    "label": "Disclosed",
+    "relevance_score": 0.8021895728053793
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8753850898890554
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "Some information about climate governance is mentioned in our annual report, but details on board oversight and specific responsibilities are limited.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.714419474554449
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.9276733809884454
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "The report does not contain any information about climate governance or board oversight of climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7465741195147046
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "Some information about climate governance is mentioned in our annual report, but details on board oversight and specific responsibilities are limited.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8632612782049154
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "There is no information about the company's approach to managing climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8228102045754884
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "The company has established a comprehensive climate governance framework with clear board oversight and management responsibility for climate-related risks and opportunities.",
+    "label": "Disclosed",
+    "relevance_score": 0.8714695078338566
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.7354601819252929
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "Climate-related risks are mentioned in our risk management framework, but specific methodologies and assessment processes are not fully detailed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8019856141458712
+  },
+  {
+    "requirement_id": "S.1",
+    "pillar": "Strategy",
+    "title": "Climate-related Risks and Opportunities",
+    "description": "Climate-related risks and opportunities",
+    "text": "The report does not contain any information about climate governance or board oversight of climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8223042621478125
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "The company has not disclosed any climate-related targets or goals for reducing greenhouse gas emissions.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8443048105714996
+  },
+  {
+    "requirement_id": "S.1",
+    "pillar": "Strategy",
+    "title": "Climate-related Risks and Opportunities",
+    "description": "Climate-related risks and opportunities",
+    "text": "Our board of directors regularly reviews climate-related risks and opportunities as part of its risk oversight duties. The sustainability committee provides quarterly reports on climate strategy progress.",
+    "label": "Disclosed",
+    "relevance_score": 0.9162844293302399
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "Our board of directors regularly reviews climate-related risks and opportunities as part of its risk oversight duties. The sustainability committee provides quarterly reports on climate strategy progress.",
+    "label": "Disclosed",
+    "relevance_score": 0.7475715283201062
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "No information is provided about climate-related risks and opportunities or their impact on the company's business strategy.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7284927177110161
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8136432632195422
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "We are working on understanding climate-related risks and opportunities. Initial assessments have been conducted but comprehensive analysis is still in progress.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8389496332626528
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "The company has established a comprehensive climate governance framework with clear board oversight and management responsibility for climate-related risks and opportunities.",
+    "label": "Disclosed",
+    "relevance_score": 0.8308230790775706
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "The report does not contain any information about climate governance or board oversight of climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.9072012899671192
+  },
+  {
+    "requirement_id": "S.1",
+    "pillar": "Strategy",
+    "title": "Climate-related Risks and Opportunities",
+    "description": "Climate-related risks and opportunities",
+    "text": "The company has not disclosed any climate-related targets or goals for reducing greenhouse gas emissions.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8240512353996817
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.9464970414571161
+  },
+  {
+    "requirement_id": "M.2",
+    "pillar": "Metrics & Targets",
+    "title": "Greenhouse Gas Emissions",
+    "description": "Scope 1, 2, and 3 GHG emissions",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.7492400647819701
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8295204712586343
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "We disclose our Scope 1, 2, and 3 greenhouse gas emissions in accordance with the GHG Protocol. Total Scope 1 emissions were 125,000 tCO2e, Scope 2 were 89,000 tCO2e, and Scope 3 were 450,000 tCO2e in 2023.",
+    "label": "Disclosed",
+    "relevance_score": 0.885605965637259
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8473351223245993
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "The company has established a comprehensive climate governance framework with clear board oversight and management responsibility for climate-related risks and opportunities.",
+    "label": "Disclosed",
+    "relevance_score": 0.7783776612934827
+  },
+  {
+    "requirement_id": "S.1",
+    "pillar": "Strategy",
+    "title": "Climate-related Risks and Opportunities",
+    "description": "Climate-related risks and opportunities",
+    "text": "There is no information about the company's approach to managing climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.9037097530644913
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "Climate-related risks are mentioned in our risk management framework, but specific methodologies and assessment processes are not fully detailed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.9265408603309577
+  },
+  {
+    "requirement_id": "G.1",
+    "pillar": "Governance",
+    "title": "Governance Disclosure",
+    "description": "Governance around climate-related risks and opportunities",
+    "text": "The company has set science-based targets aligned with the Paris Agreement, including a 50% reduction in Scope 1 and 2 emissions by 2030 and net-zero by 2050.",
+    "label": "Disclosed",
+    "relevance_score": 0.7345735347762329
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "The report does not contain any information about climate governance or board oversight of climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7107102270100314
+  },
+  {
+    "requirement_id": "G.1",
+    "pillar": "Governance",
+    "title": "Governance Disclosure",
+    "description": "Governance around climate-related risks and opportunities",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8747972950161067
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7062521451002337
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "Climate-related risks are mentioned in our risk management framework, but specific methodologies and assessment processes are not fully detailed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8829954889183478
+  },
+  {
+    "requirement_id": "M.3",
+    "pillar": "Metrics & Targets",
+    "title": "Targets and Performance",
+    "description": "Targets and performance against targets",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.734555372543519
+  },
+  {
+    "requirement_id": "S.1",
+    "pillar": "Strategy",
+    "title": "Climate-related Risks and Opportunities",
+    "description": "Climate-related risks and opportunities",
+    "text": "The company has not disclosed any climate-related targets or goals for reducing greenhouse gas emissions.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7326647724343259
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "We disclose our Scope 1, 2, and 3 greenhouse gas emissions in accordance with the GHG Protocol. Total Scope 1 emissions were 125,000 tCO2e, Scope 2 were 89,000 tCO2e, and Scope 3 were 450,000 tCO2e in 2023.",
+    "label": "Disclosed",
+    "relevance_score": 0.9121639937398325
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "No information is provided about climate-related risks and opportunities or their impact on the company's business strategy.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8845114599398568
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "We disclose our Scope 1, 2, and 3 greenhouse gas emissions in accordance with the GHG Protocol. Total Scope 1 emissions were 125,000 tCO2e, Scope 2 were 89,000 tCO2e, and Scope 3 were 450,000 tCO2e in 2023.",
+    "label": "Disclosed",
+    "relevance_score": 0.7483826849478321
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "The report does not contain any information about climate governance or board oversight of climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.9208926637500484
+  },
+  {
+    "requirement_id": "M.3",
+    "pillar": "Metrics & Targets",
+    "title": "Targets and Performance",
+    "description": "Targets and performance against targets",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.7664085942040401
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "No information is provided about climate-related risks and opportunities or their impact on the company's business strategy.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7510987248174119
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7097681270731082
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "The company has set science-based targets aligned with the Paris Agreement, including a 50% reduction in Scope 1 and 2 emissions by 2030 and net-zero by 2050.",
+    "label": "Disclosed",
+    "relevance_score": 0.7669483451711969
+  },
+  {
+    "requirement_id": "G.1",
+    "pillar": "Governance",
+    "title": "Governance Disclosure",
+    "description": "Governance around climate-related risks and opportunities",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.924898090184708
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "There is no information about the company's approach to managing climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8191050692356184
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.9145965878057036
+  },
+  {
+    "requirement_id": "M.3",
+    "pillar": "Metrics & Targets",
+    "title": "Targets and Performance",
+    "description": "Targets and performance against targets",
+    "text": "We have identified several climate-related risks including physical risks from extreme weather events and transition risks from regulatory changes. These are integrated into our enterprise risk management process.",
+    "label": "Disclosed",
+    "relevance_score": 0.9347783790672521
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8253762984187503
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "The company has not disclosed any climate-related targets or goals for reducing greenhouse gas emissions.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7952435186955602
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "There is no information about the company's approach to managing climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.9249412716175291
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "We have identified several climate-related risks including physical risks from extreme weather events and transition risks from regulatory changes. These are integrated into our enterprise risk management process.",
+    "label": "Disclosed",
+    "relevance_score": 0.7468219716305299
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "The report does not contain any information about climate governance or board oversight of climate-related risks.",
+    "label": "Not disclosed",
+    "relevance_score": 0.8151682204358635
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "Our board of directors regularly reviews climate-related risks and opportunities as part of its risk oversight duties. The sustainability committee provides quarterly reports on climate strategy progress.",
+    "label": "Disclosed",
+    "relevance_score": 0.768088680021582
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "We are working on understanding climate-related risks and opportunities. Initial assessments have been conducted but comprehensive analysis is still in progress.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8692637146091641
+  },
+  {
+    "requirement_id": "M.3",
+    "pillar": "Metrics & Targets",
+    "title": "Targets and Performance",
+    "description": "Targets and performance against targets",
+    "text": "We have identified several climate-related risks including physical risks from extreme weather events and transition risks from regulatory changes. These are integrated into our enterprise risk management process.",
+    "label": "Disclosed",
+    "relevance_score": 0.8989186338174974
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "We have identified several climate-related risks including physical risks from extreme weather events and transition risks from regulatory changes. These are integrated into our enterprise risk management process.",
+    "label": "Disclosed",
+    "relevance_score": 0.9394452057010819
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "The company has established a comprehensive climate governance framework with clear board oversight and management responsibility for climate-related risks and opportunities.",
+    "label": "Disclosed",
+    "relevance_score": 0.8310098458163018
+  },
+  {
+    "requirement_id": "M.3",
+    "pillar": "Metrics & Targets",
+    "title": "Targets and Performance",
+    "description": "Targets and performance against targets",
+    "text": "We disclose our Scope 1, 2, and 3 greenhouse gas emissions in accordance with the GHG Protocol. Total Scope 1 emissions were 125,000 tCO2e, Scope 2 were 89,000 tCO2e, and Scope 3 were 450,000 tCO2e in 2023.",
+    "label": "Disclosed",
+    "relevance_score": 0.8145943645525419
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8759652335718215
+  },
+  {
+    "requirement_id": "M.2",
+    "pillar": "Metrics & Targets",
+    "title": "Greenhouse Gas Emissions",
+    "description": "Scope 1, 2, and 3 GHG emissions",
+    "text": "We are working on understanding climate-related risks and opportunities. Initial assessments have been conducted but comprehensive analysis is still in progress.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8790337336026729
+  },
+  {
+    "requirement_id": "S.1",
+    "pillar": "Strategy",
+    "title": "Climate-related Risks and Opportunities",
+    "description": "Climate-related risks and opportunities",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.749982732774786
+  },
+  {
+    "requirement_id": "G.1",
+    "pillar": "Governance",
+    "title": "Governance Disclosure",
+    "description": "Governance around climate-related risks and opportunities",
+    "text": "Our board of directors regularly reviews climate-related risks and opportunities as part of its risk oversight duties. The sustainability committee provides quarterly reports on climate strategy progress.",
+    "label": "Disclosed",
+    "relevance_score": 0.7750762617056703
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7911931540834684
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "Some information about climate governance is mentioned in our annual report, but details on board oversight and specific responsibilities are limited.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8111303992971466
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "We are working on understanding climate-related risks and opportunities. Initial assessments have been conducted but comprehensive analysis is still in progress.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8756069093235874
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "Our board of directors regularly reviews climate-related risks and opportunities as part of its risk oversight duties. The sustainability committee provides quarterly reports on climate strategy progress.",
+    "label": "Disclosed",
+    "relevance_score": 0.7723969562310283
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "We have identified several climate-related risks including physical risks from extreme weather events and transition risks from regulatory changes. These are integrated into our enterprise risk management process.",
+    "label": "Disclosed",
+    "relevance_score": 0.797861896747015
+  },
+  {
+    "requirement_id": "M.1",
+    "pillar": "Metrics & Targets",
+    "title": "Climate-related Metrics",
+    "description": "Climate-related metrics",
+    "text": "The company has not disclosed any climate-related targets or goals for reducing greenhouse gas emissions.",
+    "label": "Not disclosed",
+    "relevance_score": 0.9063606963642421
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "Our board of directors regularly reviews climate-related risks and opportunities as part of its risk oversight duties. The sustainability committee provides quarterly reports on climate strategy progress.",
+    "label": "Disclosed",
+    "relevance_score": 0.7253082433871294
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "We disclose our Scope 1, 2, and 3 greenhouse gas emissions in accordance with the GHG Protocol. Total Scope 1 emissions were 125,000 tCO2e, Scope 2 were 89,000 tCO2e, and Scope 3 were 450,000 tCO2e in 2023.",
+    "label": "Disclosed",
+    "relevance_score": 0.7603161043953437
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.7689040571056013
+  },
+  {
+    "requirement_id": "S.3",
+    "pillar": "Strategy",
+    "title": "Resilience of Strategy",
+    "description": "Resilience under different climate scenarios",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.9457449881898214
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.7100150591521838
+  },
+  {
+    "requirement_id": "S.4",
+    "pillar": "Strategy",
+    "title": "Risk Assessment Process",
+    "description": "Risk identification and assessment process",
+    "text": "Climate-related risks are mentioned in our risk management framework, but specific methodologies and assessment processes are not fully detailed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.7644523265129053
+  },
+  {
+    "requirement_id": "S.1",
+    "pillar": "Strategy",
+    "title": "Climate-related Risks and Opportunities",
+    "description": "Climate-related risks and opportunities",
+    "text": "Partial disclosure of greenhouse gas emissions is provided for Scope 1 and 2, but Scope 3 emissions data is not yet available.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8673793625015394
+  },
+  {
+    "requirement_id": "R.1",
+    "pillar": "Risk Management",
+    "title": "Risk Identification",
+    "description": "Risk identification and assessment",
+    "text": "We have identified several climate-related risks including physical risks from extreme weather events and transition risks from regulatory changes. These are integrated into our enterprise risk management process.",
+    "label": "Disclosed",
+    "relevance_score": 0.7407154367329175
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "We have identified several climate-related risks including physical risks from extreme weather events and transition risks from regulatory changes. These are integrated into our enterprise risk management process.",
+    "label": "Disclosed",
+    "relevance_score": 0.9174249527537082
+  },
+  {
+    "requirement_id": "R.2",
+    "pillar": "Risk Management",
+    "title": "Risk Management",
+    "description": "Risk management processes",
+    "text": "Greenhouse gas emissions data is not disclosed in this report.",
+    "label": "Not disclosed",
+    "relevance_score": 0.7795976386640058
+  },
+  {
+    "requirement_id": "S.2",
+    "pillar": "Strategy",
+    "title": "Impact on Business",
+    "description": "Impact on business, strategy, and financial planning",
+    "text": "The company has begun setting climate targets. We have committed to reducing emissions but specific metrics and timelines are still being developed.",
+    "label": "Partially disclosed",
+    "relevance_score": 0.8300935454132543
+  }
+]

@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "source_file": "Ujjivan_SR_2025-26.pdf",
+    "sha256": "b5c376aad38271a8913d31247dccf6b29868252faefc990894acd96b1a012794",
+    "num_pages": 132,
+    "labeler": "AI draft (Claude) - needs human review",
+    "company": "Ujjivan Small Finance Bank",
+    "reporting_year": 2026,
+    "labelled_at": "2026-11-11T00:08:03"
+  },
+  "labels": {
+    "G.1": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        20,
+        23
+      ],
+      "notes": "",
+      "rationale": "Risk Management Committee of the Board reviews climate-vulnerable district exposure in the Risk Appetite Statement quarterly; ICAAP climate review at board level; CSR & Sustainability Committee met twice. Narrow: no board oversight of climate strategy or targets described. Detail is in the bank's separate TCFD report."
+    },
+    "G.2": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        18,
+        23
+      ],
+      "notes": "",
+      "rationale": "ERM function coordinates climate risk; CSR & Sustainability Management Committee (CEO, COO, CFO, business heads) exists, but climate-specific management responsibilities, reporting lines and frequency are not described."
+    },
+    "S.1": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        23,
+        24,
+        11
+      ],
+      "notes": "",
+      "rationale": "Physical risks identified (drought, cyclone, flood) for vulnerable districts; short/medium/long horizons mentioned but not defined; transition risks and opportunities (EV financing, green housing) only briefly mentioned."
+    },
+    "S.2": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        24,
+        11
+      ],
+      "notes": "",
+      "rationale": "Some business impacts: climate-informed branch expansion checklist, Green Finance Program / Green Deposit Policy. No discussion of impact on financial planning or financial performance."
+    },
+    "S.3": {
+      "label": "Not disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        24
+      ],
+      "notes": "",
+      "rationale": "No scenario analysis reported; only 'evaluation of the feasibility of introducing climate stress testing' as a future focus area and NGFS scenarios as a training topic."
+    },
+    "R.1": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        23,
+        24
+      ],
+      "notes": "",
+      "rationale": "Identification of physical risk via CEEW district vulnerability assessment (8 -> 18 districts, High/Very High classes, combination-of-events); operational climate risk assessment initiated. Transition risk identification and significance determination not described."
+    },
+    "R.2": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        23,
+        24
+      ],
+      "notes": "",
+      "rationale": "Specific controls: exposure limit of 5% of outstanding portfolio for vulnerable districts reviewed quarterly (no breaches); five climate-related KRIs; branch-siting due diligence; BCP/DR considerations."
+    },
+    "R.3": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        23
+      ],
+      "notes": "",
+      "rationale": "Climate risk explicitly within the Risk Appetite Statement, ERM function, Credit Monitoring Framework and ICAAP; operational risk and control framework being extended to climate."
+    },
+    "M.1": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        23,
+        16,
+        41,
+        38
+      ],
+      "notes": "",
+      "rationale": "Some climate metrics: share of portfolio in vulnerable districts vs 5% limit, energy use, emission intensity, renewable energy. No remuneration link, internal carbon price or opportunity metrics."
+    },
+    "M.2": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        41
+      ],
+      "notes": "",
+      "rationale": "Scope 1 (601.8), Scope 2 (12,240.6) and Scope 3 (62,520.6 tCO2e incl. financed emissions for vehicle and housing loans) for three years, per GHG Protocol and PCAF, with intensities."
+    },
+    "M.3": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        38,
+        23
+      ],
+      "notes": "",
+      "rationale": "Only operational targets: Sanchaya programme 5% year-on-year energy reduction; portfolio exposure limit 5%. No GHG emissions reduction target, base year or long-term target."
+    }
+  }
+}

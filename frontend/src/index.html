@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCFD Compliance Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+        }
+
+        .company-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .compliance-overview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .score-card {
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .score-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .status-count {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .status-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .disclosures-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .disclosure-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+            align-items: center;
+            padding: 16px;
+            background: #f7fafc;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .disclosure-item:hover {
+            background: #edf2f7;
+        }
+
+        .disclosure-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .disclosure-pillar {
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .disclosure-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .status-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .status-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .status-btn:hover {
+            border-color: #667eea;
+        }
+
+        .status-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .status-btn.active-compliant {
+            border-color: #48bb78;
+            background: #48bb78;
+        }
+
+        .status-btn.active-partial {
+            border-color: #ed8936;
+            background: #ed8936;
+        }
+
+        .status-btn.active-noncompliant {
+            border-color: #f56565;
+            background: #f56565;
+        }
+
+        .formula-box {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .formula-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 12px;
+        }
+
+        .formula-text {
+            font-size: 14px;
+            color: #718096;
+            font-family: 'Courier New', monospace;
+        }
+
+        .actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .upload-box {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+        }
+
+        .upload-box input[type="file"] {
+            flex: 1;
+            min-width: 0;
+            font-size: 14px;
+        }
+
+        .upload-box .btn {
+            flex: 0 0 auto;
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .upload-status {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .upload-status.error {
+            color: #c53030;
+        }
+
+        .disclosure-meta {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .evidence {
+            grid-column: 1 / -1;
+            font-size: 13px;
+            color: #4a5568;
+        }
+
+        .evidence summary {
+            cursor: pointer;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .evidence blockquote {
+            margin: 8px 0 0;
+            padding: 8px 12px;
+            border-left: 3px solid #cbd5e0;
+            background: white;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+
+        .evidence .page-ref {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px;
+            }
+
+            .company-details {
+                grid-template-columns: 1fr;
+            }
+
+            .compliance-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .disclosure-item {
+                grid-template-columns: 1fr;
+            }
+
+            .status-selector {
+                margin-top: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TCFD Assessment</h1>
+        <p class="subtitle">Climate disclosure compliance calculator · <a href="label.html" style="color: #667eea">Labelling tool</a></p>
+
+        <div class="section">
+            <h2 class="section-title">Company details</h2>
+            <div class="company-details">
+                <div class="input-group">
+                    <label for="companyName">Company name</label>
+                    <input type="text" id="companyName" placeholder="Enter company name">
+                </div>
+                <div class="input-group">
+                    <label for="reportingYear">Reporting year</label>
+                    <input type="number" id="reportingYear" placeholder="2023" value="2023">
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Auto-fill from report (optional)</h2>
+            <div class="upload-box">
+                <input type="file" id="reportFile" accept="application/pdf,.pdf">
+                <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeReport()">Analyse PDF</button>
+            </div>
+            <div class="upload-status" id="uploadStatus">
+                Upload a sustainability report to pre-fill statuses with page-cited evidence. Requires the backend API at <code>localhost:8250</code>. You can override any suggested status.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Compliance overview</h2>
+            <div class="compliance-overview">
+                <div class="score-card">
+                    <div class="score-value" id="overallScore">0%</div>
+                    <div class="score-label">Overall compliance score</div>
+                </div>
+                <div class="score-card">
+                    <div class="status-count" id="compliantCount">0</div>
+                    <div class="status-label">Compliant</div>
+                </div>
+                <div class="score-card">
+                    <div class="status-count" id="partialCount">0</div>
+                    <div class="status-label">Partial</div>
+                </div>
+                <div class="score-card">
+                    <div class="status-count" id="nonCompliantCount">0</div>
+                    <div class="status-label">Non-compliant</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">TCFD disclosures</h2>
+            <p style="color: #718096; margin-bottom: 16px; font-size: 14px;">Select a status for each requirement.</p>
+            <div class="disclosures-list" id="disclosuresList">
+                <!-- Disclosures will be rendered here -->
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Scoring formula</h2>
+            <div class="formula-box">
+                <div class="formula-title">Full = 1 | Partial = 0.5 | Non-compliant = 0</div>
+                <div class="formula-text">Score = (Weighted points / 11) × 100</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-secondary" onclick="resetAssessment()">Reset assessment</button>
+            <button class="btn btn-primary" onclick="exportReport()">Export report</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

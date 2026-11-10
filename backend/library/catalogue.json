@@ -1,5 +1,12 @@
 {
   "library": {
+    "TCFD": [
+      {
+        "name": "tcfd_requirements.json",
+        "description": "TCFD 11 recommendations across 4 pillars",
+        "esg-labels": ["Environment", "Climate", "Governance"]
+      }
+    ],
     "TFND": [
       {
         "name": "Additional-Sector-Guidance-Aquaculture.pdf",

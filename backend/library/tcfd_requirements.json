@@ -1,0 +1,162 @@
+{
+  "framework": "TCFD",
+  "description": "Task Force on Climate-related Financial Disclosures - 11 recommended disclosures across 4 pillars",
+  "pillars": {
+    "Governance": {
+      "description": "Disclose the organization's governance around climate-related risks and opportunities.",
+      "recommendations": [
+        {
+          "id": "G.1",
+          "tcfd_ref": "Governance (a)",
+          "title": "Board oversight",
+          "description": "Describe the board's oversight of climate-related risks and opportunities.",
+          "keywords": ["board", "oversight", "committee", "directors", "climate", "risk", "governance", "reviews", "chair", "agenda", "frequency", "sustainability committee"],
+          "requirements": [
+            "Processes and frequency by which the board and/or committees are informed about climate-related issues",
+            "Whether the board considers climate-related issues when reviewing strategy, budgets and major plans",
+            "How the board monitors and oversees progress against climate-related goals and targets"
+          ]
+        },
+        {
+          "id": "G.2",
+          "tcfd_ref": "Governance (b)",
+          "title": "Management's role",
+          "description": "Describe management's role in assessing and managing climate-related risks and opportunities.",
+          "keywords": ["management", "executive", "responsibility", "accountable", "chief", "officer", "reporting line", "climate", "team", "remuneration", "incentive", "senior"],
+          "requirements": [
+            "Whether climate-related responsibilities are assigned to management-level positions or committees",
+            "Description of the associated organizational structure",
+            "Processes by which management is informed about and monitors climate-related issues"
+          ]
+        }
+      ]
+    },
+    "Strategy": {
+      "description": "Disclose the actual and potential impacts of climate-related risks and opportunities on the organization's businesses, strategy, and financial planning where such information is material.",
+      "recommendations": [
+        {
+          "id": "S.1",
+          "tcfd_ref": "Strategy (a)",
+          "title": "Climate risks and opportunities",
+          "description": "Describe the climate-related risks and opportunities the organization has identified over the short, medium, and long term.",
+          "keywords": ["climate-related risks", "opportunities", "short term", "medium term", "long term", "time horizon", "physical risk", "transition risk", "climate", "identified"],
+          "requirements": [
+            "Relevant short-, medium- and long-term time horizons",
+            "Specific climate-related issues for each time horizon that could have a material financial impact",
+            "Processes used to determine which risks and opportunities could have a material financial impact"
+          ]
+        },
+        {
+          "id": "S.2",
+          "tcfd_ref": "Strategy (b)",
+          "title": "Business and financial impact",
+          "description": "Describe the impact of climate-related risks and opportunities on the organization's businesses, strategy, and financial planning.",
+          "keywords": ["impact", "financial planning", "strategy", "revenue", "costs", "capital expenditure", "investment", "supply chain", "products", "operations", "climate", "transition plan"],
+          "requirements": [
+            "Impact on products and services, supply chain, adaptation and mitigation activities, R&D and operations",
+            "How climate-related issues serve as an input to financial planning",
+            "Impact on financial performance and financial position"
+          ]
+        },
+        {
+          "id": "S.3",
+          "tcfd_ref": "Strategy (c)",
+          "title": "Organisational resilience",
+          "description": "Describe the resilience of the organization's strategy, taking into consideration different climate-related scenarios, including a 2°C or lower scenario.",
+          "keywords": ["scenario", "scenario analysis", "resilience", "2°c", "1.5°c", "warming", "pathway", "iea", "ngfs", "rcp", "stress test", "climate"],
+          "requirements": [
+            "Climate-related scenarios and time horizons considered",
+            "Inclusion of a 2°C or lower scenario",
+            "Where the strategy may be affected and how it might change to address potential risks"
+          ]
+        }
+      ]
+    },
+    "Risk Management": {
+      "description": "Disclose how the organization identifies, assesses, and manages climate-related risks.",
+      "recommendations": [
+        {
+          "id": "R.1",
+          "tcfd_ref": "Risk Management (a)",
+          "title": "Risk identification and assessment",
+          "description": "Describe the organization's processes for identifying and assessing climate-related risks.",
+          "keywords": ["identify", "identification", "assess", "assessment", "materiality", "likelihood", "magnitude", "risk", "climate", "process", "methodology", "regulatory"],
+          "requirements": [
+            "Risk management processes for identifying and assessing climate-related risks",
+            "How the organization determines the relative significance of climate-related risks",
+            "Whether existing and emerging regulatory requirements are considered"
+          ]
+        },
+        {
+          "id": "R.2",
+          "tcfd_ref": "Risk Management (b)",
+          "title": "Risk management processes",
+          "description": "Describe the organization's processes for managing climate-related risks.",
+          "keywords": ["manage", "mitigate", "mitigation", "transfer", "accept", "control", "monitor", "prioritize", "materiality", "risk", "climate", "response"],
+          "requirements": [
+            "Processes for managing climate-related risks, including decisions to mitigate, transfer, accept or control",
+            "Processes for prioritizing climate-related risks",
+            "How materiality determinations are made"
+          ]
+        },
+        {
+          "id": "R.3",
+          "tcfd_ref": "Risk Management (c)",
+          "title": "Integration into overall risk management",
+          "description": "Describe how processes for identifying, assessing, and managing climate-related risks are integrated into the organization's overall risk management.",
+          "keywords": ["enterprise risk management", "erm", "integrated", "integration", "principal risks", "risk register", "risk framework", "group risk", "overall risk", "climate", "risk"],
+          "requirements": [
+            "How climate-related risk processes are integrated into overall (enterprise) risk management"
+          ]
+        }
+      ]
+    },
+    "Metrics & Targets": {
+      "description": "Disclose the metrics and targets used to assess and manage relevant climate-related risks and opportunities where such information is material.",
+      "recommendations": [
+        {
+          "id": "M.1",
+          "tcfd_ref": "Metrics and Targets (a)",
+          "title": "Climate-related metrics",
+          "description": "Disclose the metrics used by the organization to assess climate-related risks and opportunities in line with its strategy and risk management process.",
+          "keywords": ["metrics", "kpi", "indicator", "energy", "water", "waste", "carbon price", "internal carbon", "renewable", "intensity", "climate", "performance"],
+          "requirements": [
+            "Key metrics used to measure and manage climate-related risks and opportunities",
+            "Whether and how performance metrics are incorporated into remuneration policies",
+            "Internal carbon prices and climate-related opportunity metrics, where relevant"
+          ]
+        },
+        {
+          "id": "M.2",
+          "tcfd_ref": "Metrics and Targets (b)",
+          "title": "Scope 1, 2 and 3 emissions",
+          "description": "Disclose Scope 1, Scope 2, and, if appropriate, Scope 3 greenhouse gas (GHG) emissions, and the related risks.",
+          "keywords": ["scope 1", "scope 2", "scope 3", "ghg", "greenhouse gas", "emissions", "tco2e", "co2e", "ghg protocol", "market-based", "location-based", "carbon"],
+          "requirements": [
+            "Scope 1 and Scope 2 GHG emissions",
+            "Scope 3 GHG emissions, if appropriate",
+            "Methodology (e.g. GHG Protocol) and historical periods for trend analysis"
+          ]
+        },
+        {
+          "id": "M.3",
+          "tcfd_ref": "Metrics and Targets (c)",
+          "title": "Climate targets and performance",
+          "description": "Describe the targets used by the organization to manage climate-related risks and opportunities and performance against targets.",
+          "keywords": ["target", "net zero", "science-based", "sbti", "baseline", "reduction", "2030", "2050", "progress", "achieved", "performance", "commitment"],
+          "requirements": [
+            "Key climate-related targets (e.g. GHG emissions, energy usage)",
+            "Time frames and base years for targets",
+            "Key performance indicators used to assess progress against targets"
+          ]
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "total_recommendations": 11,
+    "version": "2.0",
+    "last_updated": "2026-11-10",
+    "source": "TCFD Final Report (2017), Recommendations of the Task Force on Climate-related Financial Disclosures"
+  }
+}

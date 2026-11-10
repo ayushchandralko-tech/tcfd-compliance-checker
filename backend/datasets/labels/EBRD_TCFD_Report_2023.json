@@ -1,0 +1,135 @@
+{
+  "metadata": {
+    "source_file": "EBRD_TCFD_Report_2023.pdf",
+    "sha256": "03440e4ac6e7beb4361b7b518d4caae58d3e30783b322366209d7ccd18009869",
+    "num_pages": 48,
+    "labeler": "AI draft (Claude) - needs human review",
+    "company": "EBRD",
+    "reporting_year": 2023,
+    "labelled_at": "2026-11-11T00:08:03"
+  },
+  "labels": {
+    "G.1": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        9,
+        10
+      ],
+      "notes": "",
+      "rationale": "Board of Directors has ultimate responsibility for climate oversight; Audit and Risk Committee oversees climate risk and TCFD disclosures and receives quarterly reports incl. climate exposure; FOPC reviews fossil-fuel projects; BAAC covers resources (PDF p.9)."
+    },
+    "G.2": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "notes": "",
+      "rationale": "Table 1 lists management committees with chairs, climate remit and meeting frequency (fortnightly); three-lines-of-defence model; CRO accountable for climate risk; dedicated Climate Risk team (pp.9-11); climate remuneration section 2.2.3 (p.12)."
+    },
+    "S.1": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        15,
+        16,
+        17,
+        21
+      ],
+      "notes": "",
+      "rationale": "Time horizons defined (short <1y, medium 1-7y, long >7y); Table 2 maps strategic priorities to horizons; three types of climate opportunity described (pp.15-17); regional transition/physical risks (sec 4.3)."
+    },
+    "S.2": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        15,
+        16,
+        18,
+        44
+      ],
+      "notes": "",
+      "rationale": "BORDERLINE (could be Partial): impacts on strategy/balance sheet described qualitatively in Table 2 (shift to lower-emitting sectors, GET finance share); resourcing via Strategy Implementation Plan; sec 3.4 says no material change to strategy/financial stability expected; financial effects quantified only via stress-test NPLs (p.44)."
+    },
+    "S.3": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        18,
+        43,
+        44
+      ],
+      "notes": "",
+      "rationale": "Climate stress test using NGFS phase 4 Delayed Transition (~1.6C by 2100, i.e. below 2C) and an in-house short-term Sudden Wake-Up Call scenario; NPL results 4-8%; pilot physical risk stress test; resilience conclusion in sec 3.4."
+    },
+    "R.1": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        19,
+        23,
+        24,
+        26
+      ],
+      "notes": "",
+      "rationale": "Climate risk treated as cross-cutting driver of credit/market/operational/reputational risk (Table 3); project-, PFI- and sovereign-level screening and assessment procedures for transition and physical risk (sec 4.4)."
+    },
+    "R.2": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        19,
+        20,
+        26
+      ],
+      "notes": "",
+      "rationale": "Responses per risk type in Table 3; climate risk in Risk Appetite Statement reviewed by Audit and Risk Committee; monitoring of climate-related financial risks (sec 4.5) and inclusion in internal risk ratings (sec 4.6)."
+    },
+    "R.3": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        19,
+        20
+      ],
+      "notes": "",
+      "rationale": "Section 4.1 explicitly describes integration of climate risk into the existing risk management framework (second line of defence, risk taxonomy, Risk Appetite Statement)."
+    },
+    "M.1": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        27,
+        28
+      ],
+      "notes": "",
+      "rationale": "Metrics overview (Table 6): own carbon footprint, financed emissions, portfolio heatmap, deep-dive transition/physical risk of portfolio, fossil-fuel exposure, physical risk to offices, green project reporting."
+    },
+    "M.2": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        27,
+        28,
+        29,
+        30
+      ],
+      "notes": "",
+      "rationale": "Scope 1, 2 (location- and market-based) and Scope 3 per GHG Protocol, plus separately disclosed financed emissions (Scope 3 cat. 15) for part of the portfolio."
+    },
+    "M.3": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        15,
+        42
+      ],
+      "notes": "",
+      "rationale": "Targets with time frames and progress: green finance >=50% of annual investment by 2025 (50% in 2023); 25-40 MtCO2e/yr net reductions 2021-25 (28.4 Mt achieved); carbon-neutral own operations since 2017; Paris alignment from 2023. Long-term own-GHG targets still to be set."
+    }
+  }
+}

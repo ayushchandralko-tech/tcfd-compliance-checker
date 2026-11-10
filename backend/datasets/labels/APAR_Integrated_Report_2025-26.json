@@ -1,0 +1,128 @@
+{
+  "metadata": {
+    "source_file": "APAR_Integrated_Report_2025-26.pdf",
+    "sha256": "85527d3a3a97132514652443fc114d915e9020c6097775c225e7004a1918986a",
+    "num_pages": 217,
+    "labeler": "AI draft (Claude) - needs human review",
+    "company": "APAR Industries",
+    "reporting_year": 2026,
+    "labelled_at": "2026-11-11T00:08:03"
+  },
+  "labels": {
+    "G.1": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        45,
+        114
+      ],
+      "notes": "",
+      "rationale": "Board CSR & Sustainability Committee 'oversees ESG strategies, risks & opportunities, targets, policies and performance' (p.45) - names the right remit but gives no climate-specific process or frequency. Separate TCFD report exists."
+    },
+    "G.2": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        45
+      ],
+      "notes": "",
+      "rationale": "CEO, Chief Sustainability Officer and Sustainability Steering Committee: oversees climate targets and performance, approves budgets, quarterly meetings; 15 Sustainability Champions for implementation; climate risks assigned to business functions (p.47)."
+    },
+    "S.1": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        54,
+        55,
+        112,
+        3,
+        25
+      ],
+      "notes": "",
+      "rationale": "Physical (cyclones, floods at named plant locations) and transition (EU CBAM) risks and grid-investment opportunities identified, but no time horizons in this report."
+    },
+    "S.2": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        54,
+        112,
+        63
+      ],
+      "notes": "",
+      "rationale": "Impacts on operations described (plant flood resilience, RE procurement, supply-chain diversification); BRSR table marks financial implications only as 'Negative' with no quantification or link to financial planning."
+    },
+    "S.3": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        47,
+        62,
+        63
+      ],
+      "notes": "",
+      "rationale": "Scenario analysis with SSP1-RCP2.6, NGFS Net Zero 2050 (<=2C) and SSP5-RCP8.5 is stated, but results and strategy resilience are not described here (referred to separate TCFD report)."
+    },
+    "R.1": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        47,
+        55,
+        62
+      ],
+      "notes": "",
+      "rationale": "Mentions climate risk identification and 'assessment and quantification of climate risks' plus water-stress assessment; the process and how significance is determined are not described."
+    },
+    "R.2": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        54,
+        112,
+        47
+      ],
+      "notes": "",
+      "rationale": "Mitigation measures listed (flood management systems, design strengthening, BCP/DR, RE share) and risks assigned to functions, but no description of the management/prioritisation process."
+    },
+    "R.3": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        114
+      ],
+      "notes": "",
+      "rationale": "Single statement that climate-related risks are being integrated into the ERM framework (MD's message, BRSR); no detail."
+    },
+    "M.1": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        62,
+        54
+      ],
+      "notes": "",
+      "rationale": "BORDERLINE: quantified climate metrics with trend - emission intensity 0.256 tCO2e/MT, RE share (3.7% -> 10.9%), energy intensity, water intensity. No remuneration link or internal carbon price."
+    },
+    "M.2": {
+      "label": "Disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        62,
+        64
+      ],
+      "notes": "",
+      "rationale": "Scope 1 48,222, Scope 2 138,693 and Scope 3 4,907,279 tCO2e; Scope 1 and 2 with third-party reasonable assurance."
+    },
+    "M.3": {
+      "label": "Partially disclosed",
+      "source": "ai_draft",
+      "evidence_pages": [
+        62,
+        15
+      ],
+      "notes": "",
+      "rationale": "BORDERLINE (could be Disclosed): 50% GHG emissions-intensity reduction by 2030 and SBTi commitment, but no base year or explicit progress against the target."
+    }
+  }
+}
