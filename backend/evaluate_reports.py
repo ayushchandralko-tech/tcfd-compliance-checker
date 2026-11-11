@@ -10,6 +10,9 @@ Each labelled report is assessed with the criterion-level pipeline (assessment.p
     (a "Not assessable" prediction counts as wrong unless the label is also Not assessable)
   - "within one step" agreement (Disclosed vs Partial counts as close)
   - per-report compliance-score error (labelled vs predicted, 0-100)
+  - per-class precision, recall and F1 (disclosure level), and the same at criterion
+    level when a label file contains criterion labels:
+        "labels": {"G.1": {"label": "Disclosed", "criteria": {"G.1.a": "Supported", ...}}}
   - evidence hit rate: share of labels with evidence pages where at least one of the
     criterion evidence passages is on a labelled page
 
@@ -33,7 +36,7 @@ import sys
 import time
 from pathlib import Path
 
-from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_recall_fscore_support
 
 BASE_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE_DIR))
@@ -65,8 +68,15 @@ def load_labels(labels_dir: Path):
     return [(f, json.loads(f.read_text(encoding="utf-8"))) for f in files]
 
 
+def per_class_metrics(y_true, y_pred, labels):
+    p, r, f, n = precision_recall_fscore_support(y_true, y_pred, labels=labels, zero_division=0)
+    return {lab: {"precision": round(float(p[i]), 3), "recall": round(float(r[i]), 3),
+                  "f1": round(float(f[i]), 3), "support": int(n[i])} for i, lab in enumerate(labels)}
+
+
 def evaluate(reports) -> dict:
     y_true, y_pred, rows, score_errors, hits, hit_total = [], [], [], [], 0, 0
+    c_true, c_pred = [], []  # criterion level, when label files contain criterion labels
     elapsed = 0.0
     for label_file, record, pdf in reports:
         t = time.time()
@@ -86,6 +96,11 @@ def evaluate(reports) -> dict:
                 hit_total += 1
                 retrieved = {e["page"] for e in pred["evidence"]}
                 hits += bool(retrieved & set(lab["evidence_pages"]))
+            pred_crit = {c["id"]: c["result"] for c in pred["criteria"]}
+            for cid, clab in (lab.get("criteria") or {}).items():
+                if cid in pred_crit:
+                    c_true.append(clab["result"] if isinstance(clab, dict) else clab)
+                    c_pred.append(pred_crit[cid])
             rows.append({"report": record["metadata"]["source_file"], "requirement": req_id,
                          "label": lab["label"], "predicted": pred["status"],
                          "coverage": pred["coverage"]["score"], "confidence": pred["confidence"]["level"]})
@@ -94,6 +109,18 @@ def evaluate(reports) -> dict:
                                  "labelled_score": round(sum(true_points) / len(true_points) * 100, 1),
                                  "predicted_score": round(sum(pred_points) / len(pred_points) * 100, 1)})
 
+    per_class = per_class_metrics(y_true, y_pred, STATUSES)
+    criterion_level = None
+    if c_true:
+        crit_labels = ["Supported", "Partly supported", "Not found"]
+        criterion_level = {
+            "n": len(c_true),
+            "accuracy": round(accuracy_score(c_true, c_pred), 3),
+            "macro_f1": round(f1_score(c_true, c_pred, labels=crit_labels, average="macro", zero_division=0), 3),
+            "per_class": per_class_metrics(c_true, c_pred, crit_labels),
+            "confusion_matrix": {"labels(rows=true, cols=pred)": crit_labels,
+                                 "matrix": confusion_matrix(c_true, c_pred, labels=crit_labels).tolist()},
+        }
     step = {s: i for i, s in enumerate(STATUSES)}
     near = [a == b or (a in step and b in step and abs(step[a] - step[b]) <= 1) for a, b in zip(y_true, y_pred)]
     return {
@@ -103,6 +130,8 @@ def evaluate(reports) -> dict:
         "accuracy": round(accuracy_score(y_true, y_pred), 3),
         "macro_f1": round(f1_score(y_true, y_pred, labels=STATUSES, average="macro", zero_division=0), 3),
         "within_one_step": round(sum(near) / len(near), 3),
+        "per_class": per_class,
+        "criterion_level": criterion_level,
         "score_mae": round(sum(abs(e["labelled_score"] - e["predicted_score"]) for e in score_errors)
                            / len(score_errors), 1) if score_errors else None,
         "evidence_hit_rate": round(hits / hit_total, 3) if hit_total else None,
@@ -160,6 +189,16 @@ def main():
         print(f"\n{r['config']} - per report (labelled vs predicted score):")
         for e in r["report_scores"]:
             print(f"  {e['report'][:50]:50} {e['labelled_score']:5.1f}  {e['predicted_score']:5.1f}")
+        print("  per class (disclosure level):")
+        for lab, m in r["per_class"].items():
+            print(f"    {lab:20} precision {m['precision']:.2f}  recall {m['recall']:.2f}  F1 {m['f1']:.2f}  (n={m['support']})")
+        if r["criterion_level"]:
+            cl = r["criterion_level"]
+            print(f"  criterion level: {cl['n']} labels, accuracy {cl['accuracy']:.2f}, macro-F1 {cl['macro_f1']:.2f}")
+            for lab, m in cl["per_class"].items():
+                print(f"    {lab:20} precision {m['precision']:.2f}  recall {m['recall']:.2f}  F1 {m['f1']:.2f}  (n={m['support']})")
+        else:
+            print("  criterion level: no criterion labels yet (add 'criteria' to label files).")
         print("  confusion (rows = label, cols = predicted: Not / Partial / Disclosed / Not assessable):")
         for name, row in zip(ALL_STATUSES, r["confusion_matrix"]["matrix"]):
             print(f"    {name:20} {row}")

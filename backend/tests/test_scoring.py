@@ -107,9 +107,47 @@ def test_plans_and_training_are_not_evidence():
     for p in (plan, training):
         r = A.evaluate_criterion(c, [p], np.array([0.6]))
         assert r["result"] == A.PARTLY
-        assert "plan or training" in r["reason"]
+        assert "plan, intention or training" in r["reason"]
+        assert r["confidence"]["level"] == "Low"
     done = passage("We ran scenario analysis using the NGFS Net Zero 2050 and Current Policies scenarios.")
     assert A.evaluate_criterion(c, [done], np.array([0.6]))["result"] == A.SUPPORTED
+
+
+def test_items_in_a_list_of_plans_are_plans():
+    c = criterion("S.3.a")
+    p = passage("The Bank intends to strengthen its climate framework. Key focus areas include: completion of the "
+                "integration work. Incorporation of NGFS climate scenarios into business impact analysis. "
+                "Advancement of the scenario programme.")
+    r = A.evaluate_criterion(c, [p], np.array([0.6]))
+    assert r["result"] == A.PARTLY and "plan" in r["reason"]
+
+
+def test_quote_is_the_exact_supporting_sentences():
+    c = criterion("G.1.a")
+    p = passage("Our cafeteria was renovated. The Audit and Risk Committee of the Board receives quarterly reports "
+                "on climate risk. Staff numbers grew.")
+    e = A.evaluate_criterion(c, [p], np.array([0.7]))["evidence"]
+    assert e["quote"] == "The Audit and Risk Committee of the Board receives quarterly reports on climate risk."
+
+
+def test_board_committee_is_not_a_management_role():
+    c = criterion("G.2.a")
+    board = passage("The Risk Management Committee of the Board is responsible for climate risk oversight.")
+    mgmt = passage("The Chief Risk Officer is responsible for climate risk management.")
+    assert A.evaluate_criterion(c, [board], np.array([0.6]))["result"] != A.SUPPORTED
+    assert A.evaluate_criterion(c, [mgmt], np.array([0.6]))["result"] == A.SUPPORTED
+
+
+def test_table_evidence_with_units():
+    c = criterion("M.1.a")
+    table = {"page": 37, "title": "Energy Metrics", "columns": ["FY 2025-26", "FY 2024-25"],
+             "rows": [{"section": "", "label": "Total energy consumed", "unit": "GJ", "values": ["70,562.99", "73,826.67"]},
+                      {"section": "", "label": "Energy intensity", "unit": "GJ/ Cr.", "values": ["8.78", "10.25"]}]}
+    ps = A.table_passages([table])
+    assert ps[0]["is_table"] and "FY 2025-26: 70,562.99 GJ" in ps[0]["text"]
+    # tables use a lower relevance threshold: precise numeric evidence ranks low semantically
+    r = A.evaluate_criterion(c, ps, np.array([A.RELEVANCE_SUPPORT_TABLE + 0.01]))
+    assert r["result"] == A.SUPPORTED and r["evidence"]["is_table"] and r["evidence"]["table"]["rows"]
 
 
 def test_searches_beyond_the_top_passage():
@@ -122,27 +160,41 @@ def test_searches_beyond_the_top_passage():
 
 # --------------------------------------------------------------------------- classification
 
-def res(result, essential=True, decisive=True):
-    return {"id": "X", "text": "t", "essential": essential, "result": result, "decisive": decisive}
+def res(result, essential=True, level=None):
+    level = level or {A.SUPPORTED: "High", A.NOT_FOUND: "High", A.PARTLY: "Low"}[result]
+    return {"id": "X", "text": "t", "essential": essential, "result": result,
+            "confidence": {"level": level, "basis": ""}}
 
 
 @pytest.mark.parametrize("results,status", [
     ([res(A.SUPPORTED), res(A.SUPPORTED), res(A.NOT_FOUND, essential=False)], A.STATUS_DISCLOSED),
     ([res(A.SUPPORTED), res(A.NOT_FOUND)], A.STATUS_PARTIAL),
-    ([res(A.PARTLY), res(A.NOT_FOUND)], A.STATUS_PARTIAL),
+    # partial / plan-only evidence alone is not meaningful support
+    ([res(A.PARTLY), res(A.NOT_FOUND)], A.STATUS_NOT),
     ([res(A.NOT_FOUND), res(A.NOT_FOUND)], A.STATUS_NOT),
+    # optional criteria never change the status
+    ([res(A.NOT_FOUND), res(A.SUPPORTED, essential=False)], A.STATUS_NOT),
+    ([res(A.SUPPORTED), res(A.NOT_FOUND, essential=False), res(A.PARTLY, essential=False)], A.STATUS_DISCLOSED),
 ])
 def test_classification_rules(results, status):
     assert A.classify_disclosure(results)["status"] == status
 
 
 def test_coverage_and_confidence_are_separate_measures():
-    out = A.classify_disclosure([res(A.SUPPORTED), res(A.PARTLY, decisive=False), res(A.NOT_FOUND)])
+    out = A.classify_disclosure([res(A.SUPPORTED), res(A.PARTLY), res(A.NOT_FOUND)])
     assert out["coverage"]["score"] == pytest.approx(0.5)
     assert out["coverage"]["supported"] == 1 and out["coverage"]["partly"] == 1
     assert out["confidence"]["level"] == "Medium"
-    low = A.classify_disclosure([res(A.PARTLY, decisive=False)] * 3)
-    assert low["confidence"]["level"] == "Low"
+    assert A.classify_disclosure([res(A.PARTLY)] * 3)["confidence"]["level"] == "Low"
+    assert A.classify_disclosure([res(A.SUPPORTED)] * 3)["confidence"]["level"] == "High"
+
+
+@pytest.mark.parametrize("result,rel,top,level", [
+    (A.SUPPORTED, 0.6, 0.6, "High"), (A.SUPPORTED, 0.45, 0.45, "Medium"),
+    (A.PARTLY, 0.5, 0.5, "Low"), (A.NOT_FOUND, 0.0, 0.2, "High"), (A.NOT_FOUND, 0.0, 0.45, "Medium"),
+])
+def test_criterion_confidence(result, rel, top, level):
+    assert A._criterion_confidence(result, rel, top)["level"] == level
 
 
 def test_not_assessable_for_scanned_or_tiny_documents():
@@ -201,3 +253,13 @@ def test_trained_passage_models_rank_relevant_text():
         assert ids[scores[1].argmax()].startswith("G.")
     finally:
         server.load_passage_models(None)
+
+
+def test_criteria_patterns_compile_and_have_no_control_characters():
+    import re as _re
+    for p in REQ["pillars"].values():
+        for r in p["recommendations"]:
+            for c in r["criteria"]:
+                for s in c["signals"]:
+                    assert "\x08" not in s["pattern"], (c["id"], s["name"])
+                    _re.compile(s["pattern"])

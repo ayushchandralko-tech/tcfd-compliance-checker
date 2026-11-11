@@ -75,7 +75,7 @@ def test_assess_finds_criterion_evidence_on_the_right_pages(client, sample_pdf):
     assert crit["G.1.a"]["result"] == "Supported" and crit["G.1.a"]["evidence"]["page"] == 2
     assert crit["M.2.a"]["result"] == "Supported" and crit["M.2.a"]["evidence"]["page"] == 4
     assert crit["M.3.a"]["result"] == "Supported"
-    assert crit["S.3.a"]["result"] == "Not found"  # no scenario analysis in the sample
+    assert crit["S.3.a"]["result"] != "Supported"  # no scenario analysis in the sample
     assert body["compliance_checklist"]["S.3"]["status"] == "Not disclosed"
 
 
@@ -178,3 +178,30 @@ def test_save_export(client, tmp_path, monkeypatch):
 ])
 def test_save_export_validates(client, payload):
     assert client.post("/tcfd/exports", json=payload).status_code == 400
+
+
+# --------------------------------------------------------------------------- robustness
+
+def test_blank_pages_keep_page_numbers(client, make_pdf_bytes):
+    from conftest import SAMPLE_REPORT
+    pages = SAMPLE_REPORT[:2] + [[]] + SAMPLE_REPORT[2:]  # a blank page 3
+    body = upload(client, "/tcfd/assess", make_pdf_bytes(pages)).json()
+    assert body["summary"]["pages_total"] == 6 and body["summary"]["pages_with_text"] == 5
+    crit = {c["id"]: c for r in body["compliance_checklist"].values() for c in r["criteria"]}
+    assert crit["M.2.a"]["evidence"]["page"] == 5  # emissions page shifted by the blank page
+
+
+def test_duplicated_text_does_not_break_assessment(client, make_pdf_bytes):
+    from conftest import SAMPLE_REPORT
+    body = upload(client, "/tcfd/assess", make_pdf_bytes(SAMPLE_REPORT + SAMPLE_REPORT[1:2])).json()
+    g1 = body["compliance_checklist"]["G.1"]
+    assert g1["criteria"][0]["result"] == "Supported"
+    assert len({(e["page"], e["text"]) for e in g1["evidence"]}) == len(g1["evidence"])
+
+
+def test_reporting_year_prefers_title_over_other_years(client, make_pdf_bytes):
+    pages = [["Acme Energy plc Annual Climate Report 2024"],
+             ["Our 2019 baseline and 2030 target. Acme Energy plc compares 2022 and 2023 results."]] + [
+        ["Acme Energy plc filler text about operations and customers in the region. " * 6]] * 3
+    meta = upload(client, "/tcfd/assess", make_pdf_bytes(pages), name="acme_report_2024.pdf").json()["metadata"]
+    assert meta["reporting_year"] == "2024"

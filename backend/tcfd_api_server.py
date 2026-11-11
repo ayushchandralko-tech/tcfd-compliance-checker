@@ -210,18 +210,23 @@ async def assess_tcfd_compliance(file: UploadFile):
         "framework": "TCFD",
         "source_file": file.filename,
         "sha256": sha256,
-        "method": "criterion-level: semantic retrieval + evidence-sufficiency checks",
+        "method": "criterion-level: hybrid retrieval (semantic + keyword + table) + evidence-sufficiency checks",
         "method_details": {
-            "relevance": "0.8 x semantic similarity (sentence embeddings) + 0.2 x lexical similarity (TF-IDF)",
-            "criterion_supported": (f"a passage with relevance >= {assessment.RELEVANCE_SUPPORT} contains every "
-                                    f"required evidence signal within {assessment.SIGNAL_WINDOW} adjacent sentences, "
-                                    "and is not only a plan or training mention"),
-            "status_rules": {"Disclosed": "all essential criteria supported",
-                             "Partially disclosed": "some criteria supported or partly supported",
-                             "Not disclosed": "no criterion has supporting evidence",
-                             "Not assessable": "document unreadable or too short"},
+            "relevance": ("hybrid retrieval: text passages 0.8 x semantic similarity (sentence embeddings) + 0.2 x "
+                          "keyword similarity (TF-IDF); tables 0.7 / 0.3. Candidates are the union of the top "
+                          "semantic, keyword and table matches"),
+            "criterion_supported": (f"a passage with relevance >= {assessment.RELEVANCE_SUPPORT} (tables "
+                                    f">= {assessment.RELEVANCE_SUPPORT_TABLE}) contains every required evidence "
+                                    f"signal within {assessment.SIGNAL_WINDOW} adjacent sentences, and the evidence is "
+                                    "not only a plan, intention or training mention"),
+            "status_rules": {"Disclosed": "every mandatory criterion has direct supporting evidence",
+                             "Partially disclosed": "at least one mandatory criterion supported, others missing",
+                             "Not disclosed": "no mandatory criterion supported (partial or plan-only evidence is not enough)",
+                             "Not assessable": "document unreadable or too short",
+                             "optional criteria": "affect evidence coverage only, never the status"},
             "coverage": "(supported + 0.5 x partly supported) / criteria",
-            "confidence": "High / Medium / Low by how many criterion results are borderline",
+            "confidence": ("per criterion: High / Medium / Low from evidence strength; per disclosure: from the "
+                           "confidence of its mandatory criteria"),
         },
         **result,
     }

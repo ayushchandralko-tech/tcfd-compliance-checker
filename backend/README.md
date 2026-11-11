@@ -9,7 +9,7 @@ criterion by criterion (34 criteria), and returns for each disclosure an AI sugg
 criterion results with page-cited evidence and missing-evidence guidance, evidence coverage and
 classification confidence. See QUICKSTART.md, "How the automated assessment works", for the method.
 
-Main modules: `assessment.py` (pipeline), `tcfd_api_server.py` (API), `passage_features.py` (embeddings),
+Main modules: `assessment.py` (pipeline), `tables.py` (table reconstruction), `tcfd_api_server.py` (API), `passage_features.py` (embeddings),
 `evaluate_reports.py` (evaluation against human labels).
 
 ## Project Structure
@@ -185,15 +185,16 @@ The system assesses compliance against 11 TCFD recommendations across 4 pillars:
 
 ## Limitations
 
-- Evidence checks are pattern-based on top of semantic retrieval: they verify that the right *kinds* of
-  information appear together, not that the disclosure is complete or high quality. Read the evidence.
-- Thresholds were calibrated on the EBRD 2023 TCFD report and AstraZeneca 2023 sustainability report.
-  Against the (unreviewed) AI-drafted labels for EBRD, Ujjivan and APAR, status agreement is 70%; the main
-  disagreement is the pipeline calling Compliant where the drafts said Partial. Confirm the labels in the
-  labelling tool to get a real measurement (`python evaluate_reports.py`).
-- Documents that *describe* disclosure requirements (e.g. GRI standards) still score moderately.
-- Integrated reports that refer to a separate TCFD report are assessed only on their own content.
-- Large reports take 30-130 s on CPU (sentence embeddings for every passage).
+- Evidence checks are pattern-based on top of hybrid retrieval: they verify that the right *kinds* of
+  information appear together, not that a disclosure is complete or of high quality. Read the quotes.
+- Signals can still co-occur by accident within 3 sentences (e.g. a board sentence next to a management
+  sentence); such results usually carry Medium or Low confidence.
+- Table reconstruction relies on pypdf's layout mode: tables with text-only cells, rotated text or
+  designed infographics (e.g. the APAR integrated report) are read as ordinary text instead.
+- Against the (unreviewed) AI-drafted labels for EBRD, Ujjivan and APAR: 73% status agreement,
+  macro-F1 0.80, average score error 10.6 points. Thresholds were tuned on EBRD 2023, AstraZeneca 2023
+  and Ujjivan 2025-26, so those results are in-sample. Confirm the labels to get a real measurement.
+- Large reports take 25-75 s on CPU.
 - Scanned PDFs are reported as Not assessable; run OCR first.
 
 ## Future Improvements

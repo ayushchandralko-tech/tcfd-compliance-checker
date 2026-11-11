@@ -265,28 +265,57 @@ function renderCard(d) {
         </article>`;
 }
 
+function renderTable(t) {
+    return `<div class="tbl-wrap"><table class="ev-table">
+        ${t.title ? `<caption>${esc(t.title)}</caption>` : ''}
+        <thead><tr><th>Item</th><th>Unit</th>${t.columns.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead>
+        <tbody>${t.rows.map(r => `<tr><td>${r.section ? `<span class="ctx">${esc(r.section)}:</span> ` : ''}${esc(r.label)}</td>
+            <td>${esc(r.unit)}</td>${r.values.map(v => `<td class="num">${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table></div>`;
+}
+
 function renderCriterion(c) {
     const r = RESULT[c.result] || RESULT['Not found'];
     const e = c.evidence;
+    const conf = c.confidence || { level: '–', basis: '' };
     const openLink = e && source && source.url
         ? ` · <a href="${source.url}#page=${e.page}" target="_blank" rel="noopener">Open page ${e.page} ↗</a>` : '';
+    let evidence = '';
+    if (e) {
+        const body = e.is_table && e.table
+            ? renderTable(e.table)
+            : `<div class="quote-body">${esc(e.quote || e.text)}</div>
+               ${e.quote && e.quote !== e.text ? `<details class="ctx-toggle"><summary>Full passage</summary>
+                   <div class="quote-body ctx">${e.context_before ? esc(e.context_before) + ' ' : ''}${esc(e.text)}${e.context_after ? ' ' + esc(e.context_after) : ''}</div></details>` : ''}`;
+        evidence = `
+            <div class="quote">
+                <div class="quote-head">${e.is_table ? 'Table on page' : 'Page'} ${e.page} · relevance ${e.relevance.toFixed(2)}${openLink}
+                    <span class="signals">${e.signals_found.map(s => `<span class="chip">${esc(s)}</span>`).join('')}</span></div>
+                ${body}
+            </div>`;
+    }
     return `
         <div class="crit crit-${r.cls}">
             <div class="crit-head">
                 <span class="crit-icon ${r.cls}" aria-hidden="true">${r.icon}</span>
                 <div class="crit-main">
-                    <div class="crit-title">${esc(c.text)} ${c.essential ? '' : '<span class="tag">optional</span>'}</div>
-                    <div class="crit-result"><b>${esc(c.result)}</b> · ${esc(c.reason)}</div>
+                    <div class="crit-title">${esc(c.text)} ${c.essential ? '<span class="tag tag-mand">mandatory</span>' : '<span class="tag">optional</span>'}</div>
+                    <div class="crit-result"><b>${esc(c.result)}</b>
+                        <span class="conf conf-${String(conf.level).toLowerCase()}" title="${esc(conf.basis)}">${esc(conf.level)} confidence</span>
+                        · ${esc(c.reason)}</div>
                 </div>
             </div>
-            ${e ? `
-            <div class="quote">
-                <div class="quote-head">Page ${e.page} · relevance ${e.relevance.toFixed(2)}${openLink}
-                    <span class="signals">${e.signals_found.map(s => `<span class="chip">${esc(s)}</span>`).join('')}</span></div>
-                <div class="quote-body">${e.context_before ? `<span class="ctx">${esc(e.context_before)} </span>` : ''}${esc(e.text)}${e.context_after ? `<span class="ctx"> ${esc(e.context_after)}</span>` : ''}</div>
-            </div>` : ''}
+            ${evidence}
             ${c.missing_guidance ? `<div class="missing"><b>What is missing:</b> ${esc(c.missing_guidance)}</div>` : ''}
         </div>`;
+}
+
+// "(6 × 1 + 4 × 0.5) ÷ 11 = 72.7%"
+function scoreCalculation(s) {
+    if (s.compliance == null) return 'No assessable disclosures yet.';
+    return `(${s.counts.compliant} × 1 + ${s.counts.partial} × 0.5 + ${s.counts.noncompliant} × 0) ÷ ${s.assessable} = ` +
+        `${(Math.round(s.compliance * 10) / 10).toFixed(1)}%` + (s.counts.na ? ` (${s.counts.na} not assessable excluded)` : '') +
+        (s.counts.unassessed ? ` · ${s.counts.unassessed} not yet assessed` : '');
 }
 
 function renderDetails(d, i) {
@@ -336,6 +365,7 @@ function updateSidebar() {
     const s = scores();
     document.getElementById('overallScore').textContent = s.compliance == null ? '–' : `${Math.round(s.compliance)}%`;
     document.getElementById('scoreRing').style.strokeDashoffset = 263.9 * (1 - (s.compliance || 0) / 100);
+    document.getElementById('scoreCalc').textContent = scoreCalculation(s);
     document.getElementById('coverageScore').textContent = s.coverage == null ? '–' : `${Math.round(s.coverage)}%`;
     document.getElementById('coverageDetail').textContent = s.crit.total
         ? `${s.crit.supported} supported, ${s.crit.partly} partly, ${s.crit.missing} missing of ${s.crit.total} criteria`
@@ -685,11 +715,15 @@ async function exportReport() {
         const crit = a ? a.criteria.map(c => {
             const r = RESULT[c.result] || RESULT['Not found'];
             const e = c.evidence;
+            const conf = c.confidence || { level: '–', basis: '' };
+            const ev = !e ? '' : e.is_table && e.table
+                ? `<blockquote><span class="pg">Table on page ${e.page} · relevance ${e.relevance.toFixed(2)} · ${e.signals_found.map(esc).join(', ')}</span>${renderTable(e.table)}</blockquote>`
+                : `<blockquote><span class="pg">Page ${e.page} · relevance ${e.relevance.toFixed(2)} · ${e.signals_found.map(esc).join(', ')}</span>“${esc(e.quote || e.text)}”</blockquote>`;
             return `<tr>
                 <td><span class="ri ${r.cls}">${r.icon}</span></td>
-                <td><b>${esc(c.text)}</b>${c.essential ? '' : ' <span class="small">(optional)</span>'}<br>
-                    <span class="small">${esc(c.result)} · ${esc(c.reason)}</span>
-                    ${e ? `<blockquote><span class="pg">Page ${e.page} · relevance ${e.relevance.toFixed(2)} · ${e.signals_found.map(esc).join(', ')}</span>${esc(e.text)}</blockquote>` : ''}
+                <td><b>${esc(c.text)}</b> <span class="small">(${c.essential ? 'mandatory' : 'optional'})</span><br>
+                    <span class="small">${esc(c.result)} · ${esc(conf.level)} confidence (${esc(conf.basis)}) · ${esc(c.reason)}</span>
+                    ${ev}
                     ${c.missing_guidance ? `<div class="miss"><b>What is missing:</b> ${esc(c.missing_guidance)}</div>` : ''}</td>
             </tr>`;
         }).join('') : '';
@@ -777,6 +811,12 @@ async function exportReport() {
     blockquote { margin: 6px 0 0; padding: 6px 10px; border-left: 3px solid #c9ced6; background: #f8f9fb; break-inside: avoid; }
     .pg { display: block; font-size: 11px; color: #5b6474; margin-bottom: 2px; }
     .miss { margin-top: 6px; padding: 6px 10px; background: #fff8f0; border-radius: 6px; font-size: 12px; }
+    .tbl-wrap { overflow-x: auto; }
+    .ev-table { border-collapse: collapse; font-size: 11px; margin-top: 4px; }
+    .ev-table caption { text-align: left; font-weight: 600; padding-bottom: 4px; }
+    .ev-table th, .ev-table td { padding: 3px 6px; border-bottom: 1px solid #e3e6eb; }
+    .ev-table td.num { text-align: right; }
+    .ctx { color: #8a93a3; }
     .method dt { font-weight: 600; margin-top: 8px; }
     .method dd { margin: 2px 0 0 0; color: #5b6474; }
     .note { margin-top: 24px; padding: 12px 14px; background: #f8f9fb; border-radius: 8px; color: #5b6474; font-size: 12px; }
@@ -794,7 +834,7 @@ async function exportReport() {
     ${yearNote}
 
     <div class="tiles">
-        <div class="tile"><span>Compliance score</span><b>${pct(s.compliance)}</b><small>Final statuses: (Compliant + 0.5 × Partial) ÷ assessable disclosures</small></div>
+        <div class="tile"><span>Compliance score</span><b>${pct(s.compliance)}</b><small>${esc(scoreCalculation(s))}</small></div>
         <div class="tile"><span>Evidence coverage</span><b>${pct(s.coverage)}</b><small>${s.crit.total ? `${s.crit.supported} supported, ${s.crit.partly} partly, ${s.crit.missing} missing of ${s.crit.total} criteria` : 'No automated analysis'}</small></div>
         <div class="tile"><span>Final statuses</span><b>${s.counts.compliant} / ${s.counts.partial} / ${s.counts.noncompliant}</b><small>Compliant / Partial / Non-compliant${s.counts.na ? ` · ${s.counts.na} not assessable` : ''}${s.counts.unassessed ? ` · ${s.counts.unassessed} not assessed` : ''}</small></div>
         <div class="tile"><span>Review</span><b>${s.review.accepted + s.review.changed} / ${source ? 11 : 0}</b><small>${source ? `${s.review.accepted} accepted, ${s.review.changed} changed, ${s.review.pending} not reviewed` : 'Manual assessment'}</small></div>
@@ -825,7 +865,9 @@ async function exportReport() {
         <dt>Criterion supported</dt><dd>${esc(source.details.criterion_supported)}.</dd>
         <dt>Evidence coverage</dt><dd>${esc(source.details.coverage)}, independent of the final status.</dd>
         <dt>Classification confidence</dt><dd>${esc(source.details.confidence)}.</dd>
-        <dt>AI suggestion rules</dt><dd>Compliant: all essential criteria supported. Partially compliant: some criteria supported or partly supported. Non-compliant: no supporting evidence. Not assessable: document unreadable or too short.</dd>` : ''}
+        <dt>AI suggestion rules</dt><dd>Compliant: every mandatory criterion has direct supporting evidence. Partially compliant: at least one mandatory criterion supported, others missing. Non-compliant: no mandatory criterion supported (partial, weak or plan-only evidence is not enough). Not assessable: document unreadable or too short. Optional criteria affect evidence coverage only, never the status.</dd>
+        <dt>Criterion confidence</dt><dd>High: all signals in a clearly relevant passage, or nothing relevant in the report. Medium: all signals but moderate relevance, or related passages without the required evidence. Low: partial evidence that needs human judgement.</dd>
+        <dt>Evidence sources</dt><dd>Text passages and tables reconstructed from the PDF layout (row labels, units, column headings and page numbers preserved); retrieval combines semantic, keyword and table search.</dd>` : ''}
     </dl>
     <div class="note">
         This is a model-assisted assessment, not an audit opinion. Scores depend on the correctness of each criterion result; read the evidence before relying on them.

@@ -244,6 +244,17 @@
         .review-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
         .review-box p { margin-bottom: 8px; color: var(--text-2); }
         textarea.required { border-color: var(--bad); }
+        .formula.calc { font-family: ui-monospace, Consolas, monospace; color: var(--text-2); margin-top: 4px; }
+        .tag-mand { color: var(--accent); border-color: #c5d0fa; }
+        .crit-result .conf { margin: 0 4px; }
+        .ctx-toggle { padding: 0 10px 8px; font-size: 12px; }
+        .ctx-toggle summary { cursor: pointer; color: var(--text-3); }
+        .tbl-wrap { overflow-x: auto; padding: 4px 10px 10px; }
+        .ev-table { border-collapse: collapse; font-size: 12px; min-width: 100%; }
+        .ev-table caption { text-align: left; font-weight: 600; padding: 2px 0 6px; color: var(--text-2); }
+        .ev-table th, .ev-table td { border-bottom: 1px solid var(--border); padding: 4px 8px; text-align: left; white-space: nowrap; }
+        .ev-table td:first-child { white-space: normal; min-width: 180px; }
+        .ev-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
         .export-notice { font-size: 12px; color: var(--text-2); background: var(--ok-soft); border-radius: 8px;
             padding: 8px 10px; overflow-wrap: anywhere; }
@@ -326,6 +337,7 @@
                     </div>
                 </div>
                 <p class="formula"><b>Compliance score</b>: final statuses, (Compliant + 0.5 × Partial) ÷ assessable disclosures.</p>
+                <p class="formula calc" id="scoreCalc"></p>
                 <div class="coverage">
                     <div class="coverage-row"><span>Evidence coverage</span><b id="coverageScore">–</b></div>
                     <p class="formula" id="coverageDetail">Run an analysis to measure evidence coverage</p>

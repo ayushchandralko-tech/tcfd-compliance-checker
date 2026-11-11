@@ -78,6 +78,18 @@ Compares the current embedding models, the fast TF-IDF models and keyword-only s
 Details per label go to `backend/models/eval/report_eval.json`. With fewer than ~50 labels, treat
 differences of a few points as noise.
 
+### Criterion-level labels (optional, recommended)
+
+To measure criterion-level precision and recall, add the criterion results you judged to a label:
+
+```json
+"G.1": {"label": "Disclosed", "source": "human",
+        "criteria": {"G.1.a": "Supported", "G.1.b": "Supported", "G.1.c": "Partly supported"}}
+```
+
+`evaluate_reports.py` then reports precision, recall and F1 per class at both disclosure and criterion
+level. Evaluation is per report (never split by passage), so no report is partly "seen".
+
 ## 4. What to do with the results
 
 - Low **evHit** means retrieval is the problem: tune ranking/keywords first.

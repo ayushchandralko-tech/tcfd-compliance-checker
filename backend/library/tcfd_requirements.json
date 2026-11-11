@@ -128,15 +128,15 @@
               "id": "G.2.a",
               "text": "Climate responsibilities assigned to management roles or committees",
               "essential": true,
-              "query": "Climate-related responsibilities are assigned to named management positions or management committees such as the chief risk officer or a sustainability committee",
+              "query": "Named management positions or committees, such as the chief risk officer, a sustainability committee or the risk management function, are responsible for climate-related issues",
               "signals": [
                 {
                   "name": "management role",
-                  "pattern": "management|executive|chief [a-z]+ officer|\\bc[efrs]o\\b|vice[- ]president|head of|steering (?:committee|group)|working group|management committee|managing director|\\bteam\\b"
+                  "pattern": "(?:(?:senior |executive )?management (?:committee|team|council|board|body|level)|management-level|executive (?:committee|management|director)|chief [a-z]+ officer|\\bc[efrs]o\\b|vice[- ]president|head of [a-z]+|managing director|steering (?:committee|group)|working group|(?:sustainability|esg|climate|csr)[a-z &]{0,25}(?:committee|council|team|cell|officer|lead|function)|(?:enterprise )?risk management (?:\\(erm\\) )?function|risk (?:management )?committee|\\bmanagers?\\b)(?! of the board| of directors)"
                 },
                 {
                   "name": "responsibility",
-                  "pattern": "responsib|accountab|in charge|charged with|mandate|oversee|leads?\\b|tasked|owner"
+                  "pattern": "responsib|accountab|in charge|charged with|mandate|oversee|\\bleads?\\b|tasked|owner|coordinat"
                 },
                 {
                   "name": "climate",
@@ -153,7 +153,7 @@
               "signals": [
                 {
                   "name": "management role",
-                  "pattern": "management|executive|chief [a-z]+ officer|\\bc[efrs]o\\b|vice[- ]president|head of|steering (?:committee|group)|working group|management committee|managing director|\\bteam\\b"
+                  "pattern": "(?:(?:senior |executive )?management (?:committee|team|council|board|body|level)|management-level|executive (?:committee|management|director)|chief [a-z]+ officer|\\bc[efrs]o\\b|vice[- ]president|head of [a-z]+|managing director|steering (?:committee|group)|working group|(?:sustainability|esg|climate|csr)[a-z &]{0,25}(?:committee|council|team|cell|officer|lead|function)|(?:enterprise )?risk management (?:\\(erm\\) )?function|risk (?:management )?committee|\\bmanagers?\\b)(?! of the board| of directors)"
                 },
                 {
                   "name": "structure",
@@ -174,7 +174,7 @@
               "signals": [
                 {
                   "name": "management role",
-                  "pattern": "management|executive|chief [a-z]+ officer|\\bc[efrs]o\\b|vice[- ]president|head of|steering (?:committee|group)|working group|management committee|managing director|\\bteam\\b"
+                  "pattern": "(?:(?:senior |executive )?management (?:committee|team|council|board|body|level)|management-level|executive (?:committee|management|director)|chief [a-z]+ officer|\\bc[efrs]o\\b|vice[- ]president|head of [a-z]+|managing director|steering (?:committee|group)|working group|(?:sustainability|esg|climate|csr)[a-z &]{0,25}(?:committee|council|team|cell|officer|lead|function)|(?:enterprise )?risk management (?:\\(erm\\) )?function|risk (?:management )?committee|\\bmanagers?\\b)(?! of the board| of directors)"
                 },
                 {
                   "name": "monitoring",
@@ -321,7 +321,7 @@
               "signals": [
                 {
                   "name": "impact",
-                  "pattern": "impact|affect|effect|implication|exposure|influence|shift|drive"
+                  "pattern": "\\b(?:impact(?:s|ed)?|affect(?:s|ed)?|effects? (?:on|of)|implications?|exposures?|influence[sd]?)\\b"
                 },
                 {
                   "name": "business area",
@@ -441,7 +441,7 @@
                 },
                 {
                   "name": "findings",
-                  "pattern": "resilience of (?:the|our|its) (?:strategy|business|portfolio|operations)|strategy (?:is|remains|would remain) resilient|results? (?:show|indicate|suggest|of the)|findings|outcomes? (?:show|indicate|of)|non-performing|\bnpl|(?:credit |expected )?loss(?:es)? (?:of|would|could)|financial impact|impact (?:on|of) [^.]{0,40}(?:revenue|portfolio|ebitda|profit|assets?|earnings|operations)|would (?:reduce|increase|result|lead)|(?:could|would) be (?:material|limited|significant)|\\d+(?:\\.\\d+)?\\s?(?:%|per ?cent)"
+                  "pattern": "resilience of (?:the|our|its) (?:strategy|business|portfolio|operations)|strategy (?:is|remains|would remain) resilient|results? (?:show|indicate|suggest|of the)|findings|outcomes? (?:show|indicate|of)|non-performing|\\bnpl|(?:credit |expected )?loss(?:es)? (?:of|would|could)|financial impact|impact (?:on|of) [^.]{0,40}(?:revenue|portfolio|ebitda|profit|assets?|earnings|operations)|would (?:reduce|increase|result|lead)|(?:could|would) be (?:material|limited|significant)|\\d+(?:\\.\\d+)?\\s?(?:%|per ?cent)"
                 }
               ],
               "missing": "Report the results of the scenario analysis and explain how resilient the strategy is and how it might change."
@@ -490,7 +490,7 @@
                 },
                 {
                   "name": "process",
-                  "pattern": "process|framework|methodolog|procedure|tool|questionnaire|due diligence|heat ?map|model|approach"
+                  "pattern": "methodolog|framework|procedure|tool|questionnaire|due diligence|heat ?map|screen|checklist|vulnerability (?:assessment|mapping|classification)|scor(?:e|ing)|rating|mapping|scenario analysis|stress[- ]test|risk assessment"
                 },
                 {
                   "name": "climate",
@@ -568,11 +568,11 @@
               "id": "R.2.a",
               "text": "Decisions to mitigate, transfer, accept or control climate risks",
               "essential": true,
-              "query": "Actions and decisions to mitigate, transfer, accept or control climate-related risks",
+              "query": "Specific actions to mitigate, transfer, accept or control climate-related risks, such as exposure limits, insurance, exclusions, adaptation measures or controls",
               "signals": [
                 {
                   "name": "response",
-                  "pattern": "mitigat|transfer|insur|accept|control|reduc|hedg|avoid|exclu|limit|adapt|respon"
+                  "pattern": "mitigat|transfer|insur|hedg|exclu|avoid|exposure limit|limit of|\\blimits? (?:on|for)|control(?:s|led)?\\b|accept(?:ed|ance)? (?:the |this )?risk|risk appetite|phase[- ]out|diversif|adaptation measure|reduce (?:exposure|risk)|ceiling|cap on"
                 },
                 {
                   "name": "risk",
@@ -883,7 +883,7 @@
               "id": "M.3.a",
               "text": "Quantified climate targets",
               "essential": true,
-              "query": "Quantified climate-related targets such as emission reductions, net zero, renewable energy share or green finance volumes",
+              "query": "Quantified climate-related targets with a target year, such as a 20% reduction in energy or power consumption, emission reduction targets, net zero, renewable energy share or green finance by 2030",
               "signals": [
                 {
                   "name": "target",
@@ -912,7 +912,11 @@
                 },
                 {
                   "name": "deadline",
-                  "pattern": "\\bby (?:the end of )?20[2-6]\\d|until 20[2-6]\\d|20[2-6]\\d target|(?:target|goal) (?:year|date)|20[2-6]\\d\\s*(?:-|–|to)\\s*(?:20)?[2-6]\\d|over the (?:next|five|\\w+)[- ]year|within \\w+ years|between 20[0-6]\\d and 20[2-6]\\d"
+                  "pattern": "\\bby (?:the end of )?(?:fy\\s?)?20[2-6]\\d|until 20[2-6]\\d|\\b20[2-6]\\d (?:target|goal)|(?:target|goal) (?:year|date)|between 20[0-6]\\d and 20[2-6]\\d|within \\w+ years|over the next \\w+ years|(?:goals?|targets?) (?:for |by )?20[2-6]\\d"
+                },
+                {
+                  "name": "climate target",
+                  "pattern": "emission|carbon|ghg|greenhouse|net[- ]?zero|renewable|energy|climate|green finance|paris|decarboni"
                 }
               ],
               "missing": "State the time frame (target year) for each climate-related target."
@@ -947,6 +951,10 @@
                 {
                   "name": "target",
                   "pattern": "target|goal|commit|objective"
+                },
+                {
+                  "name": "climate target",
+                  "pattern": "emission|carbon|ghg|greenhouse|net[- ]?zero|renewable|energy|climate|green finance|paris|decarboni"
                 }
               ],
               "missing": "Report actual performance against each target in the reporting period and progress to date."
