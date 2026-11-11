@@ -77,6 +77,38 @@ let source = null;      // { file, pages, pagesTotal, method, details, analysedA
 let detected = null;    // { company, reporting_year, ... }
 const audit = [];       // review audit trail
 
+// --------------------------------------------------------------------------- dialog
+// In-page replacement for confirm()/alert(): native dialogs are blocked in some embedded
+// browsers (they silently return false), which made Export and Reset do nothing.
+
+function showDialog({ title, message = '', items = [], confirmText = 'OK', cancelText = 'Cancel', danger = false }) {
+    return new Promise(resolve => {
+        const overlay = document.getElementById('dialog');
+        document.getElementById('dialogTitle').textContent = title;
+        document.getElementById('dialogMessage').textContent = message;
+        const list = document.getElementById('dialogItems');
+        list.innerHTML = items.map(x => `<li>${esc(x)}</li>`).join('');
+        list.hidden = !items.length;
+        const ok = document.getElementById('dialogOk');
+        const cancel = document.getElementById('dialogCancel');
+        ok.textContent = confirmText;
+        ok.classList.toggle('btn-danger', danger);
+        cancel.textContent = cancelText || '';
+        cancel.hidden = !cancelText;
+        overlay.hidden = false;
+        const finish = value => {
+            overlay.hidden = true;
+            ok.onclick = cancel.onclick = overlay.onclick = document.onkeydown = null;
+            resolve(value);
+        };
+        ok.onclick = () => finish(true);
+        cancel.onclick = () => finish(false);
+        overlay.onclick = e => { if (e.target === overlay) finish(false); };
+        document.onkeydown = e => { if (e.key === 'Escape') finish(false); };
+        ok.focus();
+    });
+}
+
 // --------------------------------------------------------------------------- helpers
 
 function esc(text) {
@@ -428,7 +460,9 @@ async function analyzeReport() {
     const file = document.getElementById('reportFile').files[0];
     if (!file) { setUploadStatus('Choose a PDF first.', true); return; }
     const reviewed = disclosures.filter(d => d.review.decision).length;
-    if (reviewed && !confirm(`Re-analysing replaces the AI suggestions and clears ${reviewed} review decision(s). Continue?`)) return;
+    if (reviewed && !(await showDialog({ title: 'Re-analyse the report?',
+        message: `This replaces the AI suggestions and clears ${reviewed} review decision(s).`,
+        confirmText: 'Re-analyse', danger: true }))) return;
 
     const button = document.getElementById('analyzeBtn');
     const label = document.getElementById('analyzeLabel');
@@ -490,8 +524,10 @@ async function analyzeReport() {
     }
 }
 
-function resetAssessment() {
-    if (!confirm('Clear all statuses, review decisions, notes and analysis results?')) return;
+async function resetAssessment() {
+    if (!(await showDialog({ title: 'Reset the assessment?',
+        message: 'This clears all statuses, review decisions, notes and analysis results.',
+        confirmText: 'Reset', danger: true }))) return;
     disclosures.forEach(d => Object.assign(d, { status: null, notes: '', open: false, analysis: null,
                                                 review: { decision: null, reason: '', at: null } }));
     if (source && source.url) URL.revokeObjectURL(source.url);
@@ -523,14 +559,37 @@ function download(content, filename, type) {
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
+    // Keep the URL alive for the "open" link; release it after 10 minutes.
+    setTimeout(() => URL.revokeObjectURL(url), 10 * 60 * 1000);
+    saveCopyOnServer(filename, content, url);
 }
 
-// Checks before export. Returns false if the user cancels.
-function readyToExport() {
+// Also save the export through the backend (InferESG/exports/), so the file reaches disk
+// even where the browser blocks downloads (some embedded preview panes discard them silently).
+async function saveCopyOnServer(filename, content, url) {
+    const box = document.getElementById('exportNotice');
+    let saved = null;
+    try {
+        const res = await fetch(`${API_BASE}/tcfd/exports`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename, content }),
+        });
+        if (res.ok) saved = await res.json();
+    } catch (e) { /* backend not running: browser download only */ }
+    box.innerHTML = `<b>Exported:</b> ${esc(filename)}<br>` + (saved
+        ? `Saved to <code>InferESG/${esc(saved.relative_path)}</code> and sent to your browser's downloads.`
+        : `Sent to your browser's downloads. Not there? <a href="${url}" target="_blank" rel="noopener">Open it in a new tab</a>.`);
+    box.hidden = false;
+}
+
+// Checks before export. Resolves false if export should not go ahead.
+async function readyToExport() {
     if (yearMismatch() && !document.getElementById('yearConfirm').checked) {
-        alert(`The reporting year you entered (${reportingYear()}) does not match the report (${detected.reporting_year}). ` +
-              'Correct the year, or tick the confirmation box in the sidebar, before exporting.');
+        await showDialog({ title: 'Reporting year does not match the report',
+            message: `You entered ${reportingYear()}, but the report appears to cover ${detected.reporting_year}. ` +
+                     'Correct the year, or tick the confirmation box in the sidebar, then export again.',
+            confirmText: 'OK', cancelText: null });
+        document.getElementById('metaCheck').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return false;
     }
     const s = scores();
@@ -538,7 +597,9 @@ function readyToExport() {
     const problems = [];
     if (s.review.pending) problems.push(`${s.review.pending} AI suggestion(s) have not been reviewed (they will be marked "Not reviewed")`);
     if (noReason.length) problems.push(`${noReason.length} change(s) have no reason: ${noReason.map(d => d.id).join(', ')}`);
-    if (problems.length && !confirm(`Before exporting:\n- ${problems.join('\n- ')}\n\nExport anyway?`)) return false;
+    if (problems.length && !(await showDialog({ title: 'Export with open review items?', items: problems,
+        message: 'The report will show these clearly. You can also go back and finish the review first.',
+        confirmText: 'Export anyway', cancelText: 'Go back' }))) return false;
     return true;
 }
 
@@ -577,13 +638,13 @@ function exportData() {
     };
 }
 
-function exportJson() {
-    if (!readyToExport()) return;
+async function exportJson() {
+    if (!(await readyToExport())) return;
     download(JSON.stringify(exportData(), null, 2), `${fileStem()}.json`, 'application/json');
 }
 
-function exportReport() {
-    if (!readyToExport()) return;
+async function exportReport() {
+    if (!(await readyToExport())) return;
     const s = scores();
     const company = companyName() || 'Not specified';
     const year = reportingYear() || 'Not specified';

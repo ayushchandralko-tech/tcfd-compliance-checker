@@ -158,3 +158,23 @@ def test_save_labels_sanitises_filename(client):
 
 def test_unknown_report_labels_404(client):
     assert client.get("/tcfd/labels/" + "0" * 64).status_code == 404
+
+
+# --------------------------------------------------------------------------- exports
+
+def test_save_export(client, tmp_path, monkeypatch):
+    monkeypatch.setattr(server, "EXPORTS_DIR", tmp_path / "exports")
+    res = client.post("/tcfd/exports", json={"filename": "../TCFD Assessment.html", "content": "<html></html>"})
+    assert res.status_code == 200
+    saved = tmp_path / "exports" / "TCFD_Assessment.html"
+    assert saved.read_text(encoding="utf-8") == "<html></html>"
+    assert res.json()["relative_path"] == "exports/TCFD_Assessment.html"
+
+
+@pytest.mark.parametrize("payload", [
+    {"filename": "report.exe", "content": "x"},
+    {"filename": "report.html", "content": ""},
+    {"filename": "report.html"},
+])
+def test_save_export_validates(client, payload):
+    assert client.post("/tcfd/exports", json=payload).status_code == 400

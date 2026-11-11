@@ -358,6 +358,33 @@ async def get_labels_for_report(sha256: str):
     raise HTTPException(status_code=404, detail="No saved labels for this report")
 
 
+EXPORTS_DIR = BASE_DIR.parent / "exports"
+MAX_EXPORT_BYTES = 20 * 1024 * 1024
+
+
+@app.post("/tcfd/exports")
+async def save_export(payload: Dict = Body(...)):
+    """Save an exported report (HTML or JSON) to InferESG/exports/.
+
+    The frontend calls this alongside the browser download, so exports reach disk even in
+    browsers that block downloads (e.g. embedded preview panes).
+    """
+    filename = str(payload.get("filename") or "")
+    content = payload.get("content")
+    if not isinstance(content, str) or not content:
+        raise HTTPException(status_code=400, detail="content is required")
+    if len(content.encode("utf-8")) > MAX_EXPORT_BYTES:
+        raise HTTPException(status_code=413, detail="Export too large")
+    suffix = Path(filename).suffix.lower()
+    if suffix not in {".html", ".json"}:
+        raise HTTPException(status_code=400, detail="Only .html and .json exports are accepted")
+    EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    path = EXPORTS_DIR / f"{_safe_stem(filename)}{suffix}"
+    path.write_text(content, encoding="utf-8")
+    logger.info("Saved export to %s", path)
+    return {"saved_to": str(path), "relative_path": f"exports/{path.name}"}
+
+
 @app.get("/tcfd/labels")
 async def list_labels():
     """List saved label files with how many requirements each covers."""
